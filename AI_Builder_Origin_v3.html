@@ -284,6 +284,11 @@ img,svg{display:block;max-width:100%}
 .footer{margin-top:90px;padding-top:28px;border-top:1px solid rgba(17,19,17,.2);display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:12px;color:#59633c}
 .footer strong{display:block;color:var(--ink);font-size:15px;margin-bottom:7px}
 .footer-nav{display:flex;gap:20px;flex-wrap:wrap}
+/* 사업자 정보 — 전자상거래법상 표기 의무 항목이라 본문과 달리 줄여 쓰지 않는다.
+   색은 .final__micro 가 쓰던 #66723d 를 재사용한다(새 색 추가 금지 — PRD §5.1). */
+.footer__legal{flex:1 0 100%;margin-top:24px;padding-top:20px;border-top:1px solid rgba(17,19,17,.14);display:flex;flex-wrap:wrap;gap:6px 20px;color:#66723d;line-height:1.7}
+.footer__legal b{font-weight:750;color:#59633c}
+.footer__copy{flex:1 0 100%;margin-top:12px;color:#66723d;opacity:.75}
 
 /* Sticky CTA */
 .dock{position:fixed;left:50%;bottom:18px;z-index:70;transform:translate(-50%,140%);width:min(720px,calc(100% - 28px));background:rgba(17,19,17,.94);color:var(--white);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:9px 10px 9px 20px;display:flex;align-items:center;justify-content:space-between;gap:18px;box-shadow:0 18px 50px rgba(17,19,17,.24);backdrop-filter:blur(12px);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
@@ -616,7 +621,20 @@ img,svg{display:block;max-width:100%}
     <div class="final__box"><h2 id="contact-title">무엇을 만들지부터 정리해 드립니다.</h2><div class="final__right"><p>프로젝트의 현재 단계와 필요한 기능을 알려주세요. 상담 과정에서 이번에 만들 범위와 다음 단계로 넘길 범위를 함께 정리합니다.</p><!-- TODO(미확정): pluuug 폼 URL. 확정 시 href 를 교체하고 §6.5 UTM 파라미터를 붙인다.
      연동 방식(A 리다이렉트 / B 임베드)도 미정 — PRD §6.5 는 B(임베드) 권장. PRD §12 🔴 -->
       <div class="final__actions"><a class="btn-primary" href="#" data-track="final_contact">프로젝트 문의하기 ↗</a><a class="btn-link" href="#work">Work 다시 보기 ↑</a></div><p class="final__micro">※ 실제 pluuug 폼 URL 확정 후 문의 버튼에 연결합니다.</p></div></div>
-    <footer class="footer"><div><strong>AI BUILDER ORIGIN ✱</strong><span>누가, 어떻게 만드는지 보여주는 개발 파트너</span></div><nav class="footer-nav"><a href="#work">Work</a><a href="#insight">Insight</a><a href="#faq">FAQ</a><a href="#contact">문의하기</a></nav><span>© 2026 Concept Prototype</span></footer>
+    <footer class="footer"><div><strong>AI BUILDER ORIGIN ✱</strong><span>누가, 어떻게 만드는지 보여주는 개발 파트너</span></div><nav class="footer-nav"><a href="#work">Work</a><a href="#insight">Insight</a><a href="#faq">FAQ</a><a href="#contact">문의하기</a></nav><span>Concept prototype</span>
+      <!-- 사업자 정보 — 사용자 제공(2026-08-07). 메일 주소는 aibuilder@origin.com 으로 지정받았다.
+           mailto 링크로 걸지 않는다: 문의를 대체하는 부차 전환 경로를 만들지 않는다는 PRD §6.2 금지 조항.
+           TODO(미확정): 저작권 표기 주체·연도 — 브랜드명 확정 후 재확인 필요. PRD §12 🔴 -->
+      <div class="footer__legal">
+        <span>상호명 <b>주식회사 똑똑한개발자</b></span>
+        <span>대표자 서장원</span>
+        <span>사업자등록번호 476-81-01694</span>
+        <span>통신판매업 번호 2023-서울마포-3760</span>
+        <span>주소 04039 서울특별시 마포구 홍익로5안길 28, 5층</span>
+        <span>메일 aibuilder@origin.com</span>
+      </div>
+      <span class="footer__copy">ⓒ 2023 Toktokhan.dev, Inc. All Right Reserved.</span>
+    </footer>
   </div>
 </section>
 </main>
