@@ -61,19 +61,20 @@
   --font:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.55;letter-spacing:-.01em;overflow-x:hidden}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.55;letter-spacing:-.01em;font-kerning:normal;text-rendering:optimizeLegibility;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 img,svg{display:block;max-width:100%}
-h1,h2,h3{word-break:keep-all;overflow-wrap:normal;text-wrap:balance}
+h1,h2,h3{word-break:keep-all;overflow-wrap:normal;line-break:strict;hyphens:none;text-wrap:balance}
+p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pretty}
 :focus-visible{outline:3px solid var(--lime-2);outline-offset:4px}
 ::selection{background:var(--lime);color:var(--ink)}
 .container{width:min(var(--max),100%);margin-inline:auto;padding-inline:var(--pad)}
 .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
 .eyebrow::before{content:'✱';color:#6d8f00;font-size:12px}
 .section{padding:clamp(88px,11vw,156px) 0}
-.section-title{font-size:clamp(38px,6.1vw,80px);line-height:1.16;letter-spacing:-.02em;font-weight:850;max-width:15ch}
+.section-title{font-size:clamp(38px,6.1vw,80px);line-height:1.16;letter-spacing:-.02em;font-weight:850;max-inline-size:15ch}
 .section-copy{font-size:clamp(16px,1.75vw,21px);line-height:1.68;color:var(--muted);max-width:52ch}
 .tag{display:inline-flex;align-items:center;border:1px solid var(--line);padding:7px 11px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
 .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -109,7 +110,7 @@ h1,h2,h3{word-break:keep-all;overflow-wrap:normal;text-wrap:balance}
   radial-gradient(circle at 88% 72%,rgba(185,216,255,.55),transparent 28%);pointer-events:none}
 .hero__grid{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(420px,.97fr);gap:clamp(42px,6vw,92px);align-items:center;padding-block:clamp(78px,10vw,132px)}
 .hero__copy{position:relative;z-index:2}
-.hero__title{margin-top:24px;font-size:clamp(54px,8.2vw,116px);line-height:1.12;letter-spacing:-.025em;font-weight:900;max-width:10ch}
+.hero__title{margin-top:24px;font-size:clamp(54px,8.2vw,116px);line-height:1.12;letter-spacing:-.025em;font-weight:900;max-inline-size:10ch}
 .hero__title .stroke{-webkit-text-stroke:1.5px var(--ink);color:transparent}
 .hero__lead{margin-top:30px;font-size:clamp(17px,1.75vw,21px);color:#4f524d;line-height:1.7;max-width:44ch}
 .hero__actions{display:flex;align-items:center;gap:18px;margin-top:38px;flex-wrap:wrap}
@@ -130,7 +131,7 @@ h1,h2,h3{word-break:keep-all;overflow-wrap:normal;text-wrap:balance}
 @keyframes scan{from{transform:translateX(-130%)}to{transform:translateX(130%)}}
 .screen-nav{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:rgba(255,255,255,.45)}
 .screen-pill{display:inline-flex;align-items:center;gap:6px;background:var(--lime);color:var(--ink);border-radius:999px;padding:6px 10px;font-weight:800}
-.screen-copy{margin-top:54px;font-size:clamp(30px,4vw,50px);line-height:1.16;letter-spacing:-.02em;font-weight:850;max-width:10ch}
+.screen-copy{margin-top:54px;font-size:clamp(30px,4vw,50px);line-height:1.16;letter-spacing:-.02em;font-weight:850;max-inline-size:10ch}
 .screen-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:10px;margin-top:38px}
 .screen-box{background:#30362f;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;min-height:92px}
 .screen-box:nth-child(2){background:var(--lime);color:var(--ink)}
@@ -158,14 +159,14 @@ h1,h2,h3{word-break:keep-all;overflow-wrap:normal;text-wrap:balance}
 .problem__aside{position:sticky;top:130px;align-self:start}
 .problem__aside .eyebrow{color:rgba(255,255,255,.65)}
 .problem__aside .eyebrow::before{color:var(--lime)}
-.problem__aside h2{margin-top:28px;font-size:clamp(40px,5.6vw,76px);line-height:1.16;letter-spacing:-.02em;font-weight:880;max-width:11ch}
+.problem__aside h2{margin-top:28px;font-size:clamp(40px,5.6vw,76px);line-height:1.16;letter-spacing:-.02em;font-weight:880;max-inline-size:11ch}
 .problem__aside p{margin-top:26px;color:rgba(255,255,255,.55);font-size:16px;line-height:1.75;max-width:34ch}
 .problem__steps{display:grid;gap:18px}
 .problem-card{min-height:62vh;border:1px solid rgba(255,255,255,.12);border-radius:26px;padding:clamp(28px,4vw,54px);display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;background:#171a17}
 .problem-card:nth-child(2){background:#1d211c}
 .problem-card:nth-child(3){background:var(--lime);color:var(--ink)}
 .problem-card__no{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.58}
-.problem-card h3{font-size:clamp(34px,4.8vw,68px);line-height:1.16;letter-spacing:-.02em;font-weight:850;max-width:13ch}
+.problem-card h3{font-size:clamp(34px,4.8vw,68px);line-height:1.16;letter-spacing:-.02em;font-weight:850;max-inline-size:13ch}
 .problem-card p{font-size:clamp(15px,1.4vw,18px);line-height:1.72;max-width:38ch;opacity:.66}
 .problem-card__graphic{position:absolute;right:-50px;top:42px;width:220px;height:220px;border:1px solid currentColor;border-radius:50%;opacity:.12}
 .problem-card__graphic::before,.problem-card__graphic::after{content:'';position:absolute;border:1px solid currentColor;border-radius:50%;inset:28px}
@@ -292,7 +293,7 @@ h1,h2,h3{word-break:keep-all;overflow-wrap:normal;text-wrap:balance}
 /* Final CTA */
 .final{background:var(--lime);padding:clamp(90px,12vw,160px) 0 70px}
 .final__box{display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:end}
-.final h2{font-size:clamp(48px,7vw,104px);line-height:1.12;letter-spacing:-.025em;font-weight:900;max-width:9ch}
+.final h2{font-size:clamp(48px,7vw,104px);line-height:1.12;letter-spacing:-.025em;font-weight:900;max-inline-size:9ch}
 .final__right{justify-self:end;max-width:470px}
 .final__right p{font-size:18px;line-height:1.72;color:#3d4336}
 .final__actions{margin-top:30px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
@@ -325,6 +326,23 @@ h1,h2,h3{word-break:keep-all;overflow-wrap:normal;text-wrap:balance}
 .dock.show ~ .chat{bottom:88px}
 body.chat-open .dock{transform:translate(-50%,140%)}
 
+/* ═══ 위로가기 — 전역 레이어. 채팅 런처와 좌우 대칭 ═══ */
+/* 순수 내비게이션이라 §6.2 의 "문의를 대체하는 부차 전환 경로"에 해당하지 않는다.
+   채팅(어두운 채움)과 색을 달리해 CTA 위계를 흐리지 않는다 — 흰 원 + 얇은 테두리.
+   고정 요소라 밝은 섹션과 어두운 섹션 위를 모두 지나므로 배경을 흰색으로 고정한다.
+   (레일이 --ink 라 어두운 구간에서 사라졌던 것과 같은 함정이다) */
+.totop{position:fixed;left:20px;bottom:20px;z-index:75;width:52px;height:52px;border-radius:50%;
+  background:var(--white);border:1px solid var(--line);color:var(--ink);display:grid;place-items:center;
+  box-shadow:0 10px 26px rgba(17,19,17,.16);opacity:0;visibility:hidden;transform:translateY(10px);
+  transition:opacity .28s,transform .28s cubic-bezier(.2,.8,.2,1),visibility 0s .28s,
+             bottom .3s cubic-bezier(.2,.8,.2,1),background .2s}
+.totop.show{opacity:1;visibility:visible;transform:none;
+  transition:opacity .28s,transform .28s cubic-bezier(.2,.8,.2,1),visibility 0s,
+             bottom .3s cubic-bezier(.2,.8,.2,1),background .2s}
+.totop.show:hover{background:var(--bg);transform:translateY(-3px)}
+.totop svg{width:20px;height:20px}
+.dock.show ~ .totop{bottom:88px}
+
 .chat__launcher{width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--lime);display:grid;place-items:center;box-shadow:0 14px 34px rgba(17,19,17,.26);transition:transform .22s,background .22s}
 .chat__launcher:hover{background:#2c302a;transform:translateY(-3px)}
 .chat__ico{width:23px;height:23px}
@@ -351,12 +369,12 @@ body.chat-open .dock{transform:translate(-50%,140%)}
 
 @media(max-width:1050px){
   .hero__grid{grid-template-columns:1fr;gap:30px}
-  .hero__title{max-width:10ch}
+  .hero__title{max-inline-size:10ch}
   .hero-stage{min-height:540px;max-width:680px;width:100%;margin-inline:auto}
   .problem__layout,.how__layout{grid-template-columns:1fr}
   .problem__aside,.how__intro{position:static}
-  .problem__aside h2{max-width:12ch}
-  .section-title{max-width:18ch}
+  .problem__aside h2{max-inline-size:18ch}
+  .section-title{max-inline-size:18ch}
   .problem-card{min-height:520px}
   .proof-grid{grid-template-columns:repeat(2,1fr)}
   .proof-item:nth-child(2){border-right:0}
@@ -383,13 +401,15 @@ body.chat-open .dock{transform:translate(-50%,140%)}
 @media(max-width:720px){
   .chat{right:14px;bottom:14px}
   .dock.show ~ .chat{bottom:78px}
+  .totop{left:14px;bottom:14px}
+  .dock.show ~ .totop{bottom:78px}
   .header{height:64px}
   .nav,.header__cta{display:none}
   .menu-btn{display:grid}
   .mobile-menu{inset-block-start:64px}
   .hero{padding-top:64px}
   .hero__grid{padding-block:68px 76px}
-  .hero__title{font-size:clamp(50px,16vw,76px)}
+  .hero__title{font-size:clamp(46px,13vw,68px);max-inline-size:100%}
   .hero__lead{font-size:16px}
   .hero__actions{align-items:flex-start;flex-direction:column;gap:8px}
   .hero-stage{min-height:430px}
@@ -400,7 +420,8 @@ body.chat-open .dock{transform:translate(-50%,140%)}
   .stage-card--ticket{width:205px;bottom:28px;padding:15px}
   .stage-card--tag{right:0;bottom:0}
   .section{padding:82px 0}
-  .section-title{font-size:clamp(38px,10vw,46px);max-width:none}
+  .section-title{font-size:clamp(36px,9.5vw,46px);max-inline-size:100%}
+  .problem__aside h2,.problem-card h3,.final h2{max-inline-size:100%}
   .problem__steps{gap:12px}
   .problem-card{min-height:auto;padding:32px 24px;gap:80px}
   .problem-card h3{font-size:39px}
@@ -422,7 +443,7 @@ body.chat-open .dock{transform:translate(-50%,140%)}
   .faq-tabs button.active::after{display:none}
   .final__box{grid-template-columns:1fr}
   .final__right{justify-self:start}
-  .final h2{font-size:58px}
+  .final h2{font-size:clamp(44px,12vw,58px)}
   .dock{bottom:10px;padding-left:14px}
   .dock__copy span{display:none}
 }
@@ -434,7 +455,7 @@ body.chat-open .dock{transform:translate(-50%,140%)}
   .screen-box strong{font-size:14px}
   .stage-card--ticket{left:-6px;width:185px}
   .stage-card--tag{font-size:11px;padding:11px 14px}
-  .section-title{font-size:clamp(34px,10.5vw,42px)}
+  .section-title{font-size:clamp(34px,10vw,40px)}
   .dock__copy b{font-size:12px;max-width:160px}
   .dock a{padding:10px 14px}
 }
@@ -715,6 +736,12 @@ body.chat-open .dock{transform:translate(-50%,140%)}
   <a href="#contact" data-track="dock_contact">문의하기 ↗</a>
 </aside>
 
+<!-- 위로가기. dock 다음에 두어야 .dock.show ~ .totop 형제 선택자가 성립한다.
+     data-track 을 붙이지 않았다 — 내비게이션이라 §6.4 전환 이벤트 목록에 넣을 성격이 아니다. -->
+<button class="totop" id="toTop" aria-label="맨 위로 이동">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
 <!-- 상담 위젯 — 콘셉트. 실제 상담 연결은 pluuug 폼 확정 후(PRD §12 🔴).
      패널 안의 행동은 문의 하나뿐이다: 문의를 대체하는 경로를 만들지 않는다(§6.2 🔴).
      CTA 는 data-track 규격에 얹어 기존 cta_click 으로 잡힌다 — 새 이벤트 타입을 만들지 않았다. -->
@@ -770,13 +797,24 @@ body.chat-open .dock{transform:translate(-50%,140%)}
     history.replaceState({},'',url);
   };
 
+  const toTop=document.getElementById('toTop');
   const onScroll=()=>{
     header.classList.toggle('is-scrolled',scrollY>24);
     const pastHero=scrollY>innerHeight*.82;
     const atFinal=contact.getBoundingClientRect().top<innerHeight*.82;
     dock.classList.toggle('show',pastHero&&!atFinal);
+    /* dock 과 달리 최종 CTA 구간에서도 남긴다 — 페이지 끝이 위로가기가 가장 필요한 지점이다. */
+    toTop.classList.toggle('show',pastHero);
   };
   addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  /* behavior 를 지정하지 않는다. CSS 의 scroll-behavior 가 결정하게 두면
+     prefers-reduced-motion 에서 smooth 가 자동으로 꺼진다(그 미디어쿼리가 auto 로 덮는다).
+     버튼은 맨 위에서 사라지므로 포커스를 로고로 넘겨 포커스가 사라진 요소에 남지 않게 한다. */
+  toTop.addEventListener('click',()=>{
+    scrollTo({top:0});
+    document.querySelector('.logo').focus();
+  });
 
   menuBtn.addEventListener('click',()=>{
     const open=menuBtn.getAttribute('aria-expanded')==='true';
