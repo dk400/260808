@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Builder Origin — 누가, 어떻게 만드는지 보여드립니다</title>
+<meta name="description" content="AI에 최적화된 작업 방식과 빌더의 실제 작업 근거를 공개하는 외주 개발 파트너 AI Builder Origin의 콘셉트 시안입니다.">
+<meta name="theme-color" content="#111311">
+<meta property="og:title" content="AI Builder Origin">
+<meta property="og:description" content="누가, 어떻게 만드는지 보여주는 개발 파트너">
+<meta property="og:type" content="website">
+
+<!-- ═══════════════════════════════════════════════════════════════
+     TODO(미확정) — GA4 측정 ID 확정 후 이 위치에 gtag 스니펫을 넣는다.
+     PRD §12 🟡 / CLAUDE.md §4. ID 없이 넣으면 안 되므로 위치만 표시한다.
+
+     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+     <script>
+       window.dataLayer = window.dataLayer || [];
+       function gtag(){dataLayer.push(arguments)}
+       gtag('js', new Date());
+       gtag('config', 'G-XXXXXXXXXX');
+     </script>
+
+     본 파일의 track() 은 이미 window.dataLayer 로 push 하므로,
+     위 스니펫만 삽입하면 별도 수정 없이 GA4 로 흘러간다.
+     ═══════════════════════════════════════════════════════════════ -->
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --bg:#f4f2eb;
+  --panel:#ebe8df;
+  --ink:#111311;
+  --muted:#686b65;
+  --line:rgba(17,19,17,.15);
+  --lime:#d7ff59;
+  --lime-2:#c8ed45;
+  --blue:#b9d8ff;
+  --orange:#ffc49a;
+  --white:#fffef9;
+  --radius:22px;
+  --shadow:0 20px 60px rgba(17,19,17,.12);
+  --max:1320px;
+  --pad:clamp(20px,4.2vw,64px);
+  --font:'Pretendard Variable','Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.55;letter-spacing:-.018em;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+img,svg{display:block;max-width:100%}
+:focus-visible{outline:3px solid var(--lime-2);outline-offset:4px}
+::selection{background:var(--lime);color:var(--ink)}
+.container{width:min(var(--max),100%);margin-inline:auto;padding-inline:var(--pad)}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.eyebrow::before{content:'✱';color:#6d8f00;font-size:12px}
+.section{padding:clamp(88px,11vw,156px) 0}
+.section-title{font-size:clamp(38px,6.1vw,80px);line-height:.98;letter-spacing:-.063em;font-weight:850;max-width:12ch}
+.section-copy{font-size:clamp(16px,1.75vw,21px);line-height:1.68;color:var(--muted);max-width:52ch}
+.tag{display:inline-flex;align-items:center;border:1px solid var(--line);padding:7px 11px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* Header */
+.header{position:fixed;inset:0 0 auto;z-index:80;height:72px;transition:background .25s,border-color .25s,box-shadow .25s}
+.header.is-scrolled{background:rgba(244,242,235,.86);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);box-shadow:0 8px 30px rgba(17,19,17,.04)}
+.header__inner{height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:850;letter-spacing:-.04em;font-size:16px}
+.logo__mark{width:22px;height:22px;background:var(--ink);color:var(--lime);border-radius:50%;display:grid;place-items:center;font-size:12px;transform:rotate(-12deg)}
+.nav{display:flex;align-items:center;gap:28px;margin-left:auto}
+.nav a{font-size:14px;font-weight:650;color:#42453f;position:relative}
+.nav a::after{content:'';position:absolute;left:0;right:100%;bottom:-8px;height:2px;background:var(--ink);transition:right .25s}
+.nav a:hover::after{right:0}
+.header__cta{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--white);padding:11px 16px;border-radius:999px;font-size:13px;font-weight:800;transition:transform .2s,background .2s}
+.header__cta:hover{background:#2a2e28;transform:translateY(-2px)}
+.menu-btn{display:none;width:42px;height:42px;border:1px solid var(--line);border-radius:50%;place-items:center}
+.menu-btn span,.menu-btn::before,.menu-btn::after{content:'';display:block;width:16px;height:1.5px;background:var(--ink);transition:.25s}
+.menu-btn span{margin:4px 0}
+.menu-btn[aria-expanded="true"] span{opacity:0}
+.menu-btn[aria-expanded="true"]::before{transform:translateY(5.5px) rotate(45deg)}
+.menu-btn[aria-expanded="true"]::after{transform:translateY(-5.5px) rotate(-45deg)}
+.mobile-menu{position:fixed;inset:72px 0 auto;z-index:79;background:var(--bg);border-bottom:1px solid var(--line);padding:18px var(--pad) 26px;display:none}
+.mobile-menu.open{display:grid;gap:4px}
+.mobile-menu a{padding:15px 0;border-bottom:1px solid var(--line);font-size:26px;font-weight:800}
+
+/* Hero */
+.hero{min-height:100svh;padding-top:72px;display:flex;align-items:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:
+  radial-gradient(circle at 75% 18%,rgba(215,255,89,.58),transparent 25%),
+  radial-gradient(circle at 88% 72%,rgba(185,216,255,.55),transparent 28%);pointer-events:none}
+.hero__grid{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(420px,.97fr);gap:clamp(42px,6vw,92px);align-items:center;padding-block:clamp(78px,10vw,132px)}
+.hero__copy{position:relative;z-index:2}
+.hero__title{margin-top:24px;font-size:clamp(54px,8.2vw,116px);line-height:.9;letter-spacing:-.078em;font-weight:900;max-width:8.5ch}
+.hero__title .stroke{-webkit-text-stroke:1.5px var(--ink);color:transparent}
+.hero__lead{margin-top:30px;font-size:clamp(17px,1.75vw,21px);color:#4f524d;line-height:1.7;max-width:44ch}
+.hero__actions{display:flex;align-items:center;gap:18px;margin-top:38px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--ink);color:var(--white);padding:16px 24px;border-radius:999px;font-size:15px;font-weight:800;min-height:54px;transition:transform .22s,background .22s}
+.btn-primary:hover{background:#2c302a;transform:translateY(-3px)}
+.btn-link{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:800;padding:14px 2px;border-bottom:1px solid var(--ink)}
+.hero__note{margin-top:28px;display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#777a74;max-width:46ch}
+.hero__note::before{content:'i';width:18px;height:18px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-weight:800;flex:0 0 auto}
+
+.hero-stage{position:relative;min-height:610px;perspective:1200px}
+.stage-card{position:absolute;border:1px solid rgba(17,19,17,.16);border-radius:24px;box-shadow:var(--shadow);overflow:hidden;transition:transform .55s cubic-bezier(.2,.8,.2,1)}
+.stage-card--main{width:min(94%,580px);right:0;top:40px;background:#121612;color:var(--white);padding:28px;transform:rotateY(-7deg) rotateX(3deg)}
+.stage-card--main:hover{transform:rotateY(-2deg) rotateX(1deg) translateY(-8px)}
+.stage-top{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:12px;color:rgba(255,255,255,.62)}
+.stage-top b{color:var(--lime);letter-spacing:.1em}
+.stage-screen{margin-top:24px;background:#222721;border-radius:16px;padding:18px;min-height:330px;position:relative;overflow:hidden}
+.stage-screen::before{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 0 46%,rgba(215,255,89,.12) 50%,transparent 54%);animation:scan 4.8s linear infinite}
+@keyframes scan{from{transform:translateX(-130%)}to{transform:translateX(130%)}}
+.screen-nav{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:rgba(255,255,255,.45)}
+.screen-pill{display:inline-flex;align-items:center;gap:6px;background:var(--lime);color:var(--ink);border-radius:999px;padding:6px 10px;font-weight:800}
+.screen-copy{margin-top:54px;font-size:clamp(30px,4vw,50px);line-height:1.02;letter-spacing:-.055em;font-weight:850;max-width:8.5ch}
+.screen-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:10px;margin-top:38px}
+.screen-box{background:#30362f;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;min-height:92px}
+.screen-box:nth-child(2){background:var(--lime);color:var(--ink)}
+.screen-box small{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:inherit;opacity:.7}
+.screen-box strong{display:block;margin-top:13px;font-size:17px}
+.stage-card--ticket{left:0;bottom:52px;width:250px;background:var(--white);padding:20px;transform:rotate(-6deg)}
+.stage-card--ticket:hover{transform:rotate(-2deg) translateY(-6px)}
+.ticket-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px dashed var(--line);font-size:12px}
+.ticket-row span{color:var(--muted)}
+.ticket-seal{margin-top:16px;display:flex;align-items:center;justify-content:space-between}
+.ticket-seal b{display:inline-flex;align-items:center;gap:7px;font-size:12px}
+.ticket-seal b::before{content:'';width:8px;height:8px;background:#4ca36d;border-radius:50%}
+.stage-card--tag{right:7%;bottom:4px;background:var(--lime);padding:14px 18px;border-radius:999px;font-size:13px;font-weight:850;transform:rotate(4deg)}
+
+/* Transition strip */
+.strip{border-block:1px solid var(--line);overflow:hidden;background:var(--white)}
+.strip__track{display:flex;width:max-content;animation:marquee 26s linear infinite}
+.strip__item{display:flex;align-items:center;gap:28px;padding:17px 14px;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.strip__item::after{content:'✱';color:#779700}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* Problem narrative */
+.problem{background:var(--ink);color:var(--white)}
+.problem__layout{display:grid;grid-template-columns:minmax(280px,.7fr) minmax(0,1.3fr);gap:clamp(48px,8vw,124px)}
+.problem__aside{position:sticky;top:130px;align-self:start}
+.problem__aside .eyebrow{color:rgba(255,255,255,.65)}
+.problem__aside .eyebrow::before{color:var(--lime)}
+.problem__aside h2{margin-top:28px;font-size:clamp(40px,5.6vw,76px);line-height:.98;letter-spacing:-.06em;font-weight:880;max-width:8ch}
+.problem__aside p{margin-top:26px;color:rgba(255,255,255,.55);font-size:16px;line-height:1.75;max-width:34ch}
+.problem__steps{display:grid;gap:18px}
+.problem-card{min-height:62vh;border:1px solid rgba(255,255,255,.12);border-radius:26px;padding:clamp(28px,4vw,54px);display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;background:#171a17}
+.problem-card:nth-child(2){background:#1d211c}
+.problem-card:nth-child(3){background:var(--lime);color:var(--ink)}
+.problem-card__no{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.58}
+.problem-card h3{font-size:clamp(34px,4.8vw,68px);line-height:1.02;letter-spacing:-.055em;font-weight:850;max-width:11ch}
+.problem-card p{font-size:clamp(15px,1.4vw,18px);line-height:1.72;max-width:38ch;opacity:.66}
+.problem-card__graphic{position:absolute;right:-50px;top:42px;width:220px;height:220px;border:1px solid currentColor;border-radius:50%;opacity:.12}
+.problem-card__graphic::before,.problem-card__graphic::after{content:'';position:absolute;border:1px solid currentColor;border-radius:50%;inset:28px}
+.problem-card__graphic::after{inset:66px}
+
+/* Proof/static section */
+.proof{background:var(--white)}
+.proof__head{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end}
+.proof__head .section-copy{justify-self:end}
+.proof-grid{margin-top:64px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr)}
+.proof-item{padding:30px 24px 36px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-height:260px;display:flex;flex-direction:column;position:relative;transition:background .25s}
+.proof-item:last-child{border-right:0}
+.proof-item:hover{background:var(--panel)}
+.proof-item__icon{width:48px;height:48px;border-radius:14px;background:var(--ink);color:var(--lime);display:grid;place-items:center;font-weight:900}
+.proof-item__label{margin-top:auto;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#6b6f67}
+.proof-item h3{margin-top:12px;font-size:24px;line-height:1.15;letter-spacing:-.04em}
+.proof-item p{margin-top:12px;font-size:14px;line-height:1.7;color:var(--muted)}
+
+/* Work */
+.work{background:var(--bg)}
+.work__head{display:flex;justify-content:space-between;align-items:flex-end;gap:40px}
+.work-layout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:42px;margin-top:64px}
+.work-filter{position:sticky;top:110px;align-self:start;border-top:1px solid var(--ink)}
+.work-filter button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:15px 2px;border-bottom:1px solid var(--line);font-size:14px;font-weight:700;text-align:left;color:#6b6e68}
+.work-filter button::after{content:'00';font-size:11px;font-variant-numeric:tabular-nums;color:#999d96}
+.work-filter button[data-filter="all"]::after{content:'04'}
+.work-filter button[data-filter="web"]::after{content:'02'}
+.work-filter button[data-filter="automation"]::after{content:'01'}
+.work-filter button[data-filter="admin"]::after{content:'01'}
+.work-filter button.active{color:var(--ink)}
+.work-filter button.active::before{content:'✱';color:#779700;margin-right:6px}
+.work-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.work-card{border-radius:24px;overflow:hidden;border:1px solid var(--line);background:var(--white);transition:transform .35s,box-shadow .35s,opacity .25s}
+.work-card:hover{transform:translateY(-7px);box-shadow:var(--shadow)}
+.work-card[hidden]{display:none}
+.work-visual{aspect-ratio:16/11;padding:20px;position:relative;overflow:hidden}
+.work-visual--1{background:#cdd9ff}
+.work-visual--2{background:#f9c3a0}
+.work-visual--3{background:#d7ff59}
+.work-visual--4{background:#c7e5d5}
+.mock-window{height:100%;border-radius:14px;background:rgba(255,255,255,.84);border:1px solid rgba(17,19,17,.13);padding:13px;box-shadow:0 18px 30px rgba(17,19,17,.13);transform:rotate(-2deg) translateY(8px);transition:transform .4s}
+.work-card:hover .mock-window{transform:rotate(0) translateY(0)}
+.mock-bar{height:26px;border-bottom:1px solid rgba(17,19,17,.1);display:flex;align-items:center;gap:5px}
+.mock-dot{width:6px;height:6px;border-radius:50%;background:rgba(17,19,17,.24)}
+.mock-layout{display:grid;grid-template-columns:1fr .8fr;gap:9px;margin-top:12px;height:calc(100% - 40px)}
+.mock-block{border-radius:9px;background:rgba(17,19,17,.08)}
+.mock-stack{display:grid;gap:9px;grid-template-rows:1fr 1.2fr}
+.work-card__body{padding:22px 22px 26px}
+.work-card__meta{display:flex;justify-content:space-between;gap:14px;align-items:center;color:#747771;font-size:11px;font-weight:750;text-transform:uppercase;letter-spacing:.08em}
+.work-card h3{margin-top:16px;font-size:26px;letter-spacing:-.045em;line-height:1.12}
+.work-card p{margin-top:11px;color:var(--muted);font-size:14px;line-height:1.65}
+.work-card__foot{margin-top:22px;display:flex;gap:7px;flex-wrap:wrap}
+
+/* How */
+.how{background:#dce0d7}
+.how__layout{display:grid;grid-template-columns:.82fr 1.18fr;gap:clamp(52px,8vw,120px)}
+.how__intro{position:sticky;top:122px;align-self:start}
+.how__intro .section-copy{margin-top:28px}
+.how__status{margin-top:34px;border:1px solid rgba(17,19,17,.17);border-radius:18px;padding:20px;background:rgba(255,255,255,.36)}
+.status-top{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:800}
+.status-dot{width:10px;height:10px;border-radius:50%;background:#55a36d;box-shadow:0 0 0 6px rgba(85,163,109,.12)}
+.status-line{height:4px;background:rgba(17,19,17,.1);border-radius:99px;margin-top:20px;overflow:hidden}
+.status-line i{display:block;height:100%;width:25%;background:var(--ink);transition:width .45s}
+.how-list{display:grid;gap:0;border-top:1px solid rgba(17,19,17,.18)}
+.how-step{padding:42px 0;border-bottom:1px solid rgba(17,19,17,.18);display:grid;grid-template-columns:72px 1fr;gap:24px;opacity:.42;transition:opacity .3s,transform .3s}
+.how-step.active{opacity:1;transform:translateX(8px)}
+.how-step__no{font-size:12px;font-weight:850;letter-spacing:.12em}
+.how-step h3{font-size:clamp(28px,3vw,42px);line-height:1.05;letter-spacing:-.05em}
+.how-step p{margin-top:13px;color:#5b5e58;font-size:15px;line-height:1.7;max-width:42ch}
+
+/* Builders */
+.builders{background:var(--ink);color:var(--white)}
+.builders__head{display:grid;grid-template-columns:1fr .8fr;gap:48px;align-items:end}
+.builders__head .section-copy{color:rgba(255,255,255,.58);justify-self:end}
+.builder-grid{margin-top:60px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+/* PRD §4 — 이 구간의 인터랙션 강도는 "무"다. hover · transition · 등장 효과를 넣지 않는다.
+   빈 구간이 아니라 판별 기준이다: "애니메이션을 넣는 판단만큼 안 넣는 판단도 기준이다"
+   되돌리려면 아래에 transition/hover 를 다시 넣기 전에 §4.1 배분표부터 갱신할 것. */
+.builder-card{border:1px solid rgba(255,255,255,.13);border-radius:22px;padding:24px;background:#171a17;min-height:370px;display:flex;flex-direction:column}
+.builder-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.builder-avatar{width:58px;height:58px;border-radius:18px;background:linear-gradient(145deg,#d7ff59,#9bb73b);display:grid;place-items:center;color:var(--ink);font-weight:900}
+.builder-state{font-size:11px;padding:6px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.64)}
+.builder-card h3{margin-top:32px;font-size:28px;letter-spacing:-.045em}
+.builder-card>p{margin-top:10px;color:rgba(255,255,255,.58);font-size:14px;line-height:1.65}
+.builder-evidence{margin-top:auto;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);display:grid;gap:10px}
+.evidence-row{display:flex;justify-content:space-between;gap:18px;font-size:12px}
+.evidence-row span{color:rgba(255,255,255,.4)}
+.evidence-row b{font-weight:750;text-align:right}
+.builders__note{margin-top:24px;color:rgba(255,255,255,.38);font-size:12px}
+
+/* Insight */
+.insight{background:var(--white)}
+.insight__head{display:flex;align-items:flex-end;justify-content:space-between;gap:32px}
+.insight-tabs{display:flex;gap:6px;background:var(--panel);padding:5px;border-radius:999px}
+.insight-tabs button{padding:10px 16px;border-radius:999px;font-size:13px;font-weight:800;color:#686b65}
+.insight-tabs button.active{background:var(--ink);color:var(--white)}
+.insight-list{margin-top:54px;border-top:1px solid var(--ink)}
+.insight-item{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:28px;align-items:center;padding:26px 4px;border-bottom:1px solid var(--line);transition:background .2s,padding .2s}
+.insight-item:hover{background:var(--panel);padding-inline:18px}
+.insight-item[hidden]{display:none}
+.insight-type{font-size:11px;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:#6d716a}
+.insight-item h3{font-size:clamp(20px,2.2vw,29px);letter-spacing:-.04em;line-height:1.2}
+.insight-meta{margin-top:8px;color:#7b7e78;font-size:12px}
+.insight-arrow{width:42px;height:42px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;transition:background .2s,transform .2s}
+.insight-item:hover .insight-arrow{background:var(--lime);transform:translateX(4px)}
+
+/* FAQ */
+.faq{background:var(--bg)}
+.faq__layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:54px;margin-top:54px}
+.faq-tabs{border-top:1px solid var(--ink)}
+.faq-tabs button{display:flex;width:100%;align-items:center;justify-content:space-between;padding:15px 0;border-bottom:1px solid var(--line);font-size:14px;font-weight:750;color:#73766f;text-align:left}
+.faq-tabs button.active{color:var(--ink)}
+.faq-tabs button.active::after{content:'✱';color:#779700}
+.faq-list{border-top:1px solid var(--ink)}
+.faq-item{border-bottom:1px solid var(--line)}
+.faq-q{width:100%;padding:23px 0;display:flex;align-items:center;justify-content:space-between;gap:24px;text-align:left;font-size:18px;font-weight:800}
+.faq-q::after{content:'+';font-size:25px;font-weight:400;transition:transform .25s}
+.faq-item.open .faq-q::after{transform:rotate(45deg)}
+.faq-a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s ease}
+.faq-a>div{overflow:hidden}
+.faq-a p{padding:0 0 24px;color:var(--muted);font-size:15px;line-height:1.75;max-width:64ch}
+.faq-item.open .faq-a{grid-template-rows:1fr}
+
+/* Final CTA */
+.final{background:var(--lime);padding:clamp(90px,12vw,160px) 0 70px}
+.final__box{display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:end}
+.final h2{font-size:clamp(48px,7vw,104px);line-height:.92;letter-spacing:-.07em;font-weight:900;max-width:7.2ch}
+.final__right{justify-self:end;max-width:470px}
+.final__right p{font-size:18px;line-height:1.72;color:#3d4336}
+.final__actions{margin-top:30px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.final .btn-primary{background:var(--ink)}
+.final__micro{margin-top:14px;font-size:11px;color:#66723d}
+.footer{margin-top:90px;padding-top:28px;border-top:1px solid rgba(17,19,17,.2);display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:12px;color:#59633c}
+.footer strong{display:block;color:var(--ink);font-size:15px;margin-bottom:7px}
+.footer-nav{display:flex;gap:20px;flex-wrap:wrap}
+
+/* Sticky CTA */
+.dock{position:fixed;left:50%;bottom:18px;z-index:70;transform:translate(-50%,140%);width:min(720px,calc(100% - 28px));background:rgba(17,19,17,.94);color:var(--white);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:9px 10px 9px 20px;display:flex;align-items:center;justify-content:space-between;gap:18px;box-shadow:0 18px 50px rgba(17,19,17,.24);backdrop-filter:blur(12px);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.dock.show{transform:translate(-50%,0)}
+.dock__copy{font-size:13px;min-width:0}
+.dock__copy b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dock__copy span{color:rgba(255,255,255,.52);font-size:11px}
+.dock a{background:var(--lime);color:var(--ink);padding:11px 18px;border-radius:999px;font-size:13px;font-weight:850;white-space:nowrap}
+
+/* Reveal helpers */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .72s,transform .72s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+@media(max-width:1050px){
+  .hero__grid{grid-template-columns:1fr;gap:30px}
+  .hero__title{max-width:10ch}
+  .hero-stage{min-height:540px;max-width:680px;width:100%;margin-inline:auto}
+  .problem__layout,.how__layout{grid-template-columns:1fr}
+  .problem__aside,.how__intro{position:static}
+  .problem__aside h2{max-width:12ch}
+  .problem-card{min-height:520px}
+  .proof-grid{grid-template-columns:repeat(2,1fr)}
+  .proof-item:nth-child(2){border-right:0}
+  .builders__head,.proof__head{grid-template-columns:1fr}
+  .builders__head .section-copy,.proof__head .section-copy{justify-self:start}
+  .builder-grid{grid-template-columns:repeat(2,1fr)}
+  .builder-card:last-child{grid-column:1/-1}
+}
+/* PRD §5.3 — "900px ↓ Work 사이드바 → 가로 필터칩".
+   1050px 블록과 분리해 둔다. 통째로 옮기면 PRD 가 요구하지 않은 #proof 4열까지
+   함께 움직여 1000px 부근에서 열당 폭이 무너진다.
+   실측(2026-08-06): 901px 에서 카드 267px · 제목 2줄 · 가로 넘침 없음. */
+@media(max-width:900px){
+  .work-layout{grid-template-columns:1fr}
+  .work-filter{position:static;display:flex;gap:8px;overflow:auto;border-top:0;padding-bottom:3px;scrollbar-width:none}
+  .work-filter::-webkit-scrollbar{display:none}
+  .work-filter button{width:auto;flex:0 0 auto;border:1px solid var(--line);border-radius:999px;padding:10px 14px;justify-content:center}
+  .work-filter button::after{display:none}
+  .work-filter button.active{background:var(--ink);color:var(--white)}
+  .work-filter button.active::before{display:none}
+}
+/* PRD §5.3 — "720px ↓ 모바일 메뉴, 단일 컬럼".
+   실측(2026-08-06): 721px 에서 헤더 필요폭 493px / 가용 706px, 가로 넘침 없음. */
+@media(max-width:720px){
+  .header{height:64px}
+  .nav,.header__cta{display:none}
+  .menu-btn{display:grid}
+  .mobile-menu{inset-block-start:64px}
+  .hero{padding-top:64px}
+  .hero__grid{padding-block:68px 76px}
+  .hero__title{font-size:clamp(50px,16vw,76px)}
+  .hero__lead{font-size:16px}
+  .hero__actions{align-items:flex-start;flex-direction:column;gap:8px}
+  .hero-stage{min-height:430px}
+  .stage-card--main{top:18px;width:95%;padding:18px;transform:rotateY(-4deg) rotateX(2deg)}
+  .stage-screen{min-height:260px;padding:14px}
+  .screen-copy{margin-top:36px;font-size:34px}
+  .screen-grid{margin-top:26px}
+  .stage-card--ticket{width:205px;bottom:28px;padding:15px}
+  .stage-card--tag{right:0;bottom:0}
+  .section{padding:82px 0}
+  .section-title{font-size:46px}
+  .problem__steps{gap:12px}
+  .problem-card{min-height:auto;padding:32px 24px;gap:80px}
+  .problem-card h3{font-size:39px}
+  .proof-grid{grid-template-columns:1fr}
+  .proof-item{border-right:0;min-height:230px}
+  .work__head,.insight__head{display:grid;align-items:start}
+  .work-grid{grid-template-columns:1fr}
+  .how-step{grid-template-columns:52px 1fr;padding:34px 0}
+  .builder-grid{grid-template-columns:1fr}
+  .builder-card:last-child{grid-column:auto}
+  .insight-tabs{justify-self:start}
+  .insight-item{grid-template-columns:1fr auto;gap:16px}
+  .insight-type{grid-column:1/-1}
+  .faq__layout{grid-template-columns:1fr;gap:28px}
+  .faq-tabs{display:flex;gap:8px;overflow:auto;border-top:0;padding-bottom:2px;scrollbar-width:none}
+  .faq-tabs::-webkit-scrollbar{display:none}
+  .faq-tabs button{width:auto;flex:0 0 auto;border:1px solid var(--line);border-radius:999px;padding:10px 14px}
+  .faq-tabs button.active{background:var(--ink);color:var(--white)}
+  .faq-tabs button.active::after{display:none}
+  .final__box{grid-template-columns:1fr}
+  .final__right{justify-self:start}
+  .final h2{font-size:58px}
+  .dock{bottom:10px;padding-left:14px}
+  .dock__copy span{display:none}
+}
+@media(max-width:480px){
+  .hero__note{display:none}
+  .hero-stage{min-height:385px}
+  .stage-card--main{right:-8px;width:102%}
+  .screen-box{min-height:72px;padding:10px}
+  .screen-box strong{font-size:14px}
+  .stage-card--ticket{left:-6px;width:185px}
+  .stage-card--tag{font-size:11px;padding:11px 14px}
+  .section-title{font-size:42px}
+  .dock__copy b{font-size:12px;max-width:160px}
+  .dock a{padding:10px 14px}
+}
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .reveal{opacity:1;transform:none}
+}
+
+/* ═══ 계측 레일 — v1 signature 이식 (오버레이 방식) ═══ */
+/* 콘텐츠를 밀지 않는다. 컨테이너 좌측 여백 위에만 떠 있음.        */
+/* → 중심축·dock·사이드바·모바일 전환에 부작용 없음                */
+.rail{
+  position:fixed;left:0;top:0;bottom:0;width:48px;z-index:60;
+  display:none;                       /* 기본 숨김 */
+  flex-direction:column;align-items:center;justify-content:space-between;
+  padding:22px 0 26px;pointer-events:none;
+}
+.rail__mark{writing-mode:vertical-rl;font-size:9.5px;letter-spacing:.32em;
+  color:var(--muted);font-weight:600;opacity:.75}
+.rail__ticks{flex:1;display:flex;flex-direction:column;justify-content:center;
+  gap:9px;width:100%;align-items:center}
+.rail__tick{width:9px;height:1px;background:var(--line);
+  transition:width .34s cubic-bezier(.2,.8,.3,1),background .34s}
+.rail__tick.on{width:24px;background:var(--ink)}
+.rail__idx{font-size:10.5px;font-weight:700;font-variant-numeric:tabular-nums;
+  color:var(--ink);opacity:.8}
+
+/* 컨테이너(1320px) 좌측 여백이 레일보다 넓어지는 지점부터 노출 */
+@media(min-width:1360px){ .rail{display:flex} }
+@media(prefers-reduced-motion:reduce){ .rail__tick{transition:none} }
+
+</style>
+</head>
+<body>
+<aside class="rail" aria-hidden="true">
+  <span class="rail__mark">ORIGIN</span>
+  <div class="rail__ticks" id="railTicks"></div>
+  <span class="rail__idx" id="railIdx">01</span>
+</aside>
+<header class="header" id="header">
+  <div class="container header__inner">
+    <!-- TODO(미확정): 브랜드명 — 그룹/크루/팀/오리진 중 미정. 확정 전까지 AI BUILDER ORIGIN 유지. PRD §12 🔴 -->
+    <a class="logo" href="#top" aria-label="AI Builder Origin 홈">
+      <span class="logo__mark">✱</span><span>AI BUILDER ORIGIN</span>
+    </a>
+    <nav class="nav" aria-label="주요 메뉴">
+      <a href="#work">Work</a><a href="#insight">Insight</a><a href="#faq">FAQ</a>
+    </nav>
+    <a class="header__cta" href="#contact" data-track="header_contact">프로젝트 문의 <span>↗</span></a>
+    <button class="menu-btn" id="menuBtn" aria-label="메뉴 열기" aria-expanded="false"><span></span></button>
+  </div>
+</header>
+<nav class="mobile-menu" id="mobileMenu" aria-label="모바일 메뉴">
+  <a href="#work">Work</a><a href="#insight">Insight</a><a href="#faq">FAQ</a><a href="#contact">문의하기</a>
+</nav>
+
+<main id="top">
+<section class="hero">
+  <div class="container hero__grid">
+    <div class="hero__copy reveal">
+      <span class="eyebrow">AI-native development partner</span>
+      <h1 class="hero__title">누가,<br><span class="stroke">어떻게</span><br>만드는지.</h1>
+      <p class="hero__lead">AI로 빠르게 만드는 것보다 중요한 건, 어떤 사람이 어떤 기준으로 끝까지 책임지는지입니다. 작업 방식과 실제 작업자의 근거를 함께 보여드립니다.</p>
+      <div class="hero__actions">
+        <a href="#contact" class="btn-primary" data-track="hero_contact">프로젝트 문의하기 <span>↗</span></a>
+        <a href="#work" class="btn-link" data-track="hero_work">Work 살펴보기 <span>↓</span></a>
+      </div>
+      <p class="hero__note">본 화면은 제출용 콘셉트 시안입니다. 빌더·프로젝트 실데이터와 pluuug URL은 확정 후 연결합니다.</p>
+    </div>
+
+    <div class="hero-stage" aria-label="AI Builder Origin 콘셉트 화면">
+      <article class="stage-card stage-card--main">
+        <div class="stage-top"><b>BUILD EVIDENCE 01</b><span>AI BUILDER ORIGIN</span></div>
+        <div class="stage-screen">
+          <div class="screen-nav"><span>WORK / INSIGHT / FAQ</span><span class="screen-pill">문의하기 ↗</span></div>
+          <p class="screen-copy">Build fast.<br>Prove every step.</p>
+          <div class="screen-grid">
+            <div class="screen-box"><small>Work method</small><strong>진단 → 설계 → 제작 → 검수</strong></div>
+            <div class="screen-box"><small>Builder evidence</small><strong>작업자와 기록 공개</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="stage-card stage-card--ticket" aria-hidden="true">
+        <div class="eyebrow">Build check</div>
+        <div class="ticket-row"><span>Scope</span><b>Defined</b></div>
+        <div class="ticket-row"><span>Owner</span><b>Visible</b></div>
+        <div class="ticket-row"><span>Review</span><b>Recorded</b></div>
+        <div class="ticket-seal"><b>Ready to build</b><span>01/04</span></div>
+      </article>
+      <div class="stage-card stage-card--tag" aria-hidden="true">WORK WITH EVIDENCE ✱</div>
+    </div>
+  </div>
+</section>
+
+<div class="strip" aria-hidden="true">
+  <div class="strip__track">
+    <div class="strip__item">Planning</div><div class="strip__item">UI · UX</div><div class="strip__item">Web · App</div><div class="strip__item">Admin</div><div class="strip__item">AI Automation</div><div class="strip__item">Quality Review</div>
+    <div class="strip__item">Planning</div><div class="strip__item">UI · UX</div><div class="strip__item">Web · App</div><div class="strip__item">Admin</div><div class="strip__item">AI Automation</div><div class="strip__item">Quality Review</div>
+  </div>
+</div>
+
+<section class="problem section" aria-labelledby="problem-title">
+  <div class="container problem__layout">
+    <div class="problem__aside reveal">
+      <span class="eyebrow">Why different</span>
+      <h2 id="problem-title">AI로 만든다는 말만으로는 부족합니다.</h2>
+      <p>포트폴리오의 개수보다, 실제 작업자와 과정이 확인되는지가 발주 판단의 근거가 되어야 합니다.</p>
+    </div>
+    <div class="problem__steps">
+      <article class="problem-card reveal"><span class="problem-card__no">01 / Problem</span><span class="problem-card__graphic"></span><div><h3>빠른 결과물은 많아졌습니다.</h3><p>같은 도구를 써도 결과는 다릅니다. 요구를 잘라내는 판단, 구조를 설계하는 방식, 검수 기준에서 차이가 생깁니다.</p></div></article>
+      <article class="problem-card reveal"><span class="problem-card__no">02 / Question</span><span class="problem-card__graphic"></span><div><h3>그런데 누가 만들었는지는 보이지 않습니다.</h3><p>화려한 목업과 기술 스택만으로는 실제 수행 경험과 책임 범위를 판단하기 어렵습니다.</p></div></article>
+      <article class="problem-card reveal"><span class="problem-card__no">03 / Origin</span><span class="problem-card__graphic"></span><div><h3>우리는 사람과 방식을 함께 공개합니다.</h3><p>참여한 Work, 작성한 Insight, 작업 과정의 기록을 연결해 고객이 직접 판단할 수 있게 합니다.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="proof section" aria-labelledby="proof-title">
+  <div class="container">
+    <div class="proof__head reveal">
+      <div><span class="eyebrow">What we prove</span><h2 class="section-title" id="proof-title" style="margin-top:24px">회사의 약속을 넘어, 작업의 근거까지.</h2></div>
+      <p class="section-copy">고객이 직접 확인할 수 있는 네 가지 근거를 먼저 설계했습니다.</p>
+    </div>
+    <div class="proof-grid">
+      <article class="proof-item"><div class="proof-item__icon">01</div><div class="proof-item__label">Scope</div><h3>무엇을 만들지 먼저 나눕니다</h3><p>지금 필요한 범위와 다음 단계로 넘길 범위를 분리해 일정과 비용의 불확실성을 줄입니다.</p></article>
+      <article class="proof-item"><div class="proof-item__icon">02</div><div class="proof-item__label">Builder</div><h3>실제 작업자를 연결합니다</h3><p>프로젝트 참여 이력과 작성 콘텐츠를 빌더 프로필에 연결하는 구조를 제안합니다.</p></article>
+      <article class="proof-item"><div class="proof-item__icon">03</div><div class="proof-item__label">Process</div><h3>판단과 변경을 기록합니다</h3><p>결정 이유와 작업 범위를 남겨 인수인계와 이후 확장이 가능하도록 합니다.</p></article>
+      <article class="proof-item"><div class="proof-item__icon">04</div><div class="proof-item__label">Review</div><h3>공개 전 검수 흐름을 둡니다</h3><p>빌더가 등록한 Work와 Insight를 운영자가 확인하는 콘텐츠 승인 구조를 전제로 합니다.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="work section" id="work" aria-labelledby="work-title">
+  <div class="container">
+    <div class="work__head reveal">
+      <div><span class="eyebrow">Selected work</span><h2 class="section-title" id="work-title" style="margin-top:24px">실제로 만든 것만 보여줍니다.</h2></div>
+      <p class="section-copy">카테고리별로 나눠 보실 수 있습니다. 선택한 화면은 주소 그대로 공유됩니다.</p>
+    </div>
+    <div class="work-layout">
+      <aside class="work-filter" aria-label="Work 카테고리">
+        <button class="active" data-filter="all">전체</button>
+        <button data-filter="web">Web · App</button>
+        <button data-filter="automation">AI Automation</button>
+        <button data-filter="admin">Admin · Ops</button>
+      </aside>
+      <div class="work-grid" id="workGrid">
+        <article class="work-card" data-category="web" data-id="work-01">
+          <div class="work-visual work-visual--1"><div class="mock-window"><div class="mock-bar"><i class="mock-dot"></i><i class="mock-dot"></i><i class="mock-dot"></i></div><div class="mock-layout"><div class="mock-block"></div><div class="mock-stack"><div class="mock-block"></div><div class="mock-block"></div></div></div></div></div>
+          <div class="work-card__body"><div class="work-card__meta"><span>Concept preview</span><span>Web app</span></div><h3>운영 흐름을 줄이는 예약 관리 도구</h3><p>수기 예약·정산 과정을 하나의 화면으로 묶는 프로젝트 콘셉트입니다.</p><div class="work-card__foot"><span class="tag">기획</span><span class="tag">UI·UX</span><span class="tag">Web</span></div></div>
+        </article>
+        <article class="work-card" data-category="web" data-id="work-02">
+          <div class="work-visual work-visual--2"><div class="mock-window"><div class="mock-bar"><i class="mock-dot"></i><i class="mock-dot"></i><i class="mock-dot"></i></div><div class="mock-layout"><div class="mock-stack"><div class="mock-block"></div><div class="mock-block"></div></div><div class="mock-block"></div></div></div></div>
+          <div class="work-card__body"><div class="work-card__meta"><span>Concept preview</span><span>Landing</span></div><h3>문의 전환을 우선한 B2B 랜딩</h3><p>보조 행동은 낮추고 핵심 CTA의 클릭과 이탈을 추적하도록 설계합니다.</p><div class="work-card__foot"><span class="tag">Conversion</span><span class="tag">GA</span><span class="tag">Responsive</span></div></div>
+        </article>
+        <article class="work-card" data-category="automation" data-id="work-03">
+          <div class="work-visual work-visual--3"><div class="mock-window"><div class="mock-bar"><i class="mock-dot"></i><i class="mock-dot"></i><i class="mock-dot"></i></div><div class="mock-layout"><div class="mock-block"></div><div class="mock-stack"><div class="mock-block"></div><div class="mock-block"></div></div></div></div></div>
+          <div class="work-card__body"><div class="work-card__meta"><span>Concept preview</span><span>Automation</span></div><h3>반복 업무를 연결하는 AI 워크플로</h3><p>입력, 검토, 알림, 결과 저장의 단계를 자동화하는 운영 콘셉트입니다.</p><div class="work-card__foot"><span class="tag">AI Agent</span><span class="tag">Workflow</span><span class="tag">API</span></div></div>
+        </article>
+        <article class="work-card" data-category="admin" data-id="work-04">
+          <div class="work-visual work-visual--4"><div class="mock-window"><div class="mock-bar"><i class="mock-dot"></i><i class="mock-dot"></i><i class="mock-dot"></i></div><div class="mock-layout"><div class="mock-stack"><div class="mock-block"></div><div class="mock-block"></div></div><div class="mock-block"></div></div></div></div>
+          <div class="work-card__body"><div class="work-card__meta"><span>Concept preview</span><span>Admin</span></div><h3>빌더 콘텐츠 승인·운영 어드민</h3><p>Work와 Insight를 작성하고 관리자가 승인하는 v1 운영 구조입니다.</p><div class="work-card__foot"><span class="tag">CMS</span><span class="tag">Approval</span><span class="tag">Role</span></div></div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="how section" aria-labelledby="how-title">
+  <div class="container how__layout">
+    <div class="how__intro reveal">
+      <span class="eyebrow">How we work</span>
+      <h2 class="section-title" id="how-title" style="margin-top:24px">빠르게 만들되, 순서를 건너뛰지 않습니다.</h2>
+      <p class="section-copy">각 단계에서 무엇을 확인하고, 무엇을 전달받는지 미리 정해두고 시작합니다.</p>
+      <div class="how__status"><div class="status-top"><span>BUILD PROGRESS</span><span class="status-dot"></span></div><div class="status-line"><i id="statusBar"></i></div></div>
+    </div>
+    <div class="how-list" id="howList">
+      <article class="how-step active" data-step="1"><div class="how-step__no">01</div><div><h3>진단</h3><p>목표, 사용자, 현재 방식과 가장 큰 병목을 확인합니다.</p></div></article>
+      <article class="how-step" data-step="2"><div class="how-step__no">02</div><div><h3>범위 설계</h3><p>이번 릴리즈에 필요한 것과 다음 단계로 넘길 것을 구분합니다.</p></div></article>
+      <article class="how-step" data-step="3"><div class="how-step__no">03</div><div><h3>제작</h3><p>확정된 구조를 기준으로 화면과 기능을 작은 단위로 구현합니다.</p></div></article>
+      <article class="how-step" data-step="4"><div class="how-step__no">04</div><div><h3>검수·이관</h3><p>작동 여부뿐 아니라 운영 가능성과 기록을 함께 확인해 전달합니다.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="builders section" aria-labelledby="builders-title">
+  <div class="container">
+    <!-- .reveal 없음 — 다른 섹션 헤드와 달리 이 구간만 즉시 표시된다. PRD §4 강도 "무" -->
+    <div class="builders__head"><div><span class="eyebrow">Builder evidence</span><h2 class="section-title" id="builders-title" style="margin-top:24px">누가 만드는지 숨기지 않습니다.</h2></div><p class="section-copy">실제 작업자의 Work와 Insight를 연결해, 고객이 직접 확인할 수 있는 근거를 남깁니다.</p></div>
+    <div class="builder-grid">
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">A</div><span class="builder-state">PROFILE CONCEPT</span></div><h3>Builder A</h3><p>문제 정의와 사용자 흐름을 화면 구조로 바꾸는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>기획 · UI/UX</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">B</div><span class="builder-state">PROFILE CONCEPT</span></div><h3>Builder B</h3><p>프론트엔드와 운영 어드민을 함께 구현하는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>Web · Admin</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">C</div><span class="builder-state">PROFILE CONCEPT</span></div><h3>Builder C</h3><p>AI 자동화와 데이터 흐름을 서비스에 연결하는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>Automation · API</b></div></div></article>
+    </div>
+    <p class="builders__note">※ 실제 빌더 정보와 공개 범위는 클라이언트 확인 후 반영합니다.</p>
+  </div>
+</section>
+
+<section class="insight section" id="insight" aria-labelledby="insight-title">
+  <div class="container">
+    <div class="insight__head reveal"><div><span class="eyebrow">Insight</span><h2 class="section-title" id="insight-title" style="margin-top:24px">일하는 방식을 콘텐츠로 증명합니다.</h2></div><div class="insight-tabs" role="tablist" aria-label="Insight 유형"><button class="active" role="tab" aria-selected="true" data-insight="article">Article</button><button role="tab" aria-selected="false" data-insight="video">Video</button></div></div>
+    <div class="insight-list" id="insightList">
+      <!-- TODO(미확정): Insight 상세 URL. Phase 2 에서 /insight/[slug] 로 연결한다.
+           href="#" 는 의도적 공란이며, JS 가 기본 동작을 막아 최상단 점프를 방지한다.
+           data-kind="video" 항목은 유튜브 URL 확정 시 youtube_out 이벤트를 함께 연결한다. PRD §6.4 -->
+      <a class="insight-item" href="#" data-kind="article" data-id="insight-01"><span class="insight-type">Working method</span><div><h3>바이브코딩 외주사를 고를 때 확인해야 할 네 가지</h3><p class="insight-meta">Article · 운영팀</p></div><span class="insight-arrow">↗</span></a>
+      <a class="insight-item" href="#" data-kind="article" data-id="insight-02"><span class="insight-type">AI practice</span><div><h3>AI를 써도 품질이 흔들리지 않게 만드는 검수 방식</h3><p class="insight-meta">Article · Builder</p></div><span class="insight-arrow">↗</span></a>
+      <a class="insight-item" href="#" data-kind="video" data-id="insight-03" hidden><span class="insight-type">Video</span><div><h3>실제 외주 프로젝트에서 AI를 사용하는 방법</h3><p class="insight-meta">YouTube · UTM tracking</p></div><span class="insight-arrow">↗</span></a>
+      <a class="insight-item" href="#" data-kind="video" data-id="insight-04" hidden><span class="insight-type">Video</span><div><h3>좋은 빌더와 부족한 빌더를 나누는 작업 기준</h3><p class="insight-meta">YouTube · UTM tracking</p></div><span class="insight-arrow">↗</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="faq section" id="faq" aria-labelledby="faq-title">
+  <div class="container">
+    <div class="reveal"><span class="eyebrow">FAQ</span><h2 class="section-title" id="faq-title" style="margin-top:24px">문의 전에 궁금한 것부터.</h2></div>
+    <div class="faq__layout">
+      <aside class="faq-tabs" aria-label="FAQ 카테고리">
+        <button class="active" data-faq="project">프로젝트</button><button data-faq="builder">빌더</button><button data-faq="process">진행 방식</button>
+      </aside>
+      <div class="faq-list" id="faqList">
+        <article class="faq-item" data-faq-kind="project"><button class="faq-q" aria-expanded="false">어떤 규모의 프로젝트를 의뢰할 수 있나요?</button><div class="faq-a"><div><p>현재 범위와 목표를 먼저 확인한 뒤, AI 빌더가 수행하기 적합한 범위와 개발자 협업이 필요한 범위를 구분해 안내하는 구조를 제안합니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="project"><button class="faq-q" aria-expanded="false">문의 후에는 어떤 방식으로 상담하나요?</button><div class="faq-a"><div><p>문의는 pluuug 폼으로 접수하고, 이후 영업 담당자가 직접 연락해 범위와 일정을 확인하는 흐름입니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="builder" hidden><button class="faq-q" aria-expanded="false">빌더의 작업 이력을 확인할 수 있나요?</button><div class="faq-a"><div><p>Work의 참여 프로젝트와 Insight의 작성 콘텐츠를 빌더 프로필에 연결하는 방향이 제안돼 있습니다. 실제 공개 범위는 운영 정책 확정 후 반영합니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="builder" hidden><button class="faq-q" aria-expanded="false">모든 빌더가 바로 프로젝트에 참여하나요?</button><div class="faq-a"><div><p>선별·배정 기준은 실제 운영 정책과 공개 카피가 일치하도록 최종 확인이 필요합니다. 시안에서는 검증되지 않은 단정 표현을 사용하지 않습니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="process" hidden><button class="faq-q" aria-expanded="false">개발 이후 수정과 확장이 가능한가요?</button><div class="faq-a"><div><p>결정과 작업 범위를 기록하고 전달하는 구조를 전제로 하므로 이후 확장과 인수인계가 가능하도록 설계합니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="process" hidden><button class="faq-q" aria-expanded="false">프로젝트 현황은 어디에서 관리하나요?</button><div class="faq-a"><div><p>이번 v1 사이트의 관리자 범위는 빌더·Work·Insight 콘텐츠 운영입니다. 리드와 영업 관리는 pluuug에서 처리하며 프로젝트 관리 기능은 현재 범위에 포함하지 않습니다.</p></div></div></article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="final" id="contact" aria-labelledby="contact-title">
+  <div class="container">
+    <div class="final__box"><h2 id="contact-title">무엇을 만들지부터 정리해 드립니다.</h2><div class="final__right"><p>프로젝트의 현재 단계와 필요한 기능을 알려주세요. 상담 과정에서 이번에 만들 범위와 다음 단계로 넘길 범위를 함께 정리합니다.</p><!-- TODO(미확정): pluuug 폼 URL. 확정 시 href 를 교체하고 §6.5 UTM 파라미터를 붙인다.
+     연동 방식(A 리다이렉트 / B 임베드)도 미정 — PRD §6.5 는 B(임베드) 권장. PRD §12 🔴 -->
+      <div class="final__actions"><a class="btn-primary" href="#" data-track="final_contact">프로젝트 문의하기 ↗</a><a class="btn-link" href="#work">Work 다시 보기 ↑</a></div><p class="final__micro">※ 실제 pluuug 폼 URL 확정 후 문의 버튼에 연결합니다.</p></div></div>
+    <footer class="footer"><div><strong>AI BUILDER ORIGIN ✱</strong><span>누가, 어떻게 만드는지 보여주는 개발 파트너</span></div><nav class="footer-nav"><a href="#work">Work</a><a href="#insight">Insight</a><a href="#faq">FAQ</a><a href="#contact">문의하기</a></nav><span>© 2026 Concept Prototype</span></footer>
+  </div>
+</section>
+</main>
+
+<aside class="dock" id="dock" aria-label="빠른 문의">
+  <p class="dock__copy"><b>프로젝트 범위부터 함께 정리해 보세요</b><span>문의는 pluuug로 연결됩니다</span></p>
+  <a href="#contact" data-track="dock_contact">문의하기 ↗</a>
+</aside>
+
+<script>
+(()=>{
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const header = document.getElementById('header');
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const dock = document.getElementById('dock');
+  const contact = document.getElementById('contact');
+
+  /* 파라미터 규격 — PRD §6.4: section / content_id / destination / utm_source
+     utm_source 는 진입 URL 에서 한 번만 읽어 모든 이벤트에 공통으로 싣는다.
+     GA4 스니펫은 <head> 의 TODO 위치에 넣으면 이 dataLayer 를 그대로 받는다. */
+  const utmSource=new URL(location.href).searchParams.get('utm_source')||'';
+  const track=(event,params={})=>{
+    window.dataLayer=window.dataLayer||[];
+    window.dataLayer.push({event,utm_source:utmSource,...params});
+  };
+  /* href="#" 는 pluuug URL 미확정에 따른 의도적 공란이다(PRD §12 🔴).
+     기본 동작을 막지 않으면 최종 CTA 클릭이 페이지 최상단 점프가 된다 — 심사자가 가장 확실히
+     누르는 버튼이라 손실이 크다. insight-item 과 동일한 처리다.
+     링크가 확정되면 href 가 '#' 이 아니게 되므로 이 분기는 자연히 통과한다.
+     이동을 막아도 track 은 항상 발화한다 — 연결 전에도 문의 의도는 집계돼야 §6.5 가 성립한다. */
+  document.querySelectorAll('[data-track]').forEach(el=>el.addEventListener('click',e=>{
+    const href=el.getAttribute('href');
+    if(href==='#') e.preventDefault();
+    track('cta_click',{section:el.dataset.track,destination:href});
+  }));
+
+  const setUrl=(key,value)=>{
+    const url=new URL(location.href);
+    if(value) url.searchParams.set(key,value); else url.searchParams.delete(key);
+    history.replaceState({},'',url);
+  };
+
+  const onScroll=()=>{
+    header.classList.toggle('is-scrolled',scrollY>24);
+    const pastHero=scrollY>innerHeight*.82;
+    const atFinal=contact.getBoundingClientRect().top<innerHeight*.82;
+    dock.classList.toggle('show',pastHero&&!atFinal);
+  };
+  addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  menuBtn.addEventListener('click',()=>{
+    const open=menuBtn.getAttribute('aria-expanded')==='true';
+    menuBtn.setAttribute('aria-expanded',String(!open));
+    menuBtn.setAttribute('aria-label',open?'메뉴 열기':'메뉴 닫기');
+    mobileMenu.classList.toggle('open',!open);
+  });
+  mobileMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menuBtn.setAttribute('aria-expanded','false');mobileMenu.classList.remove('open')}));
+
+  if(!reduce){
+    const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.14});
+    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+  }else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+
+  // Work filtering + URL state
+  const workBtns=[...document.querySelectorAll('[data-filter]')];
+  const workCards=[...document.querySelectorAll('.work-card')];
+  const setWork=(value,shouldTrack=true)=>{
+    workBtns.forEach(b=>b.classList.toggle('active',b.dataset.filter===value));
+    workCards.forEach(c=>c.hidden=value!=='all'&&c.dataset.category!==value);
+    setUrl('work',value==='all'?'':value);
+    if(shouldTrack) track('tab_change',{section:'work',content_id:value});
+  };
+  workBtns.forEach(b=>b.addEventListener('click',()=>setWork(b.dataset.filter)));
+  const workInit=new URL(location.href).searchParams.get('work');
+  setWork(workBtns.some(b=>b.dataset.filter===workInit)?workInit:'all',false);
+
+  /* 카드는 아직 링크가 아니다(Phase 1 에 Work 상세 페이지 없음). 이동은 없지만
+     어떤 작업물이 관심을 받는지는 지금부터 쌓아야 §6.5 의 ref_content 분석이 성립한다.
+     Phase 2 에서 <a> 로 승격되면 destination 을 함께 싣는다. */
+  workCards.forEach(card=>card.addEventListener('click',()=>
+    track('work_card_click',{section:'work',content_id:card.dataset.id||''})));
+
+  // How steps: bidirectional scroll activation
+  const howSteps=[...document.querySelectorAll('.how-step')];
+  const statusBar=document.getElementById('statusBar');
+  const howObserver=new IntersectionObserver(entries=>{
+    const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];
+    if(!visible) return;
+    const idx=howSteps.indexOf(visible.target);
+    howSteps.forEach((s,i)=>s.classList.toggle('active',i===idx));
+    statusBar.style.width=((idx+1)/howSteps.length*100)+'%';
+  },{rootMargin:'-35% 0px -35% 0px',threshold:[0,.25,.5,.75,1]});
+  howSteps.forEach(s=>howObserver.observe(s));
+
+  // Insight tabs + URL state
+  const insightBtns=[...document.querySelectorAll('[data-insight]')];
+  const insightItems=[...document.querySelectorAll('[data-kind]')];
+  const setInsight=(value,shouldTrack=true)=>{
+    insightBtns.forEach(b=>{const active=b.dataset.insight===value;b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active))});
+    insightItems.forEach(i=>i.hidden=i.dataset.kind!==value);
+    setUrl('insight',value==='article'?'':value);
+    if(shouldTrack) track('tab_change',{section:'insight',content_id:value});
+  };
+  insightBtns.forEach(b=>b.addEventListener('click',()=>setInsight(b.dataset.insight)));
+  const insightInit=new URL(location.href).searchParams.get('insight');
+  setInsight(insightInit==='video'?'video':'article',false);
+
+  /* href="#" 는 상세 URL 미확정에 따른 의도적 공란이다. 기본 동작을 막지 않으면
+     클릭이 페이지 최상단 점프로 이어져 완성도 인상을 해친다. */
+  insightItems.forEach(item=>item.addEventListener('click',e=>{
+    e.preventDefault();
+    track('insight_click',{section:'insight',content_id:item.dataset.id||'',
+      destination:item.getAttribute('href')});
+  }));
+
+  // FAQ tabs + URL state
+  const faqBtns=[...document.querySelectorAll('[data-faq]')];
+  const faqItems=[...document.querySelectorAll('[data-faq-kind]')];
+  const setFaq=(value,shouldTrack=true)=>{
+    faqBtns.forEach(b=>b.classList.toggle('active',b.dataset.faq===value));
+    faqItems.forEach(i=>{i.hidden=i.dataset.faqKind!==value;i.classList.remove('open');i.querySelector('.faq-q').setAttribute('aria-expanded','false')});
+    setUrl('faq',value==='project'?'':value);
+    if(shouldTrack) track('tab_change',{section:'faq',content_id:value});
+  };
+  faqBtns.forEach(b=>b.addEventListener('click',()=>setFaq(b.dataset.faq)));
+  const faqInit=new URL(location.href).searchParams.get('faq');
+  setFaq(faqBtns.some(b=>b.dataset.faq===faqInit)?faqInit:'project',false);
+
+  document.querySelectorAll('.faq-q').forEach(q=>q.addEventListener('click',()=>{
+    const item=q.closest('.faq-item'); const open=item.classList.toggle('open');
+    q.setAttribute('aria-expanded',String(open));
+    track('faq_toggle',{section:'faq',content_id:q.textContent.trim(),open});
+  }));
+
+  // Respect browser navigation of query states
+  addEventListener('popstate',()=>{
+    const u=new URL(location.href);
+    setWork(u.searchParams.get('work')||'all',false);
+    setInsight(u.searchParams.get('insight')||'article',false);
+    setFaq(u.searchParams.get('faq')||'project',false);
+  });
+})();
+
+/* ═══ 계측 레일 ═══ */
+/* CSS 는 min-width:1360px 에서 레일을 표시한다. JS 도 같은 지점을 "구독"해야 한다.
+   이전 판은 로드 시점에 한 번만 판정하고 return 했기 때문에, 좁게 연 창을 넓히면
+   CSS 는 레일을 띄우는데 눈금은 생성되지 않아 빈 레일이 남았다.
+   레일은 PRD §4.2 가 규정한 시그니처라, 고장난 채 보이는 것이 없는 것보다 나쁘다. */
+(function(){
+  const mq=matchMedia('(min-width:1360px)');
+  const box=document.getElementById('railTicks');
+  const idx=document.getElementById('railIdx');
+  if(!box||!idx) return;
+  let io=null;
+
+  const build=()=>{
+    if(io) return;                                  // 중복 생성 방지
+    const secs=[...document.querySelectorAll('.hero, section')].filter(el=>el.offsetHeight>240);
+    if(secs.length<2) return;
+    box.innerHTML='';
+    secs.forEach(()=>box.insertAdjacentHTML('beforeend','<span class="rail__tick"></span>'));
+    const ticks=[...box.children];
+    io=new IntersectionObserver(es=>{
+      es.forEach(e=>{
+        if(!e.isIntersecting) return;
+        const i=secs.indexOf(e.target);
+        ticks.forEach((t,n)=>t.classList.toggle('on',n===i));
+        idx.textContent=String(i+1).padStart(2,'0');
+      });
+    },{rootMargin:'-45% 0px -45% 0px'});
+    secs.forEach(el=>io.observe(el));
+  };
+
+  const teardown=()=>{
+    if(io){io.disconnect();io=null;}
+    box.innerHTML='';
+    idx.textContent='01';
+  };
+
+  const sync=()=>mq.matches?build():teardown();
+  // addEventListener 미지원 구형 Safari 대비 — 실기기 확인 대상(PRD §10)
+  if(mq.addEventListener) mq.addEventListener('change',sync); else mq.addListener(sync);
+  sync();
+})();
+</script>
+</body>
+</html>
