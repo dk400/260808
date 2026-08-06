@@ -441,8 +441,26 @@ body.chat-open .dock{transform:translate(-50%,140%)}
 .rail__tick{width:9px;height:1px;background:var(--line);
   transition:width .34s cubic-bezier(.2,.8,.3,1),background .34s}
 .rail__tick.on{width:24px;background:var(--ink)}
-.rail__idx{font-size:10.5px;font-weight:700;font-variant-numeric:tabular-nums;
-  color:var(--ink);opacity:.8}
+/* 번호 강조형 — 현재 구간을 크게, 총 구간을 분모처럼.
+   캡처로 심사가 돌 때 1px 눈금보다 숫자가 먼저 읽힌다(§4.2). 히어로 스테이지의
+   "01/04" 표기와 같은 계측 성적서 어법이라 새 조형을 들이지 않는다. */
+.rail__count{display:grid;justify-items:center;gap:4px;line-height:1;
+  font-variant-numeric:tabular-nums}
+.rail__now{font-size:18px;font-weight:850;letter-spacing:-.04em;color:var(--ink)}
+.rail__total{font-size:10px;font-weight:700;color:var(--muted);opacity:.75}
+.rail__total::before{content:'';display:block;width:12px;height:1px;
+  background:currentColor;opacity:.55;margin:0 auto 5px}
+.rail__mark,.rail__now,.rail__total{transition:color .34s}
+
+/* 어두운 섹션 위에서는 명암을 반전한다.
+   #problem · #builders 는 배경이 --ink 라 눈금·번호가 배경과 같은 색으로 칠해져 대비 1:1 이었다.
+   레일은 "정지 화면 한 장으로도 손이 갔다가 드러나는" 장치(§4.2)라 안 보이면 존재 의미가 없다.
+   새 색을 만들지 않고 --white 와 흰색 알파만 쓴다(§5.1). */
+.rail.on-dark .rail__mark{color:rgba(255,255,255,.62)}
+.rail.on-dark .rail__tick{background:rgba(255,255,255,.24)}
+.rail.on-dark .rail__tick.on{background:var(--white)}
+.rail.on-dark .rail__now{color:var(--white)}
+.rail.on-dark .rail__total{color:rgba(255,255,255,.58)}
 
 /* 컨테이너(1320px) 좌측 여백이 레일보다 넓어지는 지점부터 노출 */
 @media(min-width:1360px){ .rail{display:flex} }
@@ -454,7 +472,10 @@ body.chat-open .dock{transform:translate(-50%,140%)}
 <aside class="rail" aria-hidden="true">
   <span class="rail__mark">ORIGIN</span>
   <div class="rail__ticks" id="railTicks"></div>
-  <span class="rail__idx" id="railIdx">01</span>
+  <div class="rail__count">
+    <b class="rail__now" id="railIdx">01</b>
+    <span class="rail__total" id="railTotal">09</span>
+  </div>
 </aside>
 <header class="header" id="header">
   <div class="container header__inner">
@@ -857,8 +878,18 @@ body.chat-open .dock{transform:translate(-50%,140%)}
   const mq=matchMedia('(min-width:1360px)');
   const box=document.getElementById('railTicks');
   const idx=document.getElementById('railIdx');
-  if(!box||!idx) return;
+  const total=document.getElementById('railTotal');
+  const rail=document.querySelector('.rail');
+  if(!box||!idx||!total||!rail) return;
   let io=null;
+
+  /* 섹션 배경의 상대 밝기로 어두운 구간을 판정한다. 색을 목록으로 박아두면
+     토큰이 바뀔 때 조용히 어긋나므로, 실제 계산된 배경색에서 매번 읽는다. */
+  const isDark=el=>{
+    const c=getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
+    if(!c||c.length<3||(c[3]!==undefined&&Number(c[3])<0.5)) return false;
+    return (0.2126*+c[0]+0.7152*+c[1]+0.0722*+c[2])<128;
+  };
 
   const build=()=>{
     if(io) return;                                  // 중복 생성 방지
@@ -866,6 +897,7 @@ body.chat-open .dock{transform:translate(-50%,140%)}
     if(secs.length<2) return;
     box.innerHTML='';
     secs.forEach(()=>box.insertAdjacentHTML('beforeend','<span class="rail__tick"></span>'));
+    total.textContent=String(secs.length).padStart(2,'0');   // 분모는 실제 구간 수에서 온다
     const ticks=[...box.children];
     io=new IntersectionObserver(es=>{
       es.forEach(e=>{
@@ -873,6 +905,7 @@ body.chat-open .dock{transform:translate(-50%,140%)}
         const i=secs.indexOf(e.target);
         ticks.forEach((t,n)=>t.classList.toggle('on',n===i));
         idx.textContent=String(i+1).padStart(2,'0');
+        rail.classList.toggle('on-dark',isDark(e.target));
       });
     },{rootMargin:'-45% 0px -45% 0px'});
     secs.forEach(el=>io.observe(el));
@@ -882,6 +915,7 @@ body.chat-open .dock{transform:translate(-50%,140%)}
     if(io){io.disconnect();io=null;}
     box.innerHTML='';
     idx.textContent='01';
+    rail.classList.remove('on-dark');
   };
 
   const sync=()=>mq.matches?build():teardown();
