@@ -13,3 +13,7 @@ desktop.ini
 
 # 이 프로젝트는 의존성 0 정적 HTML이다 (PRD §9.1).
 # node_modules / 빌드 산출물이 생겼다면 그건 규칙 위반이지 무시 대상이 아니다.
+
+# 로컬 백업 스냅샷 — git 이 이 역할을 하므로 추적하지 않는다
+*.pre-*.html
+*.backup-*.html
