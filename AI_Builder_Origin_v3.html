@@ -84,10 +84,12 @@ img,svg{display:block;max-width:100%}
 .logo{display:flex;align-items:center;gap:10px;font-weight:850;letter-spacing:-.04em;font-size:16px}
 .logo__mark{width:22px;height:22px;background:var(--ink);color:var(--lime);border-radius:50%;display:grid;place-items:center;font-size:12px;transform:rotate(-12deg)}
 .nav{display:flex;align-items:center;gap:28px;margin-left:auto}
-.nav a{font-size:14px;font-weight:650;color:#42453f;position:relative}
+/* 가독성 — 50~60대 클라이언트 기준. 12~14px·w400 조합을 키우고 굵힌다.
+   색은 새로 만들지 않고 --ink 와 기존 #3d4336(.final__right p) 을 재사용한다(§5.1). */
+.nav a{font-size:16px;font-weight:700;color:var(--ink);position:relative}
 .nav a::after{content:'';position:absolute;left:0;right:100%;bottom:-8px;height:2px;background:var(--ink);transition:right .25s}
 .nav a:hover::after{right:0}
-.header__cta{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--white);padding:11px 16px;border-radius:999px;font-size:13px;font-weight:800;transition:transform .2s,background .2s}
+.header__cta{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--white);padding:13px 20px;border-radius:999px;font-size:15px;font-weight:800;transition:transform .2s,background .2s}
 .header__cta:hover{background:#2a2e28;transform:translateY(-2px)}
 .menu-btn{display:none;width:42px;height:42px;border:1px solid var(--line);border-radius:50%;place-items:center}
 .menu-btn span,.menu-btn::before,.menu-btn::after{content:'';display:block;width:16px;height:1.5px;background:var(--ink);transition:.25s}
@@ -295,14 +297,15 @@ img,svg{display:block;max-width:100%}
 .final__actions{margin-top:30px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .final .btn-primary{background:var(--ink)}
 .final__micro{margin-top:14px;font-size:11px;color:#66723d}
-.footer{margin-top:90px;padding-top:28px;border-top:1px solid rgba(17,19,17,.2);display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:12px;color:#59633c}
-.footer strong{display:block;color:var(--ink);font-size:15px;margin-bottom:7px}
-.footer-nav{display:flex;gap:20px;flex-wrap:wrap}
+.footer{margin-top:90px;padding-top:28px;border-top:1px solid rgba(17,19,17,.2);display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:14px;font-weight:600;color:#3d4336}
+.footer strong{display:block;color:var(--ink);font-size:17px;margin-bottom:7px}
+.footer-nav{display:flex;gap:22px;flex-wrap:wrap;font-weight:700}
 /* 사업자 정보 — 전자상거래법상 표기 의무 항목이라 본문과 달리 줄여 쓰지 않는다.
    색은 .final__micro 가 쓰던 #66723d 를 재사용한다(새 색 추가 금지 — PRD §5.1). */
-.footer__legal{flex:1 0 100%;margin-top:24px;padding-top:20px;border-top:1px solid rgba(17,19,17,.14);display:flex;flex-wrap:wrap;gap:6px 20px;color:#66723d;line-height:1.7}
-.footer__legal b{font-weight:750;color:#59633c}
-.footer__copy{flex:1 0 100%;margin-top:12px;color:#66723d;opacity:.75}
+.footer__legal{flex:1 0 100%;margin-top:24px;padding-top:20px;border-top:1px solid rgba(17,19,17,.14);display:flex;flex-wrap:wrap;gap:8px 22px;color:#3d4336;line-height:1.75}
+.footer__legal b{font-weight:800;color:var(--ink)}
+/* opacity 를 걷어냈다 — 4.54:1 대비를 실질 3.6:1 로 떨어뜨려 AA 미달이었다. */
+.footer__copy{flex:1 0 100%;margin-top:12px;color:#3d4336}
 
 /* Sticky CTA */
 .dock{position:fixed;left:50%;bottom:18px;z-index:70;transform:translate(-50%,140%);width:min(720px,calc(100% - 28px));background:rgba(17,19,17,.94);color:var(--white);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:9px 10px 9px 20px;display:flex;align-items:center;justify-content:space-between;gap:18px;box-shadow:0 18px 50px rgba(17,19,17,.24);backdrop-filter:blur(12px);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
