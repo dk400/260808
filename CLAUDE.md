@@ -33,6 +33,10 @@ AI Builder School 을 통과한 빌더의 작업 역량을 보여주고,
 | `#proof` `#work` `#insight` `#faq` `#final` | 호버·슬라이드·아코디언 — 약 |
 | **`#builders`** | **없음 — 의도된 정적 구간** |
 
+배분표 밖 **전역 레이어**(섹션이 아니라 화면 전체에 뜨는 것): `.dock` · `.rail` · `.strip` 마퀴 ·
+히어로 `scan` · `.chat`(상담 위젯, 2026-08-07 추가). 전부 강도 "약" 이고 `.chat` 에는 무한
+애니메이션을 두지 않았다. 상세는 PRD §4.1 "배분표 밖 — 전역 레이어".
+
 - **`#builders` 에 애니메이션을 넣지 마라.** 빈 구간이 아니라 판별 기준이다.
   > 클라이언트 원문: *"애니메이션을 넣는 판단만큼 안 넣는 판단도 기준이다"*
 - 새 섹션에 인터랙션을 자동으로 붙이지 마라. 붙이려면 배분표를 먼저 갱신하고 보고하라.
@@ -154,7 +158,8 @@ prefers-reduced-motion: reduce  → 모든 모션 비활성
 
 ### 3.4 전환 트래킹
 
-현재 `data-track` 5종: `header_contact` `hero_contact` `hero_work` `dock_contact` `final_contact`
+현재 `data-track` 6종: `header_contact` `hero_contact` `hero_work` `dock_contact` `final_contact`
+`chat_contact`
 
 추가 시 이 규칙을 따른다.
 ```

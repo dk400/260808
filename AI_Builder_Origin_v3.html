@@ -298,6 +298,35 @@ img,svg{display:block;max-width:100%}
 .dock__copy span{color:rgba(255,255,255,.52);font-size:11px}
 .dock a{background:var(--lime);color:var(--ink);padding:11px 18px;border-radius:999px;font-size:13px;font-weight:850;white-space:nowrap}
 
+/* ═══ 상담 위젯 — 콘셉트 (배분표 밖 전역 레이어. 강도 "약") ═══ */
+/* 패널 안의 행동은 pluuug 문의 하나뿐이다. 부차 전환 경로를 만들지 않는다 — PRD §6.2 🔴 */
+/* z-index 75 = dock(70) 위, header(80) 아래. 무한 애니메이션 없음(딸깍 신호 회피). */
+.chat{position:fixed;right:20px;bottom:20px;z-index:75;display:flex;flex-direction:column;align-items:flex-end;gap:12px;transition:bottom .3s cubic-bezier(.2,.8,.2,1)}
+/* dock 이 떠 있는 동안에는 런처를 그 위로 올린다. 720px 이하에서 dock 이 화면 폭을
+   거의 채우므로 이 회피가 없으면 두 요소가 포개진다. DOM 에서 .dock 다음이라 ~ 로 잡힌다. */
+.dock.show ~ .chat{bottom:88px}
+body.chat-open .dock{transform:translate(-50%,140%)}
+
+.chat__launcher{width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--lime);display:grid;place-items:center;box-shadow:0 14px 34px rgba(17,19,17,.26);transition:transform .22s,background .22s}
+.chat__launcher:hover{background:#2c302a;transform:translateY(-3px)}
+.chat__ico{width:23px;height:23px}
+.chat__ico--close{display:none}
+.chat.open .chat__ico--open{display:none}
+.chat.open .chat__ico--close{display:block}
+
+/* visibility 로 닫는다 — display:none 과 달리 전환이 보이고, hidden 과 달리 포커스·
+   스크린리더에서도 함께 빠진다. */
+.chat__panel{width:min(336px,calc(100vw - 40px));background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(10px) scale(.98);transform-origin:100% 100%;transition:opacity .24s,transform .24s cubic-bezier(.2,.8,.2,1),visibility 0s .24s}
+.chat.open .chat__panel{opacity:1;visibility:visible;transform:none;transition:opacity .24s,transform .24s cubic-bezier(.2,.8,.2,1),visibility 0s}
+.chat__head{background:var(--ink);color:var(--white);padding:20px}
+.chat__label{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.chat__title{margin-top:11px;font-size:19px;font-weight:850;letter-spacing:-.042em;line-height:1.32}
+.chat__body{padding:18px 20px 20px}
+.chat__body>p{font-size:13.5px;line-height:1.7;color:var(--muted)}
+.chat__cta{margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:var(--white);border-radius:999px;padding:13px 18px;font-size:14px;font-weight:800;min-height:48px;transition:transform .2s,background .2s}
+.chat__cta:hover{background:#2c302a;transform:translateY(-2px)}
+.chat__micro{margin-top:12px;font-size:11px;line-height:1.6;color:#7b7e78}
+
 /* Reveal helpers */
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .72s,transform .72s cubic-bezier(.2,.8,.2,1)}
 .reveal.in{opacity:1;transform:none}
@@ -333,6 +362,8 @@ img,svg{display:block;max-width:100%}
 /* PRD §5.3 — "720px ↓ 모바일 메뉴, 단일 컬럼".
    실측(2026-08-06): 721px 에서 헤더 필요폭 493px / 가용 706px, 가로 넘침 없음. */
 @media(max-width:720px){
+  .chat{right:14px;bottom:14px}
+  .dock.show ~ .chat{bottom:78px}
   .header{height:64px}
   .nav,.header__cta{display:none}
   .menu-btn{display:grid}
@@ -644,6 +675,27 @@ img,svg{display:block;max-width:100%}
   <a href="#contact" data-track="dock_contact">문의하기 ↗</a>
 </aside>
 
+<!-- 상담 위젯 — 콘셉트. 실제 상담 연결은 pluuug 폼 확정 후(PRD §12 🔴).
+     패널 안의 행동은 문의 하나뿐이다: 문의를 대체하는 경로를 만들지 않는다(§6.2 🔴).
+     CTA 는 data-track 규격에 얹어 기존 cta_click 으로 잡힌다 — 새 이벤트 타입을 만들지 않았다. -->
+<div class="chat" id="chat">
+  <div class="chat__panel" id="chatPanel" role="dialog" aria-labelledby="chatTitle">
+    <div class="chat__head">
+      <span class="chat__label">Direct line</span>
+      <p class="chat__title" id="chatTitle">프로젝트 이야기를<br>지금 시작해 보세요.</p>
+    </div>
+    <div class="chat__body">
+      <p>현재 단계와 필요한 기능만 알려주시면, 이번에 만들 범위와 다음 단계로 넘길 범위를 함께 정리해 드립니다.</p>
+      <a class="chat__cta" href="#" data-track="chat_contact">프로젝트 문의하기 <span aria-hidden="true">↗</span></a>
+      <p class="chat__micro">※ 콘셉트 시안입니다. 문의는 pluuug 폼 확정 후 연결됩니다.</p>
+    </div>
+  </div>
+  <button class="chat__launcher" id="chatBtn" aria-expanded="false" aria-controls="chatPanel" aria-label="상담 창 열기">
+    <svg class="chat__ico chat__ico--open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8 8 0 0 1-8 8H7.4L3 22.5v-5.1a8 8 0 0 1 2.3-11A8 8 0 0 1 13 3.5a8 8 0 0 1 8 8Z"/></svg>
+    <svg class="chat__ico chat__ico--close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+  </button>
+</div>
+
 <script>
 (()=>{
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -693,6 +745,23 @@ img,svg{display:block;max-width:100%}
     mobileMenu.classList.toggle('open',!open);
   });
   mobileMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menuBtn.setAttribute('aria-expanded','false');mobileMenu.classList.remove('open')}));
+
+  /* 상담 위젯. 열림 상태는 UI 상태라 URL 에 넣지 않는다 — 아코디언과 같은 등급(§6.3).
+     열기/닫기 자체는 §6.4 이벤트 목록에 없어 계측하지 않았다. 넣으려면 목록부터 갱신할 것.
+     패널 CTA 는 위의 [data-track] 핸들러가 이미 잡고, href="#" 이라 최상단 점프도 막힌다. */
+  const chat=document.getElementById('chat');
+  const chatBtn=document.getElementById('chatBtn');
+  const setChat=open=>{
+    chat.classList.toggle('open',open);
+    document.body.classList.toggle('chat-open',open);   // dock 을 내려 겹침을 없앤다
+    chatBtn.setAttribute('aria-expanded',String(open));
+    chatBtn.setAttribute('aria-label',open?'상담 창 닫기':'상담 창 열기');
+    if(open) chat.querySelector('.chat__cta').focus();
+  };
+  chatBtn.addEventListener('click',()=>setChat(chatBtn.getAttribute('aria-expanded')!=='true'));
+  addEventListener('keydown',e=>{
+    if(e.key==='Escape'&&chat.classList.contains('open')){setChat(false);chatBtn.focus()}
+  });
 
   if(!reduce){
     const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.14});
