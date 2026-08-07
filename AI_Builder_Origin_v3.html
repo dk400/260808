@@ -282,8 +282,8 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 
 /* Builders */
 .builders{background:var(--ink);color:var(--white)}
-.builders__head{display:grid;grid-template-columns:1fr .8fr;gap:48px;align-items:end}
-.builders__head .section-copy{color:rgba(255,255,255,.58);justify-self:end}
+.builders__head{display:block}
+.builders__head .section-copy{color:rgba(255,255,255,.58);margin-top:24px}
 .builder-grid{margin-top:60px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 /* PRD §4 — 이 구간의 인터랙션 강도는 "무"다. hover · transition · 등장 효과를 넣지 않는다.
    빈 구간이 아니라 판별 기준이다: "애니메이션을 넣는 판단만큼 안 넣는 판단도 기준이다"
@@ -292,9 +292,13 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .builder-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
 /* 사진이 없거나 못 읽으면 이니셜이 남는다. <img> 만 두면 파일이 빠지는 순간 빈 박스가 된다 —
    시안을 옮기거나 assets 를 빠뜨렸을 때 가장 먼저 드러나는 자리다. */
+/* 사진이 없으면 이니셜이 남는다. 어두운 카드 위에서 라임이 포인트 역할을 한다.
+   🔴 얼굴 사진은 실제 인물의 것이고 동의를 받은 경우에만 넣는다.
+      AI 로 만든 얼굴은 §7.5 가 막고, 가상의 빌더에 남의 얼굴을 붙이면 초상권 문제가 된다.
+      준비되면 data-photo 에 경로만 채우면 아래 스크립트가 얹는다. */
 .builder-avatar{position:relative;width:66px;height:66px;flex:0 0 66px;border-radius:20px;
-  overflow:hidden;background:#252a25;border:1px solid rgba(255,255,255,.14);
-  display:grid;place-items:center;color:var(--lime);font-weight:900;font-size:23px}
+  overflow:hidden;background:linear-gradient(145deg,#d7ff59,#9bb73b);
+  display:grid;place-items:center;color:var(--ink);font-weight:900;font-size:24px}
 .builder-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 .builder-state{font-size:11px;padding:6px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.64)}
 .builder-card h3{margin-top:26px;font-size:28px;line-height:1.3;letter-spacing:-.015em}
@@ -764,8 +768,6 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   .problem-card{min-height:520px}
   .proof-grid{grid-template-columns:repeat(2,1fr)}
   .proof-item:nth-child(2){border-right:0}
-  .builders__head{grid-template-columns:1fr}
-  .builders__head .section-copy{justify-self:start}
   .builder-grid{grid-template-columns:repeat(2,1fr)}
   .builder-card:last-child{grid-column:1/-1}
 }
@@ -1090,15 +1092,15 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 <section class="builders section" aria-labelledby="builders-title">
   <div class="container">
     <!-- .reveal 없음 — 다른 섹션 헤드와 달리 이 구간만 즉시 표시된다. PRD §4 강도 "무" -->
-    <div class="builders__head"><div><span class="eyebrow">Builder evidence</span><h2 class="section-title" id="builders-title" style="margin-top:24px">누가 만드는지 숨기지 않습니다.</h2></div><p class="section-copy">실제 작업자의 Work와 Insight를 연결해, 고객이 직접 확인할 수 있는 근거를 남깁니다.</p></div>
+    <div class="builders__head"><div><span class="eyebrow">Builder evidence</span><h2 class="section-title" id="builders-title" style="margin-top:24px">누가 만드는지 숨기지 않습니다.</h2><p class="section-copy">실제 작업자의 Work와 Insight를 연결해, 고객이 직접 확인할 수 있는 근거를 남깁니다.</p></div></div>
     <!-- ⚠️ 가상의 빌더다. 1기가 진행 중이라 실제 프로필이 아직 없어 표기 방식을 보여주는
          예시로 채웠다. 아래 note 가 그 사실을 고지한다 — 지우지 마라(§7.6).
          연결된 Work · Insight 는 실제 항목이고 누르면 그 상세로 간다.
          🔴 이 구간에는 등장 애니메이션도 전환(transition)도 넣지 않는다. PRD §4.1 강도 "무". -->
     <div class="builder-grid">
-      <article class="builder-card"><div class="builder-top"><div class="builder-avatar"><img src="assets/builders/kim-do-yoon.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" width="1254" height="1254"><span aria-hidden="true">도</span></div><span class="builder-state">BUILDER PROFILE</span></div><h3>김도윤</h3><p>문제 정의와 사용자 흐름을 화면 구조로 바꾸는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-02"><img src="assets/work/work-02.jpg" alt="" aria-hidden="true" loading="lazy"><span>NICE 정보통신</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-06"><img src="assets/work/work-06.jpg" alt="" aria-hidden="true" loading="lazy"><span>CANAPE</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-04">요구를 다 받는 것은 친절이 아닙니다</a></div><div class="evidence-row"><span>Role</span><b>기획 · UI/UX</b></div></div></article>
-      <article class="builder-card"><div class="builder-top"><div class="builder-avatar"><img src="assets/builders/lee-seo-jin.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" width="1254" height="1254"><span aria-hidden="true">서</span></div><span class="builder-state">BUILDER PROFILE</span></div><h3>이서진</h3><p>프론트엔드와 운영 어드민을 함께 구현하는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-01"><img src="assets/work/work-01.jpg" alt="" aria-hidden="true" loading="lazy"><span>Aerok Admin</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-03"><img src="assets/work/work-03.jpg" alt="" aria-hidden="true" loading="lazy"><span>패밀리케어</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-02">AI를 써도 품질이 흔들리지 않게</a></div><div class="evidence-row"><span>Role</span><b>Web · Admin</b></div></div></article>
-      <article class="builder-card"><div class="builder-top"><div class="builder-avatar"><img src="assets/builders/park-ha-neul.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async" width="1254" height="1254"><span aria-hidden="true">하</span></div><span class="builder-state">BUILDER PROFILE</span></div><h3>박하늘</h3><p>AI 자동화와 데이터 흐름을 서비스에 연결하는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-04"><img src="assets/work/work-04.jpg" alt="" aria-hidden="true" loading="lazy"><span>Btv 우리동네광고</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-05"><img src="assets/work/work-05.jpg" alt="" aria-hidden="true" loading="lazy"><span>마크스폰 EDK</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-06">AI가 만든 것과 사람이 정한 것</a></div><div class="evidence-row"><span>Role</span><b>Automation · API</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar" data-photo=""><span aria-hidden="true">도</span></div><span class="builder-state">BUILDER PROFILE</span></div><h3>김도윤</h3><p>문제 정의와 사용자 흐름을 화면 구조로 바꾸는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-02"><img src="assets/work/work-02.jpg" alt="" aria-hidden="true" loading="lazy"><span>NICE 정보통신</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-06"><img src="assets/work/work-06.jpg" alt="" aria-hidden="true" loading="lazy"><span>CANAPE</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-04">요구를 다 받는 것은 친절이 아닙니다</a></div><div class="evidence-row"><span>Role</span><b>기획 · UI/UX</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar" data-photo=""><span aria-hidden="true">서</span></div><span class="builder-state">BUILDER PROFILE</span></div><h3>이서진</h3><p>프론트엔드와 운영 어드민을 함께 구현하는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-01"><img src="assets/work/work-01.jpg" alt="" aria-hidden="true" loading="lazy"><span>Aerok Admin</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-03"><img src="assets/work/work-03.jpg" alt="" aria-hidden="true" loading="lazy"><span>패밀리케어</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-02">AI를 써도 품질이 흔들리지 않게</a></div><div class="evidence-row"><span>Role</span><b>Web · Admin</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar" data-photo=""><span aria-hidden="true">하</span></div><span class="builder-state">BUILDER PROFILE</span></div><h3>박하늘</h3><p>AI 자동화와 데이터 흐름을 서비스에 연결하는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-04"><img src="assets/work/work-04.jpg" alt="" aria-hidden="true" loading="lazy"><span>Btv 우리동네광고</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-05"><img src="assets/work/work-05.jpg" alt="" aria-hidden="true" loading="lazy"><span>마크스폰 EDK</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-06">AI가 만든 것과 사람이 정한 것</a></div><div class="evidence-row"><span>Role</span><b>Automation · API</b></div></div></article>
     </div>
     <p class="builders__note">1기가 진행 중이라 빌더 프로필은 준비 중입니다. 위 카드는 작업물과 콘텐츠를 어떻게 연결해 보여드릴지에 대한 예시입니다.</p>
   </div>
@@ -1605,13 +1607,16 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     if(inside) chatBtn.focus();
   });
 
-  /* 사진을 못 읽으면 <img> 를 걷어낸다. 남겨두면 깨진 이미지 아이콘이 이니셜을 덮는다.
-     onerror 를 인라인 속성으로 쓰지 않는다 — 문자열 안의 따옴표 중첩에서 한 번 깨진 적이 있다. */
-  document.querySelectorAll('.builder-avatar img').forEach(img=>{
-    const drop=()=>img.remove();
-    img.addEventListener('error',drop,{once:true});
-    /* 이미 실패한 뒤에 리스너를 달면 error 가 오지 않는다 — complete 인데 크기가 0 이면 실패다. */
-    if(img.complete&&!img.naturalWidth) drop();
+  /* 프로필 사진은 data-photo 에 경로가 있을 때만 얹는다. 빈 <img> 를 두면 404 가 그만큼 나고
+     콘솔이 지저분해져 "아직 준비 안 된 것"과 "고장난 것"이 구분되지 않는다.
+     읽지 못하면 걷어내 이니셜을 남긴다 — 깨진 이미지 아이콘이 이니셜을 덮는 것보다 낫다. */
+  document.querySelectorAll('.builder-avatar[data-photo]').forEach(av=>{
+    const src=av.dataset.photo; if(!src) return;
+    const img=new Image();
+    img.alt=''; img.setAttribute('aria-hidden','true'); img.loading='lazy';
+    img.addEventListener('error',()=>img.remove(),{once:true});
+    img.src=src;
+    av.insertBefore(img,av.firstChild);
   });
 
   /* ═══ 등장 스캐너 — 재실행 가능하게 둔다 ═══
