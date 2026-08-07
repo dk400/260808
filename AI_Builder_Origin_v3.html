@@ -605,6 +605,29 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 .adm__panel h3{font-size:18px;letter-spacing:-.02em;line-height:1.35}
 /* 역할 전환 — 실제 로그인이 아니라 "권한에 따라 무엇이 달라지는가"를 보여주는 장치다.
    Phase 2 에서 인증이 붙으면 이 토글은 사라지고 서버가 역할을 정한다. */
+/* 로그인 화면. 어드민 본체와 같은 폭을 쓰되 가운데로 모은다 — 들어가기 전 화면이라
+   목록·패널 레이아웃을 흉내 낼 이유가 없다. */
+.adm--login{padding-top:clamp(96px,11vw,140px)}
+.login{max-width:520px;margin:0 auto;padding:clamp(28px,4vw,40px);
+  border:1px solid var(--line);border-radius:var(--radius);background:var(--white)}
+.login__title{margin-top:14px;font-size:clamp(26px,3vw,34px);letter-spacing:-.025em;font-weight:850}
+.login__lead{margin-top:12px;font-size:14.5px;line-height:1.7;color:var(--muted)}
+.login__form{margin-top:26px;display:grid;gap:12px}
+.login__go{min-height:48px;border-radius:999px;background:var(--ink);color:var(--white);
+  font-size:14px;font-weight:850;transition:background .2s}
+.login__go:hover{background:#2c302a}
+.login__sent{margin-top:26px;padding:16px 18px;border-radius:14px;background:var(--panel);
+  font-size:14px;line-height:1.7}
+.login__sent span{display:block;margin-top:4px;color:var(--muted);font-size:12.5px;font-weight:400}
+.login__demo{margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
+.login__demoBtns{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
+.login__demoBtns button{min-height:44px;flex:1 1 auto;padding:12px 16px;border:1px solid var(--line);
+  border-radius:999px;background:var(--white);font-size:13px;font-weight:800;transition:border-color .2s}
+.login__demoBtns button:hover{border-color:var(--ink)}
+/* 로그인한 뒤의 상단 — 누구로 들어와 있는지와 나가는 길만 둔다. */
+.adm__who--user{gap:10px;padding-left:14px;align-items:center}
+.adm__me{display:grid;line-height:1.25;font-size:13px;font-weight:800}
+.adm__me em{font-style:normal;font-size:11px;font-weight:750;color:var(--muted)}
 .adm__who{display:flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:999px;background:var(--white)}
 .adm__who button{min-height:36px;padding:8px 15px;border-radius:999px;font-size:13px;font-weight:800;
   color:var(--muted);transition:background .18s,color .18s}
@@ -2090,6 +2113,11 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   let admInvite=false;
   /* 역할. 실제 인증은 Phase 2 다(§8). 여기서는 "무엇이 다르게 보이는가"만 보여준다 —
      동작하지 않는 로그인 화면을 만드는 것보다 권한 설계를 드러내는 쪽이 낫다. */
+  /* 로그인 상태. null 이면 로그인 화면이 먼저 뜬다.
+     🔴 인증이 아니다. 정적 파일에서 클라이언트가 판정하는 로그인은 소스를 열면 그대로 뚫린다 —
+     시안에 "되는 것처럼 보이는" 인증을 넣으면 심사자가 실제 보안으로 오해한다.
+     여기서 보여주는 것은 로그인 흐름과 권한 차이이고, 판정은 Phase 2 에서 서버가 한다(§8). */
+  let admAuth=null;                       // null | 'builder' | 'admin'
   let admRole='admin', admTab='work', admFilter='all', admPick=0;
   const ROLE_CAN={
     admin  :{tabs:['work','insight','builder'], seeAll:true,  publish:true },
@@ -2177,17 +2205,50 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     return {list,panel};
   };
 
+  /* 로그인 화면. 비밀번호 칸을 두지 않았다 — 매직링크는 보안이 약해서가 아니라 강해서 고른 것이고,
+     "까먹었을 때 복구"라는 문제 자체가 생기지 않는다. 근거는 PRD §9.4. */
+  let admSent='';
+  const renderAdminLogin=()=>
+    '<article class="adm adm--login"><div class="container">'+
+      '<div class="login">'+
+        '<span class="eyebrow">Admin</span>'+
+        '<h1 class="login__title" id="detailTitle" tabindex="-1">콘텐츠 운영</h1>'+
+        '<p class="login__lead">빌더와 운영팀이 콘텐츠를 관리하는 화면입니다. 초대받은 계정만 들어올 수 있습니다.</p>'+
+        (admSent
+          ? '<p class="login__sent"><b>'+esc(admSent)+'</b> 로 로그인 링크를 보냈습니다.'+
+            '<span>메일함을 확인해 주세요. 링크는 15분 뒤 만료됩니다.</span></p>'
+          : '<form class="login__form" data-act="signin">'+
+              '<label class="adm__field"><span>이메일</span>'+
+                '<input type="email" required placeholder="name@example.com" autocomplete="email"></label>'+
+              '<button type="submit" class="login__go">로그인 링크 받기</button>'+
+              '<p class="adm__hint">비밀번호가 없습니다. 메일로 받은 링크를 누르면 바로 들어옵니다.<br>'+
+              '등록되지 않은 주소로는 링크가 발송되지 않습니다.<br>'+
+              '<b>관리자 계정은 링크에 더해 2단계 인증을 거칩니다.</b></p>'+
+            '</form>')+
+        '<div class="login__demo">'+
+          '<p class="adm__hint">시안 미리보기 — 실제 인증은 연결돼 있지 않습니다. 권한에 따라 무엇이 달라지는지 보시려면 아래로 들어가세요.</p>'+
+          '<div class="login__demoBtns">'+
+            '<button data-signin="builder">빌더로 둘러보기 — '+esc(ME)+'</button>'+
+            '<button data-signin="admin">관리자로 둘러보기</button>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+    '</div></article>';
+
   const renderAdmin=()=>{
     const {list,panel}=renderAdminBody();
     /* 탭 개수도 역할을 따른다. 빌더에게 전체 건수를 보여주면 "안 보이는 게 있다"가 드러난다. */
     const count=k=>ADMIN[k].filter(r=>ROLE_CAN[admRole].seeAll||r.w===ME).length;
     const tab=(k,label)=>'<button data-tab="'+k+'" data-n="'+count(k)+'" aria-pressed="'+(admTab===k)+'">'+label+'</button>';
-    const roleBtn=(k,label)=>'<button data-role="'+k+'" aria-pressed="'+(admRole===k)+'">'+label+'</button>';
     const filt=(k,label)=>'<button data-f="'+k+'" aria-pressed="'+(admFilter===k)+'">'+label+'</button>';
     return '<article class="adm"><div class="container">'+
       '<div class="adm__bar"><h1 class="adm__title" id="detailTitle" tabindex="-1">콘텐츠 운영</h1>'+
-      '<div class="adm__who" role="group" aria-label="역할 전환">'+
-        roleBtn('builder','빌더 — '+esc(ME))+roleBtn('admin','관리자')+
+      /* 로그인한 뒤에 역할을 마음대로 바꿀 수 있으면 권한이 있다는 인상이 무너진다.
+         현재 계정만 보여주고, 다른 역할을 보려면 로그아웃하고 다시 들어온다 — 실제 제품과 같다. */
+      '<div class="adm__who adm__who--user">'+
+        '<span class="adm__me">'+esc(admRole==='admin'?'운영팀':ME)+
+        '<em>'+(admRole==='admin'?'관리자':'빌더')+'</em></span>'+
+        '<button data-signout="1">로그아웃</button>'+
       '</div>'+
       '<span class="adm__badge">화면 시안 — 저장·로그인 없음</span></div>'+
       '<p class="adm__note">'+(ROLE_CAN[admRole].publish
@@ -2221,7 +2282,10 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       '</div></article>';
   };
 
-  const admRepaint=()=>{ if(location.hash==='#/admin') view.innerHTML=renderAdmin(); };
+  const admRepaint=()=>{
+    if(location.hash!=='#/admin') return;
+    view.innerHTML=admAuth?renderAdmin():renderAdminLogin();
+  };
 
   /* 아바타 이니셜. 한글 세 글자 이름은 성을 빼고 이름 첫 글자를 쓴다(김도윤 → 도) —
      #builders 의 아바타와 같은 규칙이라야 같은 사람으로 읽힌다.
@@ -2322,19 +2386,24 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
      UI 상태다. 위임으로 받아 화면만 다시 그린다. */
   document.addEventListener('click',e=>{
     if(location.hash!=='#/admin') return;
-    const t=e.target.closest&&e.target.closest('[data-role],[data-tab],[data-f],[data-i],[data-act]');
+    const t=e.target.closest&&e.target.closest('[data-signin],[data-signout],[data-tab],[data-f],[data-i],[data-act]');
     if(!t) return;
-    if(t.dataset.role){
-      admRole=t.dataset.role; admFilter='all'; admPick=0;
-      /* 빌더로 바꿨는데 빌더 탭에 있으면 볼 수 없는 화면에 남는다. 허용된 첫 탭으로 옮긴다. */
-      if(!ROLE_CAN[admRole].tabs.includes(admTab)) admTab=ROLE_CAN[admRole].tabs[0];
-      admInvite=false;
-      admRepaint();
-      return;
-    }
     if(t.dataset.tab){ admTab=t.dataset.tab; admFilter='all'; admPick=0; }
     else if(t.dataset.f){ admFilter=t.dataset.f; admPick=0; }
     else if(t.dataset.i!==undefined){ admPick=+t.dataset.i; }
+    else if(t.dataset.signin){
+      admAuth=admRole=t.dataset.signin;
+      admTab=ROLE_CAN[admRole].tabs[0]; admFilter='all'; admPick=0; admInvite=false; admSent='';
+      admRepaint();
+      return;
+    }
+    else if(t.dataset.signout){
+      admAuth=null; admSent='';
+      admRepaint();
+      /* 로그아웃 뒤에는 로그인 화면의 제목으로 포커스를 옮긴다 — 화면이 바뀐 것을 알려야 한다. */
+      const h2=view.querySelector('#detailTitle'); if(h2) h2.focus({preventScroll:true});
+      return;
+    }
     else if(t.dataset.act==='invite'||t.dataset.act==='cancel'){
       admInvite=t.dataset.act==='invite';
       admRepaint();
@@ -2369,6 +2438,13 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   /* 초대 폼은 실제로 보내지 않는다(§8). submit 을 막지 않으면 페이지가 새로고침되며
      해시가 날아가 홈으로 튄다 — 시안에서 가장 눈에 띄는 고장이 된다. */
   document.addEventListener('submit',e=>{
+    const lf=e.target.closest&&e.target.closest('.login__form');
+    if(lf){
+      e.preventDefault();
+      admSent=(lf.querySelector('input')||{}).value||'';
+      admRepaint();
+      return;
+    }
     const f=e.target.closest&&e.target.closest('.adm__inviteForm');
     if(!f) return;
     e.preventDefault();
@@ -2495,7 +2571,9 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     else if(h==='#/work'){ showDetail(renderWorkList(),'Work'); handled=true; }
     else if(h==='#/insight'){ showDetail(renderInsightList(),'Insight'); handled=true; }
     else if(h==='#/education'){ showDetail(renderEducation(),'AI 빌더 스쿨 부트캠프'); handled=true; }
-    else if(h==='#/admin'){ showDetail(renderAdmin(),'콘텐츠 운영'); handled=true; }
+    else if(h==='#/admin'){
+      showDetail(admAuth?renderAdmin():renderAdminLogin(),'콘텐츠 운영'); handled=true;
+    }
     if(!handled){
       showHome();
       /* 라우트가 아니면 홈 내부 앵커다(#work · #contact). 기존 동작을 그대로 둔다. */
