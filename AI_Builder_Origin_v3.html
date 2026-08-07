@@ -83,8 +83,8 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 :focus-visible{outline:3px solid var(--lime-2);outline-offset:4px}
 ::selection{background:var(--lime);color:var(--ink)}
 .container{width:min(var(--max),100%);margin-inline:auto;padding-inline:var(--pad)}
-.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
-.eyebrow::before{content:'✱';color:#6d8f00;font-size:12px}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.eyebrow::before{content:'✱';color:#6d8f00;font-size:14px}
 .section{padding:clamp(88px,11vw,156px) 0}
 .section-title{font-size:clamp(38px,6.1vw,80px);line-height:1.16;letter-spacing:-.02em;font-weight:850;max-inline-size:15ch}
 .section-copy{font-size:clamp(16px,1.75vw,21px);line-height:1.68;color:var(--muted);max-width:52ch}
@@ -610,10 +610,20 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 .adm__ava{display:flex;align-items:center;gap:14px}
 .adm-avatar{width:64px;height:64px;flex:0 0 64px;border-radius:20px;display:grid;place-items:center;
   background:linear-gradient(145deg,#d7ff59,#9bb73b);color:var(--ink);font-weight:900;font-size:22px}
+/* 사진이 붙으면 배경으로 깔린다. 이니셜 그라디언트가 폴백이라 로딩 중에도 빈칸이 남지 않는다. */
+.adm-avatar[data-photo],.builder-avatar[data-photo]{background-size:cover;background-position:center}
+.adm__avaBtns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.adm__photoMsg{color:#a3401f;font-weight:750}
 .adm__field{display:grid;gap:6px;font-size:12px;color:var(--muted)}
-.adm__field input{padding:11px 13px;border:1px solid var(--line);border-radius:11px;
-  background:var(--white);font:inherit;font-size:14px;color:var(--ink)}
-.adm__field input:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.adm__field input,.adm__field select{padding:11px 13px;border:1px solid var(--line);border-radius:11px;
+  background:var(--white);font:inherit;font-size:14px;color:var(--ink);min-height:44px}
+.adm__field input:focus-visible,.adm__field select:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+/* 네이티브 select 를 쓴다. 이 시안은 의존성 0 이라 커스텀 드롭다운을 붙일 수 없고,
+   직접 만들면 키보드·스크린리더 동작을 처음부터 다시 구현해야 한다.
+   화살표만 브랜드에 맞춰 그린다 — 배경 이미지가 아니라 인라인 SVG 라 외부 요청이 없다. */
+.adm__field select{appearance:none;padding-right:34px;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%23111311' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center}
 .adm__count{justify-self:end;font-style:normal;font-size:11px;color:var(--muted)}
 .adm__hint{font-size:11.5px;line-height:1.6;color:var(--muted)}
 .adm__mini{min-height:36px;padding:9px 14px;border:1px solid var(--line);border-radius:999px;
@@ -794,6 +804,8 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   .stage-card--ticket{width:205px;bottom:28px;padding:15px}
   .stage-card--tag{right:0;bottom:0}
   .section{padding:82px 0}
+  .eyebrow{font-size:13px;gap:8px}
+  .eyebrow::before{font-size:12px}
   .section-title{font-size:clamp(36px,9.5vw,46px);max-inline-size:100%}
   .problem__aside h2,.problem-card h3,.final h2{max-inline-size:100%}
   .problem__steps{gap:12px}
@@ -1008,7 +1020,6 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
            현재형 문장으로 바꿨다. 실데이터가 붙어도 이 문장은 그대로 참이다.
            "Selected work" 도 선별된 실적을 함의해 "Work" 로 줄였다. -->
       <div><span class="eyebrow">Work</span><h2 class="section-title" id="work-title" style="margin-top:24px">어떤 문제를 어떤 구조로 푸는지 보여줍니다.</h2></div>
-      <p class="section-copy">아래는 일부입니다. <a class="edu-link" href="#/work">전체 보기 →</a></p>
     </div>
     <!-- 수행 주체 표기 — PRD §7.6 이 ✅ 로 규정한 시나리오다.
          "표기 없이 자사 실적처럼 게시"는 ❌("비판한 업체와 같은 구조")이므로 이 줄을 지우지 마라.
@@ -2037,22 +2048,25 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
        작성자가 사라지고 #builders 의 연결도 끊긴다. inactive 로 로그인만 막는다. */
     builder:[
       {t:'김도윤 · 기획 · UI/UX',w:'김도윤',s:'live',d:'2026-07-20',
-       ini:'도',name:'김도윤',role:'기획 · UI/UX',state:'active',photo:false,
+       ini:'도',name:'김도윤',role:'기획 · UI/UX',state:'active',photo:'',
        bio:'문제 정의와 사용자 흐름을 화면 구조로 바꾸는 빌더.'},
       {t:'이서진 · Web · Admin',w:'이서진',s:'live',d:'2026-07-20',
-       ini:'서',name:'이서진',role:'Web · Admin',state:'active',photo:false,
+       ini:'서',name:'이서진',role:'Web · Admin',state:'active',photo:'',
        bio:'프론트엔드와 운영 어드민을 함께 구현하는 빌더.'},
       {t:'박하늘 · Automation · API',w:'박하늘',s:'review',d:'2026-08-04',
-       ini:'하',name:'박하늘',role:'Automation · API',state:'active',photo:false,
+       ini:'하',name:'박하늘',role:'Automation · API',state:'active',photo:'',
        bio:'AI 자동화와 데이터 흐름을 서비스에 연결하는 빌더.'},
-      {t:'정유선 · 미배정',w:'정유선',s:'draft',d:'2026-08-07',
-       ini:'유',name:'정유선',role:'미배정',state:'invited',photo:false,
+      {t:'정유선 · 교육생',w:'정유선',s:'draft',d:'2026-08-07',
+       ini:'유',name:'정유선',role:'교육생',state:'invited',photo:'',
        bio:''}
     ]
   };
   const SLABEL={draft:'작성 중',review:'검토 요청',live:'공개'};
   /* 계정 상태는 콘텐츠 상태와 별개다. 초대만 보내고 아직 안 들어온 사람이 있다. */
   const ASTATE={active:'활동 중',invited:'초대됨 · 미수락',inactive:'비활성'};
+  /* 역할은 골라 쓰되 목록에 없는 것도 적을 수 있게 둔다. 목록만 두면 새 역할이 생길 때마다
+     코드를 고쳐야 하고, 자유 입력만 두면 같은 역할이 표기만 달리해 여러 개로 갈라진다. */
+  const ROLES=['기획 · UI/UX','Web · Admin','Automation · API','콘텐츠 · 마케팅','교육생','미배정'];
   let admInvite=false;
   /* 역할. 실제 인증은 Phase 2 다(§8). 여기서는 "무엇이 다르게 보이는가"만 보여준다 —
      동작하지 않는 로그인 화면을 만드는 것보다 권한 설계를 드러내는 쪽이 낫다. */
@@ -2091,14 +2105,31 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
            한 줄 소개에 §7.5 가 막는 표현("엄격히 선별된" · 검증 불가 수치)이 들어갈 수 있다. */
         ? '<div class="adm__profile">'+
             '<div class="adm__ava">'+
-              '<span class="adm-avatar"'+(cur.photo?' data-photo="1"':'')+'>'+esc(cur.ini||'?')+'</span>'+
-              '<div><button class="adm__mini" data-act="photo">사진 변경</button>'+
-              '<p class="adm__hint">정사각 400px 이상 · 5MB 이하. 없으면 이름 첫 글자로 표시됩니다.</p></div>'+
+              '<span class="adm-avatar"'+(cur.photo?' data-photo="1" style="background-image:url('+cur.photo+')"':'')+'>'+
+                (cur.photo?'':esc(cur.ini||'?'))+'</span>'+
+              '<div><div class="adm__avaBtns">'+
+                '<button class="adm__mini" data-act="photo">'+(cur.photo?'사진 변경':'사진 올리기')+'</button>'+
+                (cur.photo?'<button class="adm__mini" data-act="photoclear">제거</button>':'')+
+                '<input type="file" id="admPhoto" accept="image/*" hidden>'+
+              '</div>'+
+              '<p class="adm__hint">정사각으로 잘라 400px 로 줄여 저장합니다. 5MB 이하. 없으면 이름 첫 글자로 표시됩니다.</p>'+
+              '<p class="adm__hint adm__photoMsg" role="status" hidden></p></div>'+
             '</div>'+
             '<label class="adm__field"><span>이름</span>'+
               '<input type="text" value="'+esc(cur.name||'')+'" data-p="name"></label>'+
-            '<label class="adm__field"><span>역할</span>'+
-              '<input type="text" value="'+esc(cur.role||'')+'" data-p="role"></label>'+
+            (()=>{
+              const other=cur.roleOther||!ROLES.includes(cur.role||'');
+              return '<label class="adm__field"><span>역할</span>'+
+                '<select data-p="role">'+
+                  ROLES.map(r=>'<option value="'+esc(r)+'"'+(!other&&cur.role===r?' selected':'')+'>'+esc(r)+'</option>').join('')+
+                  '<option value="__other"'+(other?' selected':'')+'>기타 — 직접 입력</option>'+
+                '</select></label>'+
+                (other
+                  ? '<label class="adm__field"><span>역할 직접 입력</span>'+
+                    '<input type="text" maxlength="30" data-p="roleCustom" value="'+esc(cur.role||'')+'" '+
+                    'placeholder="예: 데이터 · 리서치"></label>'
+                  : '');
+            })()+
             '<label class="adm__field"><span>한 줄 소개</span>'+
               '<input type="text" maxlength="70" value="'+esc(cur.bio||'')+'" data-p="bio">'+
               /* 길이를 안 막으면 #builders 카드가 줄바꿈으로 깨진다. 카드는 두 줄까지다. */
@@ -2180,6 +2211,67 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     return /^[가-힣]{3}$/.test(n)?n.charAt(1):(n.charAt(0)||'?');
   };
 
+  /* 사진 업로드. 업로드는 생성이 아니므로 이미지 정책과 무관하다.
+     저장은 되지 않는다(§8) — 고른 파일을 브라우저 안에서만 처리해 보여준다.
+     원본을 그대로 쓰지 않는 이유: 폰 사진은 수 MB 라 목록마다 그대로 내려가면 감당이 안 된다.
+     가운데를 정사각으로 잘라 400px JPEG 로 줄인다 — Phase 2 에서도 같은 처리가 필요하다. */
+  const AVATAR_PX=400, AVATAR_MAX=5*1024*1024;
+  const readAvatar=file=>new Promise((res,rej)=>{
+    if(!/^image\//.test(file.type)) return rej('이미지 파일만 올릴 수 있습니다.');
+    if(file.size>AVATAR_MAX)         return rej('5MB 이하만 올릴 수 있습니다.');
+    const url=URL.createObjectURL(file), img=new Image();
+    img.onload=()=>{
+      const side=Math.min(img.width,img.height);
+      const c=document.createElement('canvas'); c.width=c.height=AVATAR_PX;
+      c.getContext('2d').drawImage(img,(img.width-side)/2,(img.height-side)/2,side,side,0,0,AVATAR_PX,AVATAR_PX);
+      URL.revokeObjectURL(url);   // 풀지 않으면 탭이 살아 있는 동안 원본이 메모리에 남는다
+      res(c.toDataURL('image/jpeg',.86));
+    };
+    img.onerror=()=>{ URL.revokeObjectURL(url); rej('이미지를 읽지 못했습니다.'); };
+    img.src=url;
+  });
+
+  /* 어드민에서 바꾼 사진이 공개 화면에도 보여야 "고쳐지는 화면"으로 읽힌다.
+     카드를 이름으로 찾는다 — 시안이라 id 가 없다. Phase 2 에서는 빌더 id 로 잇는다. */
+  const syncBuilderAvatar=cur=>{
+    home.querySelectorAll('.builder-card').forEach(card=>{
+      const h=card.querySelector('h3');
+      if(!h||h.textContent.trim()!==String(cur.name||'').trim()) return;
+      const av=card.querySelector('.builder-avatar'); if(!av) return;
+      if(cur.photo){ av.style.backgroundImage='url('+cur.photo+')'; av.dataset.photo='1'; av.textContent=''; }
+      else { av.style.backgroundImage=''; delete av.dataset.photo; av.textContent=cur.ini||'?'; }
+    });
+  };
+
+  document.addEventListener('change',e=>{
+    const sel=e.target.closest&&e.target.closest('select[data-p="role"]');
+    if(!sel||location.hash!=='#/admin') return;
+    const cur=admRows()[admPick]; if(!cur) return;
+    if(sel.value==='__other'){ cur.roleOther=true; cur.role=''; }
+    else { cur.roleOther=false; cur.role=sel.value; }
+    cur.t=(cur.name||'')+' · '+(cur.role||'미입력');
+    admRepaint();
+    /* 기타를 고르면 곧바로 적을 수 있어야 한다. 다시 클릭하게 만들지 않는다. */
+    const f=document.querySelector('[data-p="roleCustom"]');
+    if(f) f.focus(); else { const r=document.querySelector('select[data-p="role"]'); if(r) r.focus(); }
+  });
+
+  document.addEventListener('change',async e=>{
+    const inp=e.target.closest&&e.target.closest('#admPhoto');
+    if(!inp||!inp.files||!inp.files[0]) return;
+    const cur=admRows()[admPick]; if(!cur) return;
+    try{
+      cur.photo=await readAvatar(inp.files[0]);
+      syncBuilderAvatar(cur);
+      admRepaint();
+    }catch(msg){
+      /* 실패를 조용히 삼키면 "눌렀는데 아무 일도 안 일어난다"가 된다. 이유를 그 자리에 쓴다. */
+      const m=document.querySelector('.adm__photoMsg');
+      if(m){ m.textContent=String(msg); m.hidden=false; }
+    }
+    inp.value='';   // 같은 파일을 다시 골라도 change 가 오도록
+  });
+
   /* 프로필 입력은 데이터에 바로 반영한다. 그래야 다른 항목을 눌렀다 돌아와도 남아 있고,
      목록 제목과 아바타가 그 자리에서 따라온다.
      ⚠️ 여기서 재렌더하지 않는다 — 입력 중에 DOM 을 갈아끼우면 포커스와 커서가 날아간다. */
@@ -2187,13 +2279,15 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     const t=e.target.closest&&e.target.closest('[data-p]');
     if(!t||location.hash!=='#/admin') return;
     const cur=admRows()[admPick]; if(!cur) return;
-    cur[t.dataset.p]=t.value;
+    /* 직접 입력 칸은 별도 필드가 아니라 role 그 자체다. 따로 두면 어느 쪽이 진짜인지 갈린다. */
+    if(t.dataset.p==='roleCustom') cur.role=t.value;
+    else cur[t.dataset.p]=t.value;
     if(t.dataset.p==='name') cur.ini=initialOf(t.value);
-    cur.t=(cur.name||'')+' · '+(cur.role||'');
+    cur.t=(cur.name||'')+' · '+(cur.role||'미입력');
     const row=document.querySelector('.adm-row[aria-current="true"] .adm-row__t');
     if(row) row.textContent=cur.t;
     const av=document.querySelector('.adm-avatar');
-    if(av&&t.dataset.p==='name') av.textContent=cur.ini;
+    if(av&&t.dataset.p==='name'&&!cur.photo) av.textContent=cur.ini;
     const c=document.querySelector('.adm__count');
     if(c&&t.dataset.p==='bio') c.textContent=t.value.length+' / 70자';
   });
@@ -2222,7 +2316,13 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       if(admInvite){ const i=document.querySelector('.adm__inviteForm input'); if(i) i.focus(); }
       return;
     }
-    else if(t.dataset.act==='photo'){ return; }   // 업로드는 Phase 2 — 시안에서는 자리만 보인다
+    else if(t.dataset.act==='photo'){
+      const inp=document.getElementById('admPhoto'); if(inp) inp.click(); return;
+    }
+    else if(t.dataset.act==='photoclear'){
+      const cur=admRows()[admPick]; if(!cur) return;
+      cur.photo=''; syncBuilderAvatar(cur); admRepaint(); return;
+    }
     else if(t.dataset.act){
       const cur=admRows()[admPick]; if(!cur) return;
       cur.s = t.dataset.act==='publish' ? 'live'
