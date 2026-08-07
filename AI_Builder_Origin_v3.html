@@ -288,16 +288,31 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 /* PRD §4 — 이 구간의 인터랙션 강도는 "무"다. hover · transition · 등장 효과를 넣지 않는다.
    빈 구간이 아니라 판별 기준이다: "애니메이션을 넣는 판단만큼 안 넣는 판단도 기준이다"
    되돌리려면 아래에 transition/hover 를 다시 넣기 전에 §4.1 배분표부터 갱신할 것. */
-.builder-card{border:1px solid rgba(255,255,255,.13);border-radius:22px;padding:24px;background:#171a17;min-height:370px;display:flex;flex-direction:column}
+.builder-card{border:1px solid rgba(255,255,255,.13);border-radius:22px;padding:24px;background:#171a17;display:flex;flex-direction:column}
 .builder-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .builder-avatar{width:58px;height:58px;border-radius:18px;background:linear-gradient(145deg,#d7ff59,#9bb73b);display:grid;place-items:center;color:var(--ink);font-weight:900}
 .builder-state{font-size:11px;padding:6px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.64)}
-.builder-card h3{margin-top:32px;font-size:28px;line-height:1.3;letter-spacing:-.015em}
+.builder-card h3{margin-top:26px;font-size:28px;line-height:1.3;letter-spacing:-.015em}
 .builder-card>p{margin-top:10px;color:rgba(255,255,255,.58);font-size:14px;line-height:1.65}
 .builder-evidence{margin-top:auto;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);display:grid;gap:10px}
 .evidence-row{display:flex;justify-content:space-between;gap:18px;font-size:12px}
 .evidence-row span{color:rgba(255,255,255,.4)}
 .evidence-row b{font-weight:750;text-align:right}
+/* 참여 작업물 — "참여 프로젝트 연결" 이라는 빈 문구가 있던 자리를 실제 Work 로 채운다.
+   🔴 transition 을 넣지 않는다. #builders 가 움직이지 않는 것이 클라이언트의 판별 기준이다.
+   링크임은 화살표와 커서로 알린다 — 색이 스르르 바뀌는 반응은 이 구간에 두지 않는다. */
+.builder-works{margin-top:20px;display:grid;gap:8px}
+.builder-work{display:grid;grid-template-columns:76px minmax(0,1fr) auto;gap:12px;align-items:center;
+  padding:9px;border:1px solid rgba(255,255,255,.11);border-radius:12px;background:rgba(255,255,255,.03)}
+/* 56x36 은 무슨 화면인지 알아볼 수 없었다. object-position:top 은 캡처 상단이 히어로라
+   그쪽을 남기는 편이 식별에 낫기 때문이다 — Work 상세 히어로와 같은 기준이다. */
+.builder-work img{width:100%;height:48px;object-fit:cover;object-position:top;border-radius:8px;display:block}
+.builder-work>span{font-size:13px;font-weight:750;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.builder-work__go{color:var(--lime);font-size:12px}
+.builder-work:hover{border-color:rgba(215,255,89,.45)}
+.evidence-link{font-weight:750;text-align:right;color:var(--white);
+  text-decoration:underline;text-decoration-color:rgba(255,255,255,.32);text-underline-offset:3px}
+.evidence-link:hover{text-decoration-color:var(--lime)}
 .builders__note{margin-top:24px;color:rgba(255,255,255,.38);font-size:12px}
 
 /* Insight */
@@ -753,7 +768,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   .proof-item{border-right:0;min-height:230px}
   .work__head,.insight__head{display:grid;align-items:start}
   .work-grid{grid-template-columns:1fr}
-  .how-step{grid-template-columns:52px 1fr;padding:34px 0}
+  .how-step{grid-template-columns:44px minmax(0,1fr);gap:16px;padding:34px 16px}
   .how-step::before{inset:8px 0}
   .how-step.active{transform:none}
   .builder-grid{grid-template-columns:1fr}
@@ -1027,11 +1042,16 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   <div class="container">
     <!-- .reveal 없음 — 다른 섹션 헤드와 달리 이 구간만 즉시 표시된다. PRD §4 강도 "무" -->
     <div class="builders__head"><div><span class="eyebrow">Builder evidence</span><h2 class="section-title" id="builders-title" style="margin-top:24px">누가 만드는지 숨기지 않습니다.</h2></div><p class="section-copy">실제 작업자의 Work와 Insight를 연결해, 고객이 직접 확인할 수 있는 근거를 남깁니다.</p></div>
+    <!-- ⚠️ 가상의 빌더다. 1기가 진행 중이라 실제 프로필이 아직 없어 표기 방식을 보여주는
+         예시로 채웠다. 아래 note 가 그 사실을 고지한다 — 지우지 마라(§7.6).
+         연결된 Work · Insight 는 실제 항목이고 누르면 그 상세로 간다.
+         🔴 이 구간에는 등장 애니메이션도 전환(transition)도 넣지 않는다. PRD §4.1 강도 "무". -->
     <div class="builder-grid">
-      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">A</div><span class="builder-state">BUILDER PROFILE</span></div><h3>Builder A</h3><p>문제 정의와 사용자 흐름을 화면 구조로 바꾸는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>기획 · UI/UX</b></div></div></article>
-      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">B</div><span class="builder-state">BUILDER PROFILE</span></div><h3>Builder B</h3><p>프론트엔드와 운영 어드민을 함께 구현하는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>Web · Admin</b></div></div></article>
-      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">C</div><span class="builder-state">BUILDER PROFILE</span></div><h3>Builder C</h3><p>AI 자동화와 데이터 흐름을 서비스에 연결하는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>Automation · API</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">도</div><span class="builder-state">BUILDER PROFILE</span></div><h3>김도윤</h3><p>문제 정의와 사용자 흐름을 화면 구조로 바꾸는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-02"><img src="assets/work/work-02.jpg" alt="" aria-hidden="true" loading="lazy"><span>NICE 정보통신</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-06"><img src="assets/work/work-06.jpg" alt="" aria-hidden="true" loading="lazy"><span>CANAPE</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-04">요구를 다 받는 것은 친절이 아닙니다</a></div><div class="evidence-row"><span>Role</span><b>기획 · UI/UX</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">서</div><span class="builder-state">BUILDER PROFILE</span></div><h3>이서진</h3><p>프론트엔드와 운영 어드민을 함께 구현하는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-01"><img src="assets/work/work-01.jpg" alt="" aria-hidden="true" loading="lazy"><span>Aerok Admin</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-03"><img src="assets/work/work-03.jpg" alt="" aria-hidden="true" loading="lazy"><span>패밀리케어</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-02">AI를 써도 품질이 흔들리지 않게</a></div><div class="evidence-row"><span>Role</span><b>Web · Admin</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">하</div><span class="builder-state">BUILDER PROFILE</span></div><h3>박하늘</h3><p>AI 자동화와 데이터 흐름을 서비스에 연결하는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-04"><img src="assets/work/work-04.jpg" alt="" aria-hidden="true" loading="lazy"><span>Btv 우리동네광고</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-05"><img src="assets/work/work-05.jpg" alt="" aria-hidden="true" loading="lazy"><span>마크스폰 EDK</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-06">AI가 만든 것과 사람이 정한 것</a></div><div class="evidence-row"><span>Role</span><b>Automation · API</b></div></div></article>
     </div>
+    <p class="builders__note">1기가 진행 중이라 빌더 프로필은 준비 중입니다. 위 카드는 작업물과 콘텐츠를 어떻게 연결해 보여드릴지에 대한 예시입니다.</p>
   </div>
 </section>
 
