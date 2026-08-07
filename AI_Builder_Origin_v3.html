@@ -319,9 +319,20 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .insight-thumb--yt::before{content:'';position:absolute;left:50%;top:50%;z-index:1;
   transform:translate(-40%,-50%);border-style:solid;border-width:5px 0 5px 8px;
   border-color:transparent transparent transparent #fffef9}
-.insight-thumb--doc{display:grid;place-items:center;background:var(--white)}
-.insight-thumb--doc i{display:block;width:56%;height:58%;border-radius:6px;
-  background:repeating-linear-gradient(to bottom,var(--line) 0 2px,transparent 2px 9px)}
+/* 아티클 표지 — CSS 그라디언트로 그린 그래픽이다. 사진이 아니고 AI 로 생성하지도 않았다(§7.5).
+   같은 클래스를 목록 썸네일(16:9)과 상세 히어로(21:9) 양쪽에 쓴다 — 크기만 다르다.
+   실사 이미지가 확정되면 이 클래스를 <img> 로 바꾸면 되고 마크업은 그대로다. */
+.insight-thumb--cover{background-color:var(--panel)}
+.cover--01{background:radial-gradient(circle at 76% 30%,#d7ff59 0 20%,transparent 21%),linear-gradient(140deg,#171a16,#2f362c)}
+.cover--02{background:repeating-linear-gradient(115deg,rgba(215,255,89,.92) 0 4px,transparent 4px 30px),linear-gradient(160deg,#1d211c,#3a4235)}
+.cover--03{background:repeating-radial-gradient(circle at 16% 84%,rgba(17,19,17,.9) 0 1.5px,transparent 1.5px 15px),linear-gradient(200deg,#b9d8ff,#e6f1ff)}
+.cover--04{background:radial-gradient(circle at 2% 100%,#ffc49a 0 58%,transparent 59%),radial-gradient(circle at 88% 16%,rgba(17,19,17,.9) 0 12%,transparent 13%),var(--white)}
+.cover--05{background:linear-gradient(to bottom,#111311 0 33%,#d7ff59 33% 42%,#ebe8df 42% 100%)}
+.cover--06{background:repeating-linear-gradient(to right,rgba(17,19,17,.13) 0 1px,transparent 1px 17px),repeating-linear-gradient(to bottom,rgba(17,19,17,.13) 0 1px,transparent 1px 17px),radial-gradient(circle at 68% 44%,#d7ff59 0 24%,transparent 25%),var(--white)}
+.cover--07{background:linear-gradient(58deg,#111311 0 46%,#d7ff59 46% 55%,#b9d8ff 55% 100%)}
+.cover--08{background:radial-gradient(circle,rgba(17,19,17,.24) 1.6px,transparent 1.7px) 0 0/13px 13px,linear-gradient(160deg,#d7ff59,#c8ed45)}
+.detail__cover{margin-top:36px;aspect-ratio:21/9;border-radius:var(--radius);
+  border:1px solid var(--line);overflow:hidden}
 .insight-item:hover .insight-thumb{border-color:rgba(17,19,17,.28)}
 .insight-type{font-size:11px;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:#6d716a}
 .insight-item h3{font-size:clamp(20px,2.2vw,29px);letter-spacing:-.015em;line-height:1.32}
@@ -459,9 +470,36 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 .edu-phase{padding:clamp(26px,3.4vw,40px);border:1px solid var(--line);border-radius:var(--radius);
   background:var(--white);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
 .edu-phase:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
-.edu-phase__no{font-size:12px;font-weight:850;letter-spacing:.12em;color:#779700}
+.edu-phase__no{font-size:12px;font-weight:850;letter-spacing:.12em;color:#5c7500}
 .edu-phase h3{margin-top:14px;font-size:clamp(22px,2.4vw,28px);letter-spacing:-.02em;line-height:1.3}
 .edu-phase p{margin-top:12px;font-size:15px;line-height:1.75;color:var(--muted)}
+/* 라인업 카드 — 이 섹션만의 동작이다. 다른 섹션은 들어 올리거나(work) 기울이거나(proof)
+   화살표를 미는데, 여기서는 카드가 통째로 어둡게 뒤집힌다.
+   섹션마다 다른 동작을 주기로 한 결정에 따른 것이다 — 같은 페이드를 반복하면
+   액션을 아무리 많이 넣어도 한 가지로 기억된다. */
+.edu-lineup{margin-top:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.edu-card{position:relative;overflow:hidden;padding:clamp(24px,3vw,34px);
+  border:1px solid var(--line);border-radius:var(--radius);background:var(--white);
+  transition:background-color .34s cubic-bezier(.2,.7,.3,1),color .34s,transform .34s cubic-bezier(.2,.7,.3,1),border-color .34s,box-shadow .34s}
+.edu-card>*{position:relative;z-index:1}
+.edu-card::after{content:'';position:absolute;inset:auto -30% -55% -30%;height:120%;z-index:0;
+  background:radial-gradient(ellipse at 50% 100%,rgba(215,255,89,.26),transparent 62%);
+  opacity:0;transform:translateY(26%);transition:opacity .4s,transform .55s cubic-bezier(.2,.7,.3,1)}
+.edu-card:hover{background:var(--ink);color:var(--white);border-color:var(--ink);
+  transform:translateY(-6px);box-shadow:var(--shadow)}
+.edu-card:hover::after{opacity:1;transform:translateY(0)}
+.edu-card:hover p{color:rgba(255,254,249,.74)}
+.edu-card:hover .edu-card__no{color:var(--lime);transform:translateX(4px)}
+.edu-card:hover .edu-badge{background:rgba(255,254,249,.16);color:var(--white)}
+.edu-card:hover .edu-badge--live{background:var(--lime);color:var(--ink)}
+.edu-card__top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.edu-card__no{font-size:12px;font-weight:850;letter-spacing:.12em;color:#5c7500;
+  transition:color .3s,transform .32s cubic-bezier(.2,.7,.3,1)}
+.edu-badge{padding:5px 11px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;
+  background:var(--panel);color:#5f635c;transition:background-color .3s,color .3s}
+.edu-badge--live{background:var(--lime);color:var(--ink)}
+.edu-card h3{margin-top:16px;font-size:clamp(19px,2.1vw,23px);letter-spacing:-.02em;line-height:1.32}
+.edu-card p{margin-top:11px;font-size:14.5px;line-height:1.72;color:var(--muted);transition:color .34s}
 .edu-note{margin-top:28px;font-size:14px;line-height:1.7;color:var(--muted)}
 .edu-note b{color:var(--ink);font-weight:800}
 /* 채움 버튼이 아니라 텍스트 링크다 — 교육 신청이 문의를 대체하는 경로가 되면 안 된다(§6.2). */
@@ -473,7 +511,8 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   .education__head .section-copy{justify-self:start}
   .edu-meta{grid-template-columns:1fr 1fr}
 }
-@media(max-width:720px){ .edu-track{grid-template-columns:1fr} }
+@media(max-width:980px){ .edu-lineup{grid-template-columns:1fr} }
+@media(max-width:780px){ .edu-track{grid-template-columns:1fr} }
 
 /* ═══ 어드민 화면 시안 ═══════════════════════════════════════════════
    §8 이 Phase 1 에서 "인증 · 로그인 · DB 연동 · 관리자 실동작"을 제외한다.
@@ -980,6 +1019,19 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       <div><span class="eyebrow">Education</span><h2 class="section-title" id="education-title" style="margin-top:24px">만드는 사람을 먼저 기릅니다.</h2></div>
       <p class="section-copy">AI 빌더 스쿨 부트캠프를 거친 빌더가 이곳에서 작업합니다. 무엇을 배우고 무엇을 만들어 봤는지가 곧 작업의 근거입니다.</p>
     </div>
+    <!-- 트랙 3종. 사업계획서에 있던 회당 매출 목표(3~5천만 원), 개설 개수(26년 3개 → 27년 6~8개),
+         정원 수치는 옮기지 않았다 — §7.5 가 가격 소구와 검증 불가 수치를 금지한다.
+         지금 실제로 굴러가는 것은 바이브코딩 육성 하나뿐이므로 나머지는 준비 중으로 표시한다.
+         단정하지 않는 편이 안전하다. 개설 시점이 밀려도 이 화면은 틀린 말이 되지 않는다. -->
+    <div class="edu-lineup" data-stagger="90" data-reveal="down">
+      <article class="edu-card"><div class="edu-card__top"><span class="edu-card__no">TRACK 01</span><span class="edu-badge edu-badge--live">운영 중</span></div>
+        <h3>바이브코딩 육성</h3><p>비전공자를 AI 빌더로. 실무 프로젝트를 병행하며 강의가 아니라 직접 만드는 방식으로 진행합니다.</p></article>
+      <article class="edu-card"><div class="edu-card__top"><span class="edu-card__no">TRACK 02</span><span class="edu-badge">준비 중</span></div>
+        <h3>AX 컨설턴트 양성</h3><p>기업의 AI 전환을 현장에서 직접 실행하는 컨설턴트를 기릅니다. 기업 수요와 바로 이어지는 트랙입니다.</p></article>
+      <article class="edu-card"><div class="edu-card__top"><span class="edu-card__no">TRACK 03</span><span class="edu-badge">준비 중</span></div>
+        <h3>AI Native 영업</h3><p>AI로 만들고 AI로 파는 영업 방법론을 다룹니다. 파트너·영업 생태계와 함께 넓히는 트랙입니다.</p></article>
+    </div>
+    <p class="edu-note" style="margin-top:34px"><b>운영 중인 과정</b> — AI 빌더 스쿨 부트캠프</p>
     <dl class="edu-meta" data-stagger="70" data-reveal="down">
       <div><dt>대상</dt><dd>비개발자 · 입문자</dd></div>
       <div><dt>기간</dt><dd>3개월 · 2026.7.11 ~ 10.8</dd></div>
@@ -998,24 +1050,14 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 
 <section class="insight section" id="insight" aria-labelledby="insight-title">
   <div class="container">
-    <div class="insight__head reveal reveal--right"><div><span class="eyebrow">Insight</span><h2 class="section-title" id="insight-title" style="margin-top:24px">일하는 방식을 콘텐츠로 증명합니다.</h2></div><!-- role="tablist" + role="tab" + aria-selected 였다. 그런데 aria-controls 도 tabpanel 도
+    <div class="insight__head reveal reveal--right"><div><span class="eyebrow">Insight</span><h2 class="section-title" id="insight-title" style="margin-top:24px">일하는 방식을 콘텐츠로 증명합니다.</h2><p class="section-copy" style="margin-top:18px">최근 항목만 보여드립니다. <a class="edu-link" href="#/insight">전체 보기 →</a></p></div><!-- role="tablist" + role="tab" + aria-selected 였다. 그런데 aria-controls 도 tabpanel 도
      없고 화살표 키 이동도 없어 ARIA 탭 계약을 절반만 지킨 상태였다 — 스크린리더에 탭이라고
      알린 뒤 탭처럼 동작하지 않는 쪽이 아무 역할도 없는 것보다 나쁘다.
      실제 동작은 같은 목록을 걸러내는 필터이므로 work · faq 와 같은 토글 버튼 의미로 통일한다. -->
 <div class="insight-tabs" role="group" aria-label="Insight 유형 필터"><button class="active" aria-pressed="true" data-insight="article">Article</button><button aria-pressed="false" data-insight="video">YouTube</button></div></div>
     <div class="insight-list" id="insightList" data-stagger="60" data-reveal="left">
-      <!-- TODO(미확정): Insight 상세 URL. Phase 2 에서 /insight/[slug] 로 연결한다.
-           href="#" 는 의도적 공란이며, JS 가 기본 동작을 막아 최상단 점프를 방지한다.
-           data-kind="video" 는 실제 유튜브 영상이다(두 채널 RSS 최신순). 외부로 나가므로
-           새 탭에서 열고 youtube_out 을 발화한다 — §6.4 가 URL 미확정으로 보류했던 이벤트다. -->
-      <a class="insight-item" href="#/insight/insight-01" data-kind="article" data-id="insight-01"><span class="insight-thumb insight-thumb--doc" aria-hidden="true"><i></i></span><div><span class="insight-type">Working method</span><h3>바이브코딩 외주사를 고를 때 확인해야 할 네 가지</h3><p class="insight-meta">Article · 운영팀</p></div><span class="insight-arrow">↗</span></a>
-      <a class="insight-item" href="#/insight/insight-02" data-kind="article" data-id="insight-02"><span class="insight-thumb insight-thumb--doc" aria-hidden="true"><i></i></span><div><span class="insight-type">AI practice</span><h3>AI를 써도 품질이 흔들리지 않게 만드는 검수 방식</h3><p class="insight-meta">Article · Builder</p></div><span class="insight-arrow">↗</span></a>
-      <a class="insight-item" href="https://www.youtube.com/watch?v=SJfMjwkL1Vo" target="_blank" rel="noopener" data-kind="video" data-id="yt-SJfMjwkL1Vo" hidden><span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/SJfMjwkL1Vo/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span><div><span class="insight-type">YouTube</span><h3>클로드 vs GPT 뭐가 더 좋냐면요 (ft.orca IDE)</h3><p class="insight-meta">AI SEO CEO · 2026-08-06</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
-      <a class="insight-item" href="https://www.youtube.com/watch?v=gtZPILhrnl8" target="_blank" rel="noopener" data-kind="video" data-id="yt-gtZPILhrnl8" hidden><span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/gtZPILhrnl8/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span><div><span class="insight-type">YouTube</span><h3>오르카(Orca) 설치 방법부터 AI 블로그 자동화 세팅까지 한 번에</h3><p class="insight-meta">AI SEO CEO · 2026-08-06</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
-      <a class="insight-item" href="https://www.youtube.com/watch?v=tBXaP2qBL4U" target="_blank" rel="noopener" data-kind="video" data-id="yt-tBXaP2qBL4U" hidden><span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/tBXaP2qBL4U/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span><div><span class="insight-type">YouTube</span><h3>IT 기술 영업, 이렇게 하지 마세요 (ft.포트폴리오)</h3><p class="insight-meta">AI SEO CEO · 2026-08-06</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
-      <a class="insight-item" href="https://www.youtube.com/watch?v=qSGtFmMclWE" target="_blank" rel="noopener" data-kind="video" data-id="yt-qSGtFmMclWE" hidden><span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/qSGtFmMclWE/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span><div><span class="insight-type">YouTube</span><h3>무료 AI IDE Orca 초보자가 쓰기 좋은 기능들만 싹 정리</h3><p class="insight-meta">김이솝의 AI 가이드 · 2026-08-05</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
-      <a class="insight-item" href="https://www.youtube.com/watch?v=09Ll7wfu414" target="_blank" rel="noopener" data-kind="video" data-id="yt-09Ll7wfu414" hidden><span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/09Ll7wfu414/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span><div><span class="insight-type">YouTube</span><h3>슬랙으로 명령하는 에이전트 환경 세팅하기</h3><p class="insight-meta">AI SEO CEO · 2026-08-05</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
-      <a class="insight-item" href="https://www.youtube.com/watch?v=STUGsDCvwu0" target="_blank" rel="noopener" data-kind="video" data-id="yt-STUGsDCvwu0" hidden><span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/STUGsDCvwu0/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span><div><span class="insight-type">YouTube</span><h3>24시간 일하는 AI 에이전트 시스템 파이프라인 구축하기</h3><p class="insight-meta">AI SEO CEO · 2026-08-03</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
+      <!-- 비어 있는 것이 맞다. 이 안은 스크립트 상단 INSIGHT 배열이 그린다.
+           행 마크업이 여기와 배열 두 곳에 있으면 한쪽만 고쳐져 갈라진다. -->
     </div>
   </div>
 </section>
@@ -1108,6 +1150,126 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 </div>
 
 <script>
+/* ═══ Insight 콘텐츠 — 진실 공급원 ═════════════════════════════════════
+   글 하나는 이 배열의 객체 하나다. 홈 목록 · 전체 목록 · 상세 본문이 모두 여기서 나온다.
+   전에는 홈 HTML 의 <a> 행과 라우터의 INSIGHT 배열 두 곳을 같이 고쳐야 했고,
+   한쪽만 고치면 목록에는 보이는데 눌러도 열리지 않는 글이 생겼다.
+
+   글을 추가하는 법 — 이 배열 맨 앞에 객체 하나를 넣는다. 그게 전부다.
+     {id:'insight-09', kind:'article', type:'Working method', by:'운영팀',
+      date:'2026-08-12', cover:'03', title:'제목', lead:'한 줄 요약',
+      body:[['소제목','문단'], ['소제목', null, ['목록','목록']]]}
+   본문 한 덩어리는 [소제목, 문단, 목록] 이고 문단과 목록은 없으면 null 로 둔다.
+   id 는 주소가 된다(#/insight/insight-09). 한 번 정한 id 는 바꾸지 않는다 —
+   공유된 링크와 GA4 content_id 가 함께 끊긴다.
+   배열 순서가 화면 순서다. 최신 글이 위로 오도록 date 내림차순을 유지한다.
+
+   cover 는 코드로 그린 표지다(01~08). 사진이 아니고 AI 로 생성하지도 않았다 — §7.5.
+   ⚠️ insight-03 ~ 08 은 화면 확인용 더미 원고다. 공개 전에 교체하거나 검수할 것. */
+(()=>{
+  const list=document.getElementById('insightList');
+  if(!list) return;
+
+  const INSIGHT=[
+    {id:'insight-03',kind:'article',type:'Philosophy',by:'운영팀',date:'2026-08-07',cover:'01',
+     title:'"빠르게"보다 "되돌릴 수 있게"를 먼저 말하는 이유',
+     lead:'속도는 팔기 좋은 말이지만, 프로젝트를 지키는 것은 되돌릴 수 있는 구조입니다.',
+     body:[['속도만 남으면 남는 것이 없다','만드는 시간이 짧아지면 그만큼 자주 바꾸게 됩니다. 자주 바꾸는 것 자체는 문제가 아닙니다. 문제는 바꾼 것을 되돌릴 수 없을 때 생깁니다. 그 지점부터는 고치는 일이 아니라 다시 만드는 일이 됩니다.'],
+           ['되돌릴 수 있게 만든다는 것',null,['배포한 것을 이전 상태로 돌리는 방법을 미리 정해 둡니다','바꾼 결정은 언제 왜 바꿨는지와 함께 남깁니다','한 번에 하나씩 바꾸고, 바꾼 뒤에 확인합니다']],
+           ['그래서 첫 미팅에서 이 이야기를 합니다','일정과 비용보다 먼저 정할 것이 있습니다. 무엇을 이번에 만들고 무엇을 다음으로 넘길지, 그리고 잘못되면 어디까지 되돌릴 수 있는지입니다. 이 두 가지가 정해져 있으면 나머지는 대부분 조정할 수 있습니다.']]},
+
+    {id:'insight-02',kind:'article',type:'AI practice',by:'Builder',date:'2026-08-06',cover:'02',
+     title:'AI를 써도 품질이 흔들리지 않게 만드는 검수 방식',
+     lead:'속도를 얻고 기준을 잃지 않으려면 검수를 사람이 아니라 규칙에 맡겨야 합니다.',
+     body:[['속도가 만드는 함정','빠르게 만들면 검토할 것도 빠르게 늘어납니다. 검수를 사람의 집중력에 맡기면 마지막에 몰립니다.'],
+           ['규칙으로 옮기기',null,['통과 기준을 문장이 아니라 확인 항목으로 적습니다','같은 입력에는 같은 결과가 나오게 합니다','판단이 필요한 항목과 자동으로 걸러낼 항목을 분리합니다']],
+           ['모델에게 자기 결과를 평가시키지 않는다','평가를 생성한 쪽에 맡기면 통과 쪽으로 기웁니다. 검수는 생성과 다른 곳에 두어야 합니다.']]},
+
+    {id:'insight-04',kind:'article',type:'Working method',by:'운영팀',date:'2026-08-05',cover:'03',
+     title:'요구를 다 받는 것은 친절이 아닙니다',
+     lead:'범위를 넓게 잡으면 당장은 만족스럽지만, 결국 아무것도 끝나지 않습니다.',
+     body:[['다 받으면 일정이 먼저 무너진다','요구를 그대로 받아 적으면 처음에는 협조적으로 보입니다. 문제는 마감 직전에 드러납니다. 우선순위를 정하지 않은 채 쌓아 두면 무엇을 포기할지 결정할 시간이 남지 않습니다.'],
+           ['범위를 자를 때 묻는 것',null,['이 기능이 없으면 서비스가 성립하지 않는가','이번 릴리즈와 다음 릴리즈를 한 줄로 나눌 수 있는가','만드는 데 드는 시간을 지금 말할 수 있는가','나중에 붙이면 더 비싸지는 구조인가']],
+           ['자른 것은 사라지지 않고 옮겨진다','뺀 기능은 없애는 것이 아니라 다음 목록으로 옮겨 적습니다. 어디로 갔는지 기록해 두지 않으면 같은 논의를 몇 번씩 반복하게 됩니다.']]},
+
+    {id:'insight-05',kind:'article',type:'Market note',by:'운영팀',date:'2026-08-04',cover:'04',
+     title:'바이브코딩 외주가 늘었습니다 — 계약 전에 확인하세요',
+     lead:'도구가 좋아지면서 만들어주겠다는 곳도 함께 늘었습니다. 문제는 대체로 만든 다음에 드러납니다.',
+     body:[['화면은 빨리 나오는데 그다음이 없다','생성 도구를 쓰면 보여줄 화면까지는 빠르게 갑니다. 어긋나기 시작하는 지점은 대개 그 뒤입니다. 데이터가 쌓이고 사용자가 들어오고 고쳐야 할 것이 생기는 시점입니다. 이때 구조가 없으면 고치는 비용이 새로 만드는 비용을 넘어섭니다.'],
+           ['인수하고 나서 확인하면 늦는 것들',null,['소스 코드와 각종 계정의 소유가 누구에게 있는가','배포·도메인·데이터베이스에 발주처가 직접 접근할 수 있는가','작업자가 빠져도 남는 문서가 있는가','되돌릴 방법과 백업이 준비되어 있는가']],
+           ['도구를 쓰는 것 자체는 문제가 아니다','저희도 씁니다. 갈리는 지점은 도구의 유무가 아니라 범위를 자르는 판단, 공개 전 검수 기준, 그리고 인수인계까지 책임지는지입니다. 계약 전에 이 세 가지를 물어보시면 대부분 구분됩니다.']]},
+
+    {id:'insight-06',kind:'article',type:'Philosophy',by:'운영팀',date:'2026-08-01',cover:'05',
+     title:'AI가 만든 것과 사람이 정한 것을 구분해 적습니다',
+     lead:'도구를 숨기지 않습니다. 대신 어디까지가 판단이었는지를 분명히 남깁니다.',
+     body:[['도구는 자랑도 변명도 아니다','AI 를 썼다는 사실만으로 결과가 좋아지지도 나빠지지도 않습니다. 그래서 도구 이름을 성과처럼 말하지 않고, 문제가 생겼을 때 도구 탓으로 돌리지도 않습니다.'],
+           ['기록에 남기는 구분',null,['생성한 것 — 초안, 반복되는 코드, 문서의 뼈대','정한 것 — 범위, 구조, 예외 처리, 공개 여부','확인한 것 — 통과 기준과 확인한 사람']],
+           ['이 구분이 인수인계를 쉽게 만든다','넘겨받는 쪽이 가장 알고 싶은 것은 "왜 이렇게 되어 있는가"입니다. 생성물과 판단이 섞여 있으면 그 답을 찾을 수 없습니다.']]},
+
+    {id:'insight-01',kind:'article',type:'Working method',by:'운영팀',date:'2026-07-30',cover:'06',
+     title:'바이브코딩 외주사를 고를 때 확인해야 할 네 가지',
+     lead:'결과물의 화려함보다 먼저 확인해야 하는 것들을 정리했습니다.',
+     body:[['왜 결과물만 봐서는 판단이 어려운가','같은 도구를 쓰면 화면은 비슷해집니다. 차이는 요구를 잘라내는 판단, 구조를 설계하는 방식, 검수 기준에서 생깁니다.'],
+           ['확인할 네 가지',null,['이번에 만들 범위와 다음으로 넘길 범위를 나눠 설명하는가','실제 작업자가 누구인지 확인할 수 있는가','결정과 변경이 기록으로 남는가','공개 전에 무엇을 확인하는지 정해져 있는가']],
+           ['질문을 언제 하는가','계약 전에 물어야 답이 남습니다. 착수 후에 물으면 이미 정해진 것을 설명받게 됩니다.']]},
+
+    {id:'insight-07',kind:'article',type:'Class note',by:'마케팅팀',date:'2026-07-25',cover:'07',
+     title:'교육 과정에서 가장 오래 가르치는 것은 "빼는 판단"입니다',
+     lead:'기능을 만드는 법보다, 만들지 않을 것을 정하는 법을 더 오래 다룹니다.',
+     body:[['처음 기획서에는 늘 열 가지가 넘는다','입문자가 처음 가져오는 기획서에는 만들고 싶은 것이 빠짐없이 적혀 있습니다. 기획 주간의 절반은 그 목록을 줄이는 데 씁니다. 줄이지 않으면 무엇도 끝나지 않기 때문입니다.'],
+           ['수업에서 반복해서 묻는 것',null,['이 서비스가 풀려는 문제를 한 줄로 말할 수 있는가','그 문제를 푸는 데 꼭 필요한 기능은 몇 개인가','나머지는 언제 만들 것인가']],
+           ['같은 판단을 실무에서 한다','과정을 마친 빌더가 프로젝트에서 하는 일도 결국 같습니다. 범위를 정하고, 왜 그렇게 정했는지 설명하고, 정한 대로 끝내는 것입니다.']]},
+
+    {id:'insight-08',kind:'article',type:'Builder story',by:'마케팅팀',date:'2026-07-22',cover:'08',
+     title:'기록이 포트폴리오가 되는 방식',
+     lead:'무엇을 만들었는지보다 왜 그렇게 만들었는지가 남아야 합니다.',
+     body:[['결과물만 남기면 구분되지 않는다','같은 도구를 쓰면 화면은 비슷해집니다. 남는 것은 판단입니다. 왜 이 기능을 뺐는지, 왜 이 구조를 골랐는지가 적혀 있으면 비로소 그 사람의 작업이 됩니다.'],
+           ['작업하면서 남기는 것',null,['정한 범위와 그렇게 정한 이유','바꾼 결정과 바꾼 시점','확인한 항목과 통과 기준']],
+           ['소개 문장이 아니라 작업 기록으로','빌더 프로필은 자기소개로 채우지 않습니다. 남아 있는 기록이 그대로 근거가 됩니다.']]},
+
+    {id:'yt-SJfMjwkL1Vo',kind:'video',vid:'SJfMjwkL1Vo',by:'AI SEO CEO',date:'2026-08-06',
+     title:'클로드 vs GPT 뭐가 더 좋냐면요 (ft.orca IDE)'},
+    {id:'yt-gtZPILhrnl8',kind:'video',vid:'gtZPILhrnl8',by:'AI SEO CEO',date:'2026-08-06',
+     title:'오르카(Orca) 설치 방법부터 AI 블로그 자동화 세팅까지 한 번에'},
+    {id:'yt-tBXaP2qBL4U',kind:'video',vid:'tBXaP2qBL4U',by:'AI SEO CEO',date:'2026-08-06',
+     title:'IT 기술 영업, 이렇게 하지 마세요 (ft.포트폴리오)'},
+    {id:'yt-qSGtFmMclWE',kind:'video',vid:'qSGtFmMclWE',by:'김이솝의 AI 가이드',date:'2026-08-05',
+     title:'무료 AI IDE Orca 초보자가 쓰기 좋은 기능들만 싹 정리'},
+    {id:'yt-09Ll7wfu414',kind:'video',vid:'09Ll7wfu414',by:'AI SEO CEO',date:'2026-08-05',
+     title:'슬랙으로 명령하는 에이전트 환경 세팅하기'},
+    {id:'yt-STUGsDCvwu0',kind:'video',vid:'STUGsDCvwu0',by:'AI SEO CEO',date:'2026-08-03',
+     title:'24시간 일하는 AI 에이전트 시스템 파이프라인 구축하기'}
+  ];
+
+  const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  /* 목록 한 줄. 홈과 전체 목록이 같은 함수를 쓴다 — 두 벌로 두면 한쪽만 고쳐진다. */
+  const insightRow=it=>{
+    const video=it.kind==='video';
+    const href=video?'https://www.youtube.com/watch?v='+it.vid:'#/insight/'+it.id;
+    const thumb=video
+      ? '<span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/'+esc(it.vid)+
+        '/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span>'
+      : '<span class="insight-thumb insight-thumb--cover cover--'+esc(it.cover||'01')+'" aria-hidden="true"></span>';
+    return '<a class="insight-item" href="'+esc(href)+'"'+
+      (video?' target="_blank" rel="noopener"':'')+
+      ' data-kind="'+esc(it.kind)+'" data-id="'+esc(it.id)+'">'+thumb+
+      '<div><span class="insight-type">'+esc(video?'YouTube':it.type)+'</span>'+
+      '<h3>'+esc(it.title)+'</h3>'+
+      '<p class="insight-meta">'+esc(video?it.by:'Article · '+it.by)+' · '+esc(it.date)+'</p></div>'+
+      '<span class="insight-arrow" aria-hidden="true">↗</span></a>';
+  };
+
+  /* 홈은 미리보기다 — 종류별 최신 4건만 둔다. 전체는 #/insight 가 보여준다.
+     여기서 자르지 않으면 홈 한 화면이 목록 페이지와 같아져 전체 보기가 의미를 잃는다. */
+  const HOME_MAX=4;
+  const take=k=>INSIGHT.filter(x=>x.kind===k).slice(0,HOME_MAX);
+  list.innerHTML=[...take('article'),...take('video')].map(insightRow).join('');
+
+  window.__INSIGHT=INSIGHT;
+  window.__insightRow=insightRow;
+})();
+
 (()=>{
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const header = document.getElementById('header');
@@ -1604,19 +1766,11 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
             ['이번 릴리즈와 다음 단계로 넘길 범위를 먼저 나눕니다','결정과 변경을 기록으로 남깁니다','운영 가능성과 인수인계 문서를 함께 확인합니다']]]}
   ];
 
-  const INSIGHT=[
-    {id:'insight-01',kind:'Article',by:'운영팀',title:'바이브코딩 외주사를 고를 때 확인해야 할 네 가지',
-     lead:'결과물의 화려함보다 먼저 확인해야 하는 것들을 정리했습니다.',
-     body:[['왜 결과물만 봐서는 판단이 어려운가','같은 도구를 쓰면 화면은 비슷해집니다. 차이는 요구를 잘라내는 판단, 구조를 설계하는 방식, 검수 기준에서 생깁니다.'],
-           ['확인할 네 가지',null,['이번에 만들 범위와 다음으로 넘길 범위를 나눠 설명하는가','실제 작업자가 누구인지 확인할 수 있는가','결정과 변경이 기록으로 남는가','공개 전에 무엇을 확인하는지 정해져 있는가']],
-           ['질문을 언제 하는가','계약 전에 물어야 답이 남습니다. 착수 후에 물으면 이미 정해진 것을 설명받게 됩니다.']]},
-    {id:'insight-02',kind:'Article',by:'Builder',title:'AI를 써도 품질이 흔들리지 않게 만드는 검수 방식',
-     lead:'속도를 얻고 기준을 잃지 않으려면 검수를 사람이 아니라 규칙에 맡겨야 합니다.',
-     body:[['속도가 만드는 함정','빠르게 만들면 검토할 것도 빠르게 늘어납니다. 검수를 사람의 집중력에 맡기면 마지막에 몰립니다.'],
-           ['규칙으로 옮기기',null,['통과 기준을 문장이 아니라 확인 항목으로 적습니다','같은 입력에는 같은 결과가 나오게 합니다','판단이 필요한 항목과 자동으로 걸러낼 항목을 분리합니다']],
-           ['모델에게 자기 결과를 평가시키지 않는다','평가를 생성한 쪽에 맡기면 통과 쪽으로 기웁니다. 검수는 생성과 다른 곳에 두어야 합니다.']]}
-  ];
-
+  /* 콘텐츠는 스크립트 상단 INSIGHT 배열 하나뿐이다. 여기서는 읽기만 한다.
+     상세 페이지는 아티클만 연다 — 영상은 유튜브로 나가므로 상세가 없다. */
+  const INSIGHT=window.__INSIGHT||[];
+  const ARTICLES=INSIGHT.filter(x=>x.kind==='article');
+  const insightRow=window.__insightRow||(()=>'');
   const wrap=inner=>'<article class="detail"><div class="container">'+inner+'</div></article>';
   const ctaBlock='<div class="detail__cta"><p>이 방식으로 만들 것이 있으신가요?</p>'+
     '<a class="btn-primary" href="#" data-track="detail_contact">프로젝트 문의하기 <span aria-hidden="true">↗</span></a></div>';
@@ -1642,15 +1796,17 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     '<div class="detail__body">'+sections(item.body)+'</div>'+
     navBlock(WORK,i,'work','Work')+ctaBlock);};
 
-  const renderInsight=item=>{const i=INSIGHT.indexOf(item);return wrap(
-    '<a class="detail__back" href="#/">← Insight 목록</a>'+
-    '<span class="eyebrow">'+esc(item.kind)+'</span>'+
+  const renderInsight=item=>{const i=ARTICLES.indexOf(item);return wrap(
+    '<a class="detail__back" href="#/insight">← Insight 목록</a>'+
+    '<span class="eyebrow">'+esc(item.type)+'</span>'+
     '<h1 class="detail__title" id="detailTitle" tabindex="-1">'+esc(item.title)+'</h1>'+
     '<p class="detail__lead">'+esc(item.lead)+'</p>'+
-    '<dl class="detail__meta"><div><dt>유형</dt><dd>'+esc(item.kind)+'</dd></div>'+
-    '<div><dt>작성</dt><dd>'+esc(item.by)+'</dd></div></dl>'+
+    '<div class="detail__cover cover--'+esc(item.cover||'01')+'" aria-hidden="true"></div>'+
+    '<dl class="detail__meta"><div><dt>유형</dt><dd>'+esc(item.type)+'</dd></div>'+
+    '<div><dt>작성</dt><dd>'+esc(item.by)+'</dd></div>'+
+    '<div><dt>발행</dt><dd>'+esc(item.date)+'</dd></div></dl>'+
     '<div class="detail__body">'+sections(item.body)+'</div>'+
-    navBlock(INSIGHT,i,'insight','Insight')+ctaBlock);};
+    navBlock(ARTICLES,i,'insight','Insight')+ctaBlock);};
 
   /* 커리큘럼은 실제 과정 안내에서 옮긴 것이다. 가격·"외주 수주 보장"·누적 매출·평점 같은
      항목은 §7.5(가격 소구·검증 불가 수치 금지)에 걸려 가져오지 않았다. */
@@ -1678,6 +1834,10 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       '<div><dt>운영</dt><dd>AI 빌더 스쿨</dd></div>'+
     '</dl>'+
     '<div class="detail__body">'+
+      '<section><h2>교육 라인업</h2><p>세 갈래로 나눠 운영할 계획입니다. 지금 진행 중인 과정은 바이브코딩 육성이고, 나머지 두 트랙은 준비 중입니다. 아래 커리큘럼은 진행 중인 과정의 내용입니다.</p>'+
+      '<ul><li>바이브코딩 육성 (운영 중) — 비전공자를 AI 빌더로. 실무 프로젝트를 병행하며 직접 만드는 방식으로 진행합니다.</li>'+
+      '<li>AX 컨설턴트 양성 (준비 중) — 기업의 AI 전환을 현장에서 실행하는 컨설턴트를 기릅니다.</li>'+
+      '<li>AI Native 영업 (준비 중) — AI로 만들고 AI로 파는 영업 방법론을 다룹니다.</li></ul></section>'+
       '<section><h2>진행 방식</h2><p>주말(토) 4시간 대면 실습과 평일 주 3일 6시간 비대면 이론으로 진행합니다. 실전 과정에서는 매주 토요일 피드백 세션으로 결과물을 점검합니다.</p></section>'+
       EDU.map(e=>'<section><h2>'+esc(e.w)+' · '+esc(e.t)+'</h2>'+
         '<p>'+esc(e.d)+'</p><ul>'+e.items.map(i=>'<li>'+esc(i)+'</li>').join('')+'</ul>'+
@@ -1699,8 +1859,14 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       {t:'CANAPE',w:'Builder C',s:'draft',d:'2026-08-06'}
     ],
     insight:[
+      {t:'"빠르게"보다 "되돌릴 수 있게"를 먼저 말하는 이유',w:'운영팀',s:'review',d:'2026-08-07'},
+      {t:'AI를 써도 품질이 흔들리지 않게 만드는 검수 방식',w:'Builder A',s:'live',d:'2026-08-06'},
+      {t:'요구를 다 받는 것은 친절이 아닙니다',w:'운영팀',s:'live',d:'2026-08-05'},
+      {t:'바이브코딩 외주가 늘었습니다 — 계약 전에 확인하세요',w:'운영팀',s:'live',d:'2026-08-04'},
+      {t:'AI가 만든 것과 사람이 정한 것을 구분해 적습니다',w:'운영팀',s:'live',d:'2026-08-01'},
       {t:'바이브코딩 외주사를 고를 때 확인해야 할 네 가지',w:'운영팀',s:'live',d:'2026-07-30'},
-      {t:'AI를 써도 품질이 흔들리지 않게 만드는 검수 방식',w:'Builder A',s:'review',d:'2026-08-06'},
+      {t:'교육 과정에서 가장 오래 가르치는 것은 "빼는 판단"입니다',w:'마케팅팀',s:'live',d:'2026-07-25'},
+      {t:'기록이 포트폴리오가 되는 방식',w:'마케팅팀',s:'live',d:'2026-07-22'},
       {t:'요구를 잘라내는 판단은 어디서 오는가',w:'Builder C',s:'draft',d:'2026-08-07'}
     ],
     builder:[
@@ -1827,16 +1993,17 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       filters,grid);
   };
 
+  /* 홈 DOM 을 복제하지 않고 배열에서 직접 그린다. 홈은 종류별 4건만 두므로
+     복제했다면 전체 목록에도 4건만 나왔을 것이다. */
   const renderInsightList=()=>{
-    const rows=[...home.querySelectorAll('.insight-item')];
     const kinds=[['all','전체'],['article','Article'],['video','YouTube']];
     const filters=kinds.map(([k,l])=>{
-      const n=k==='all'?rows.length:rows.filter(r=>r.dataset.kind===k).length;
+      const n=k==='all'?INSIGHT.length:INSIGHT.filter(x=>x.kind===k).length;
       return '<button data-il="'+k+'" aria-pressed="'+(insightListFilter===k)+'">'+l+' <span style="opacity:.6">'+String(n).padStart(2,'0')+'</span></button>';
     }).join('');
-    const shown=rows.filter(r=>insightListFilter==='all'||r.dataset.kind===insightListFilter);
+    const shown=INSIGHT.filter(x=>insightListFilter==='all'||x.kind===insightListFilter);
     const list='<div class="insight-list" style="margin-top:26px;border-top:1px solid var(--ink)">'+
-      shown.map(cloneClean).join('')+'</div>';
+      shown.map(insightRow).join('')+'</div>';
     return listShell('Insight','일하는 방식을 콘텐츠로',
       '글과 영상을 한곳에 모았습니다. 영상은 유튜브에서 열립니다.',
       filters,list);
@@ -1889,7 +2056,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     const m=h.match(/^#\/(work|insight)\/([\w-]+)$/);
     let handled=false;
     if(m){
-      const list=m[1]==='work'?WORK:INSIGHT;
+      const list=m[1]==='work'?WORK:ARTICLES;
       const item=list.find(x=>x.id===m[2]);
       if(item){
         if(window.__setRef) window.__setRef(item.id);   // 주소로 바로 들어와도 ref_content 가 실린다
