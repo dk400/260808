@@ -47,6 +47,10 @@
      ⚠️ 둘 다 설치하면 이중 집계되니 하나만 붙일 것.
      ═══════════════════════════════════════════════════════════════ -->
 
+<!-- 등장 효과를 켜는 스위치. 이 한 줄이 돌아야만 .reveal 이 숨겨진다.
+     head 에 두는 이유: body 끝에서 달면 이미 그려진 콘텐츠가 한 번 깜빡였다 사라진다. -->
+<script>document.documentElement.classList.add('js-reveal')</script>
+
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <style>
@@ -212,10 +216,7 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .work-card:hover{transform:translateY(-7px);box-shadow:var(--shadow)}
 .work-card[hidden]{display:none}
 .work-visual{aspect-ratio:16/11;padding:20px;position:relative;overflow:hidden}
-.work-visual--1{background:#cdd9ff}
-.work-visual--2{background:#f9c3a0}
-.work-visual--3{background:#d7ff59}
-.work-visual--4{background:#c7e5d5}
+.work-visual--1,.work-visual--2,.work-visual--3,.work-visual--4{background:var(--lime)}
 .mock-window{height:100%;border-radius:14px;background:rgba(255,255,255,.84);border:1px solid rgba(17,19,17,.13);padding:13px;box-shadow:0 18px 30px rgba(17,19,17,.13);transform:rotate(-2deg) translateY(8px);transition:transform .4s}
 .work-card:hover .mock-window{transform:rotate(0) translateY(0)}
 .mock-bar{height:26px;border-bottom:1px solid rgba(17,19,17,.1);display:flex;align-items:center;gap:5px}
@@ -245,17 +246,28 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .status-current strong{font-size:22px;line-height:1.2;letter-spacing:-.015em}
 .status-current span{font-size:13px;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums}
 .status-line{height:10px;background:rgba(17,19,17,.1);border-radius:99px;margin-top:16px;position:relative}
-.status-line i{display:block;height:100%;width:25%;background:var(--ink);border-radius:inherit;position:relative;transition:width .42s cubic-bezier(.2,.8,.2,1)}
-.status-line i::after{content:'';position:absolute;right:-5px;top:50%;width:10px;height:10px;border:3px solid var(--lime);border-radius:50%;background:var(--ink);box-shadow:0 0 0 4px rgba(17,19,17,.1);transform:translateY(-50%)}
-.status-milestones{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:15px}
-.status-milestones span{position:relative;padding-top:12px;font-size:10px;font-weight:750;color:var(--muted);text-align:center;transition:color .25s}
+.status-line i{display:block;height:100%;width:0;background:var(--ink);border-radius:inherit;position:relative;transition:width .42s cubic-bezier(.2,.8,.2,1)}
+.status-line i::after{content:'';position:absolute;right:0;top:50%;width:10px;height:10px;border:3px solid var(--lime);border-radius:50%;background:var(--ink);box-shadow:0 0 0 4px rgba(17,19,17,.1);transform:translate(50%,-50%)}
+.status-milestones{position:relative;height:34px;margin-top:15px}
+.status-milestones span{position:absolute;top:0;left:var(--point);padding-top:12px;font-size:10px;font-weight:750;color:var(--muted);text-align:center;white-space:nowrap;transform:translateX(-50%);transition:color .25s,font-weight .25s}
+.status-milestones span:first-child{transform:none;text-align:left}
+.status-milestones span:last-child{transform:translateX(-100%);text-align:right}
 .status-milestones span::before{content:'';position:absolute;top:0;left:50%;width:5px;height:5px;border-radius:50%;background:rgba(17,19,17,.2);transform:translateX(-50%);transition:background .25s,transform .25s}
+.status-milestones span:first-child::before{left:0;transform:none}
+.status-milestones span:last-child::before{left:100%;transform:translateX(-100%)}
 .status-milestones span.done,.status-milestones span.current{color:var(--ink)}
 .status-milestones span.done::before,.status-milestones span.current::before{background:var(--ink)}
 .status-milestones span.current::before{transform:translateX(-50%) scale(1.6)}
+.status-milestones span.current{font-weight:900}
+.status-milestones span.current:first-child::before{transform:scale(1.6)}
+.status-milestones span.current:last-child::before{transform:translateX(-100%) scale(1.6)}
 .how-list{display:grid;gap:0;border-top:1px solid rgba(17,19,17,.18)}
-.how-step{padding:42px 0;border-bottom:1px solid rgba(17,19,17,.18);display:grid;grid-template-columns:72px 1fr;gap:24px;opacity:.42;transition:opacity .3s,transform .3s}
+.how-step{padding:42px 0;border-bottom:1px solid rgba(17,19,17,.18);display:grid;grid-template-columns:72px 1fr;gap:24px;opacity:.42;position:relative;transition:opacity .3s,transform .3s}
+.how-step::before{content:'';position:absolute;z-index:0;inset:8px -18px;border:1px solid transparent;border-radius:20px;background:transparent;box-shadow:0 0 0 rgba(17,19,17,0);transition:background .3s,border-color .3s,box-shadow .3s}
+.how-step>*{position:relative;z-index:1}
 .how-step.active{opacity:1;transform:translateX(8px)}
+.how-step.active::before{border-color:rgba(17,19,17,.12);background:var(--lime);box-shadow:0 14px 30px rgba(17,19,17,.08)}
+.how-step.active .how-step__no,.how-step.active h3{font-weight:900}
 .how-step__no{font-size:12px;font-weight:850;letter-spacing:.12em}
 .how-step h3{font-size:clamp(28px,3vw,42px);line-height:1.25;letter-spacing:-.015em}
 .how-step p{margin-top:13px;color:#5b5e58;font-size:15px;line-height:1.7;max-width:42ch}
@@ -411,9 +423,51 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
    앞서 어차피 13.5px 로 렌더되므로, 여기 숫자를 적으면 코드와 실제가 어긋난다. */
 .chat__micro{margin-top:12px;line-height:1.65;color:var(--muted)}
 
-/* Reveal helpers */
-.reveal{opacity:0;transform:translateY(26px);transition:opacity .72s,transform .72s cubic-bezier(.2,.8,.2,1)}
-.reveal.in{opacity:1;transform:none}
+/* ═══ 등장 — 방향·시차를 갈라준다 ═══════════════════════════════════
+   이전에는 8곳 전부 translateY(26px) 하나였다. 일방향 페이드업만 반복하면
+   §4.1 이 규정한 "모든 섹션이 같은 방식으로 등장하면 그것이 딸깍 신호"에 정확히 걸린다.
+   방향을 나누는 것은 그 기준을 어기는 게 아니라 더 잘 지키는 쪽이다.
+
+   #builders 에는 여전히 아무것도 붙이지 않는다 — 다양성에는 "움직이지 않는 구간"도 포함된다.
+   전부 움직이면 정적 구간이 만드는 대비가 사라진다. */
+   🔴 숨기는 것은 .js-reveal 이 붙었을 때뿐이다. 이 클래스는 <head> 인라인 스크립트가 단다.
+   스크립트가 막히거나 죽으면 아무것도 숨겨지지 않아 콘텐츠가 그냥 보인다.
+   등장 효과를 잃는 것과 페이지가 백지가 되는 것은 손실의 크기가 다르다. */
+.js-reveal .reveal{opacity:0;transform:translateY(26px);
+  transition:opacity .72s cubic-bezier(.2,.8,.2,1),transform .72s cubic-bezier(.2,.8,.2,1);
+  transition-delay:var(--d,0s)}
+.js-reveal .reveal--left {transform:translateX(-40px)}
+.js-reveal .reveal--right{transform:translateX(40px)}
+.js-reveal .reveal--down {transform:translateY(-22px)}
+.js-reveal .reveal--zoom {transform:scale(.94)}
+.js-reveal .reveal--tilt {transform:translateY(28px) rotate(-1.4deg)}
+.js-reveal .reveal.in{opacity:1;transform:none}
+
+/* ═══ 마우스오버 — 반응이 없던 구간에 붙인다 ═══════════════════════
+   등장 애니메이션은 한 번 보고 끝이지만 hover 는 미팅에서 직접 눌러보는 부분이다.
+   기존에 hover 가 있던 13곳(카드 부상 · 화살표 이동 · 버튼 등)은 그대로 두고,
+   반응이 아예 없던 곳만 채운다. #builders 는 여기서도 제외한다 — 판별 기준이다. */
+.proof-item__icon{transition:transform .3s cubic-bezier(.2,.8,.2,1),border-radius .3s}
+.proof-item:hover .proof-item__icon{transform:translateY(-4px) rotate(-6deg);border-radius:18px}
+.proof-item h3{transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.proof-item:hover h3{transform:translateX(4px)}
+
+.how-step{cursor:default}
+.how-step:not(.active):hover{opacity:.66}          /* 스크롤이 만든 active 와 다투지 않게 약하게만 */
+.how-step__no{transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+.how-step:hover .how-step__no{transform:translateX(3px)}
+
+.footer-nav a{position:relative}
+.footer-nav a::after{content:'';position:absolute;left:0;right:100%;bottom:-3px;height:1.5px;
+  background:currentColor;transition:right .28s cubic-bezier(.2,.8,.2,1)}
+.footer-nav a:hover::after{right:0}
+
+.tag{transition:border-color .22s,transform .22s}
+.work-card:hover .tag{border-color:rgba(17,19,17,.32)}
+.tag:hover{transform:translateY(-2px)}
+
+.faq-q{transition:padding-left .25s cubic-bezier(.2,.8,.2,1)}
+.faq-item:not(.open) .faq-q:hover{padding-left:8px}
 
 @media(max-width:1050px){
   .hero__grid{grid-template-columns:1fr;gap:30px}
@@ -478,6 +532,8 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   .work__head,.insight__head{display:grid;align-items:start}
   .work-grid{grid-template-columns:1fr}
   .how-step{grid-template-columns:52px 1fr;padding:34px 0}
+  .how-step::before{inset:8px 0}
+  .how-step.active{transform:none}
   .builder-grid{grid-template-columns:1fr}
   .builder-card:last-child{grid-column:auto}
   .insight-tabs{justify-self:start}
@@ -595,7 +651,9 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 <main id="top">
 <section class="hero">
   <div class="container hero__grid">
-    <div class="hero__copy reveal">
+    <!-- 자식들을 90ms 간격으로 순차 등장시킨다. PRD §4 가 요구했지만 미구현으로 남아 있던
+         "스태거 등장"이다. 부모 한 덩어리로 뜨면 문구·CTA 가 동시에 들어와 밋밋하다. -->
+    <div class="hero__copy" data-stagger="90">
       <span class="eyebrow">AI-native development partner</span>
       <h1 class="hero__title">누가,<br><span class="stroke">어떻게</span><br>만드는지.</h1>
       <p class="hero__lead">AI로 빠르게 만드는 것보다 중요한 건, 어떤 사람이 어떤 기준으로 끝까지 책임지는지입니다. 작업 방식과 실제 작업자의 근거를 함께 보여드립니다.</p>
@@ -606,7 +664,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       <p class="hero__note">본 화면은 제출용 콘셉트 시안입니다. 빌더·프로젝트는 실데이터 확정 후 반영합니다. 문의는 pluuug 폼으로 연결됩니다.</p>
     </div>
 
-    <div class="hero-stage" aria-label="AI Builder Origin 콘셉트 화면">
+    <div class="hero-stage reveal reveal--right" style="--d:.18s" aria-label="AI Builder Origin 콘셉트 화면">
       <article class="stage-card stage-card--main">
         <div class="stage-top"><b>BUILD EVIDENCE 01</b><span>AI BUILDER ORIGIN</span></div>
         <div class="stage-screen">
@@ -639,26 +697,26 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 
 <section class="problem section" aria-labelledby="problem-title">
   <div class="container problem__layout">
-    <div class="problem__aside reveal">
+    <div class="problem__aside reveal reveal--left">
       <span class="eyebrow">Why different</span>
       <h2 id="problem-title">AI로 만든다는 말만으로는 부족합니다.</h2>
       <p>포트폴리오의 개수보다, 실제 작업자와 과정이 확인되는지가 발주 판단의 근거가 되어야 합니다.</p>
     </div>
     <div class="problem__steps">
-      <article class="problem-card reveal"><span class="problem-card__no">01 / Problem</span><span class="problem-card__graphic"></span><div><h3>빠른 결과물은 많아졌습니다.</h3><p>같은 도구를 써도 결과는 다릅니다. 요구를 잘라내는 판단, 구조를 설계하는 방식, 검수 기준에서 차이가 생깁니다.</p></div></article>
-      <article class="problem-card reveal"><span class="problem-card__no">02 / Question</span><span class="problem-card__graphic"></span><div><h3>그런데 누가 만들었는지는 보이지 않습니다.</h3><p>화려한 목업과 기술 스택만으로는 실제 수행 경험과 책임 범위를 판단하기 어렵습니다.</p></div></article>
-      <article class="problem-card reveal"><span class="problem-card__no">03 / Origin</span><span class="problem-card__graphic"></span><div><h3>우리는 사람과 방식을 함께 공개합니다.</h3><p>참여한 Work, 작성한 Insight, 작업 과정의 기록을 연결해 고객이 직접 판단할 수 있게 합니다.</p></div></article>
+      <article class="problem-card reveal reveal--right"><span class="problem-card__no">01 / Problem</span><span class="problem-card__graphic"></span><div><h3>빠른 결과물은 많아졌습니다.</h3><p>같은 도구를 써도 결과는 다릅니다. 요구를 잘라내는 판단, 구조를 설계하는 방식, 검수 기준에서 차이가 생깁니다.</p></div></article>
+      <article class="problem-card reveal reveal--left"><span class="problem-card__no">02 / Question</span><span class="problem-card__graphic"></span><div><h3>그런데 누가 만들었는지는 보이지 않습니다.</h3><p>화려한 목업과 기술 스택만으로는 실제 수행 경험과 책임 범위를 판단하기 어렵습니다.</p></div></article>
+      <article class="problem-card reveal reveal--zoom"><span class="problem-card__no">03 / Origin</span><span class="problem-card__graphic"></span><div><h3>우리는 사람과 방식을 함께 공개합니다.</h3><p>참여한 Work, 작성한 Insight, 작업 과정의 기록을 연결해 고객이 직접 판단할 수 있게 합니다.</p></div></article>
     </div>
   </div>
 </section>
 
 <section class="proof section" aria-labelledby="proof-title">
   <div class="container">
-    <div class="proof__head reveal">
+    <div class="proof__head reveal reveal--left">
       <div><span class="eyebrow">What we prove</span><h2 class="section-title" id="proof-title" style="margin-top:24px">회사의 약속을 넘어, 작업의 근거까지.</h2></div>
       <p class="section-copy">고객이 직접 확인할 수 있는 네 가지 근거를 먼저 설계했습니다.</p>
     </div>
-    <div class="proof-grid">
+    <div class="proof-grid" data-stagger="80" data-reveal="down">
       <article class="proof-item"><div class="proof-item__icon">01</div><div class="proof-item__label">Scope</div><h3>무엇을 만들지 먼저 나눕니다</h3><p>지금 필요한 범위와 다음 단계로 넘길 범위를 분리해 일정과 비용의 불확실성을 줄입니다.</p></article>
       <article class="proof-item"><div class="proof-item__icon">02</div><div class="proof-item__label">Builder</div><h3>실제 작업자를 연결합니다</h3><p>프로젝트 참여 이력과 작성 콘텐츠를 빌더 프로필에 연결하는 구조를 제안합니다.</p></article>
       <article class="proof-item"><div class="proof-item__icon">03</div><div class="proof-item__label">Process</div><h3>판단과 변경을 기록합니다</h3><p>결정 이유와 작업 범위를 남겨 인수인계와 이후 확장이 가능하도록 합니다.</p></article>
@@ -669,7 +727,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 
 <section class="work section" id="work" aria-labelledby="work-title">
   <div class="container">
-    <div class="work__head reveal">
+    <div class="work__head reveal reveal--left">
       <!-- 이전 카피는 "실제로 만든 것만 보여줍니다." 였다. 카드가 전부 Concept preview 라
            같은 화면 안에서 스스로를 반증했다(PRD §7.6 자기모순 리스크).
            Work 표기 방식이 §12 🟡 미확정이라 표기를 정하는 대신, 완료된 실적을 주장하지 않는
@@ -688,7 +746,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
         <button data-filter="automation">AI Automation</button>
         <button data-filter="admin">Admin · Ops</button>
       </aside>
-      <div class="work-grid" id="workGrid">
+      <div class="work-grid" id="workGrid" data-stagger="90" data-reveal="zoom">
         <article class="work-card" data-category="web" data-id="work-01">
           <div class="work-visual work-visual--1"><div class="mock-window"><div class="mock-bar"><i class="mock-dot"></i><i class="mock-dot"></i><i class="mock-dot"></i></div><div class="mock-layout"><div class="mock-block"></div><div class="mock-stack"><div class="mock-block"></div><div class="mock-block"></div></div></div></div></div>
           <div class="work-card__body"><div class="work-card__meta"><span>Concept preview</span><span>Web app</span></div><h3>운영 흐름을 줄이는 예약 관리 도구</h3><p>수기 예약·정산 과정을 하나의 화면으로 묶는 프로젝트 콘셉트입니다.</p><div class="work-card__foot"><span class="tag">기획</span><span class="tag">UI·UX</span><span class="tag">Web</span></div></div>
@@ -712,7 +770,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 
 <section class="how section" aria-labelledby="how-title">
   <div class="container how__layout">
-    <div class="how__intro reveal">
+    <div class="how__intro reveal reveal--left">
       <span class="eyebrow">How we work</span>
       <h2 class="section-title" id="how-title" style="margin-top:24px">빠르지만 순서를<br>건너뛰지 않습니다.</h2>
       <p class="section-copy">각 단계에서 무엇을 확인하고, 무엇을 전달받는지 미리 정해두고 시작합니다.</p>
@@ -720,7 +778,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
         <div class="status-top"><span>BUILD PROGRESS</span><span class="status-count"><b id="statusCurrent">01</b><span>/ 04</span></span></div>
         <div class="status-current"><strong id="statusLabel">진단</strong><span id="statusPercent">25%</span></div>
         <div class="status-line" id="statusProgress" role="progressbar" aria-label="제작 진행 단계" aria-valuemin="1" aria-valuemax="4" aria-valuenow="1" aria-valuetext="진단"><i id="statusBar"></i></div>
-        <div class="status-milestones" id="statusMilestones" aria-hidden="true"><span class="current">진단</span><span>범위</span><span>제작</span><span>이관</span></div>
+        <div class="status-milestones" id="statusMilestones" aria-hidden="true"><span class="current" style="--point:0%">진단</span><span style="--point:33.333%">범위</span><span style="--point:66.667%">제작</span><span style="--point:100%">이관</span></div>
       </div>
     </div>
     <div class="how-list" id="howList">
@@ -747,12 +805,12 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 
 <section class="insight section" id="insight" aria-labelledby="insight-title">
   <div class="container">
-    <div class="insight__head reveal"><div><span class="eyebrow">Insight</span><h2 class="section-title" id="insight-title" style="margin-top:24px">일하는 방식을 콘텐츠로 증명합니다.</h2></div><!-- role="tablist" + role="tab" + aria-selected 였다. 그런데 aria-controls 도 tabpanel 도
+    <div class="insight__head reveal reveal--right"><div><span class="eyebrow">Insight</span><h2 class="section-title" id="insight-title" style="margin-top:24px">일하는 방식을 콘텐츠로 증명합니다.</h2></div><!-- role="tablist" + role="tab" + aria-selected 였다. 그런데 aria-controls 도 tabpanel 도
      없고 화살표 키 이동도 없어 ARIA 탭 계약을 절반만 지킨 상태였다 — 스크린리더에 탭이라고
      알린 뒤 탭처럼 동작하지 않는 쪽이 아무 역할도 없는 것보다 나쁘다.
      실제 동작은 같은 목록을 걸러내는 필터이므로 work · faq 와 같은 토글 버튼 의미로 통일한다. -->
 <div class="insight-tabs" role="group" aria-label="Insight 유형 필터"><button class="active" aria-pressed="true" data-insight="article">Article</button><button aria-pressed="false" data-insight="video">Video</button></div></div>
-    <div class="insight-list" id="insightList">
+    <div class="insight-list" id="insightList" data-stagger="60" data-reveal="left">
       <!-- TODO(미확정): Insight 상세 URL. Phase 2 에서 /insight/[slug] 로 연결한다.
            href="#" 는 의도적 공란이며, JS 가 기본 동작을 막아 최상단 점프를 방지한다.
            data-kind="video" 항목은 유튜브 URL 확정 시 youtube_out 이벤트를 함께 연결한다. PRD §6.4 -->
@@ -771,7 +829,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       <aside class="faq-tabs" aria-label="FAQ 카테고리">
         <button class="active" data-faq="project">프로젝트</button><button data-faq="builder">빌더</button><button data-faq="process">진행 방식</button>
       </aside>
-      <div class="faq-list" id="faqList">
+      <div class="faq-list" id="faqList" data-stagger="55" data-reveal="left">
         <article class="faq-item" data-faq-kind="project" data-id="faq-01"><button class="faq-q" aria-expanded="false">어떤 규모의 프로젝트를 의뢰할 수 있나요?</button><div class="faq-a"><div><p>현재 범위와 목표를 먼저 확인한 뒤, AI 빌더가 수행하기 적합한 범위와 개발자 협업이 필요한 범위를 구분해 안내하는 구조를 제안합니다.</p></div></div></article>
         <article class="faq-item" data-faq-kind="project" data-id="faq-02"><button class="faq-q" aria-expanded="false">문의 후에는 어떤 방식으로 상담하나요?</button><div class="faq-a"><div><p>문의는 pluuug 폼으로 접수하고, 이후 영업 담당자가 직접 연락해 범위와 일정을 확인하는 흐름입니다.</p></div></div></article>
         <article class="faq-item" data-faq-kind="builder" data-id="faq-03" hidden><button class="faq-q" aria-expanded="false">빌더의 작업 이력을 확인할 수 있나요?</button><div class="faq-a"><div><p>Work의 참여 프로젝트와 Insight의 작성 콘텐츠를 빌더 프로필에 연결하는 방향이 제안돼 있습니다. 실제 공개 범위는 운영 정책 확정 후 반영합니다.</p></div></div></article>
@@ -993,10 +1051,42 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     if(inside) chatBtn.focus();
   });
 
-  if(!reduce){
-    const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.14});
-    document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-  }else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+  /* ═══ 등장 스캐너 — 재실행 가능하게 둔다 ═══
+     [data-stagger] 그룹의 자식에 방향(data-reveal)과 시차(--d)를 부여한 뒤 관찰한다.
+     한꺼번에 뜨면 방향을 갈라도 "한 번에 들어온다"는 인상이 남는다.
+     함수로 빼둔 이유: 서브페이지가 생기면 라우터가 새 화면을 그린 뒤 그대로 다시 부른다. */
+  const prepStagger=root=>{
+    root.querySelectorAll('[data-stagger]').forEach(g=>{
+      const step=parseFloat(g.dataset.stagger)||70;
+      const dir=g.dataset.reveal?'reveal--'+g.dataset.reveal:'';
+      [...g.children].forEach((c,i)=>{
+        if(c.classList.contains('reveal')) return;   // 두 번 부여하지 않는다
+        c.classList.add('reveal');
+        if(dir) c.classList.add(dir);
+        c.style.setProperty('--d',(i*step)+'ms');
+      });
+    });
+  };
+  let revealIO=null, ioFired=false;
+  const revealAll=()=>document.querySelectorAll('.reveal:not(.in)').forEach(el=>el.classList.add('in'));
+  const scanReveals=(root=document)=>{
+    prepStagger(root);
+    const els=[...root.querySelectorAll('.reveal:not(.in)')];
+    /* IntersectionObserver 가 없거나(구형) reduced-motion 이면 그냥 다 보여준다. */
+    if(reduce||!('IntersectionObserver' in window)){ els.forEach(el=>el.classList.add('in')); return; }
+    revealIO=revealIO||new IntersectionObserver(es=>es.forEach(e=>{
+      ioFired=true;
+      if(e.isIntersecting){ e.target.classList.add('in'); revealIO.unobserve(e.target) }
+    }),{threshold:.14});
+    els.forEach(el=>revealIO.observe(el));
+  };
+  scanReveals();
+
+  /* 안전장치 — 관찰자가 한 번도 발화하지 않으면 전부 드러낸다.
+     백그라운드 탭처럼 렌더링이 멈춘 환경에서는 IO 콜백이 오지 않아 페이지가 백지로 남는다.
+     한 번이라도 발화했으면 정상 동작 중이므로 건드리지 않는다(스크롤 등장을 죽이지 않는다). */
+  setTimeout(()=>{ if(!ioFired) revealAll() },2500);
+  window.__scanReveals=scanReveals;   // 라우터 진입점
 
   // Work filtering + URL state
   const workBtns=[...document.querySelectorAll('[data-filter]')];
@@ -1039,8 +1129,9 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 
   const renderHowStep=idx=>{
     const percent=Math.round((idx+1)/howSteps.length*100);
+    const position=howSteps.length>1?idx/(howSteps.length-1)*100:100;
     howSteps.forEach((step,i)=>step.classList.toggle('active',i===idx));
-    statusBar.style.width=percent+'%';
+    statusBar.style.width=position+'%';
     statusCurrent.textContent=String(idx+1).padStart(2,'0');
     statusLabel.textContent=howLabels[idx];
     statusPercent.textContent=percent+'%';
