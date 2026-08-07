@@ -127,7 +127,7 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .hero__grid{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(420px,.97fr);gap:clamp(42px,6vw,92px);align-items:center;padding-block:clamp(78px,10vw,132px)}
 .hero__copy{position:relative;z-index:2}
 .hero__title{margin-top:24px;font-size:clamp(54px,8.2vw,116px);line-height:1.12;letter-spacing:-.025em;font-weight:900;max-inline-size:10ch}
-.hero__title .stroke{-webkit-text-stroke:1.5px var(--ink);color:transparent}
+.hero__title .stroke{-webkit-text-stroke:0;color:var(--lime-2)}
 .hero__lead{margin-top:30px;font-size:clamp(17px,1.75vw,21px);color:#4f524d;line-height:1.7;max-width:44ch}
 .hero__actions{display:flex;align-items:center;gap:18px;margin-top:38px;flex-wrap:wrap}
 .btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--ink);color:var(--white);padding:16px 24px;border-radius:999px;font-size:15px;font-weight:800;min-height:54px;transition:transform .22s,background .22s}
@@ -604,6 +604,31 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 .adm__note{margin-top:14px;font-size:13px;line-height:1.7;color:var(--muted)}
 .adm__wait{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:999px;
   border:1px dashed var(--line);font-size:13px;font-weight:750;color:var(--muted)}
+/* 프로필 편집 — 아바타는 사진이 없을 때 이름 첫 글자로 대체한다.
+   #builders 가 이미 같은 방식이라 시안 화면이 곧 "사진 미등록 상태"다. */
+.adm__profile{margin-top:18px;display:grid;gap:14px}
+.adm__ava{display:flex;align-items:center;gap:14px}
+.adm-avatar{width:64px;height:64px;flex:0 0 64px;border-radius:20px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#d7ff59,#9bb73b);color:var(--ink);font-weight:900;font-size:22px}
+.adm__field{display:grid;gap:6px;font-size:12px;color:var(--muted)}
+.adm__field input{padding:11px 13px;border:1px solid var(--line);border-radius:11px;
+  background:var(--white);font:inherit;font-size:14px;color:var(--ink)}
+.adm__field input:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.adm__count{justify-self:end;font-style:normal;font-size:11px;color:var(--muted)}
+.adm__hint{font-size:11.5px;line-height:1.6;color:var(--muted)}
+.adm__mini{min-height:36px;padding:9px 14px;border:1px solid var(--line);border-radius:999px;
+  background:var(--white);font-size:12.5px;font-weight:800}
+.adm__mini:hover{border-color:var(--ink)}
+.adm__invite{margin-bottom:12px}
+.adm__inviteForm{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.adm__inviteForm input{flex:1 1 200px;min-height:44px;padding:11px 14px;border:1px solid var(--line);
+  border-radius:999px;background:var(--white);font:inherit;font-size:13px}
+.adm__inviteForm button{min-height:44px;padding:11px 18px;border-radius:999px;font-size:13px;font-weight:800;
+  border:1px solid var(--line);background:var(--white)}
+.adm__inviteForm button[type="submit"]{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.adm__inviteForm .adm__hint{flex:1 0 100%}
+.adm__sent{font-size:13px;font-weight:750;line-height:1.7}
+.adm__sent span{font-weight:400;color:var(--muted)}
 .adm__meta{margin-top:18px;display:grid;gap:10px;font-size:13px}
 .adm__meta div{display:flex;justify-content:space-between;gap:12px}
 .adm__meta span{color:var(--muted)}
@@ -2007,19 +2032,34 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       {t:'기록이 포트폴리오가 되는 방식',w:'마케팅팀',s:'live',d:'2026-07-22'},
       {t:'요구를 잘라내는 판단은 어디서 오는가',w:'김도윤',s:'draft',d:'2026-08-07'}
     ],
+    /* 프로필은 본인이 관리한다 — w 를 본인으로 두어야 빌더 시점에서 자기 프로필만 보인다.
+       state 는 계정 상태다. 기수가 끝나도 계정을 지우지 않는다 — 지우면 그 사람이 쓴 글의
+       작성자가 사라지고 #builders 의 연결도 끊긴다. inactive 로 로그인만 막는다. */
     builder:[
-      {t:'김도윤 · 기획 · UI/UX',w:'운영팀',s:'live',d:'2026-07-20'},
-      {t:'이서진 · Web · Admin',w:'운영팀',s:'live',d:'2026-07-20'},
-      {t:'박하늘 · Automation · API',w:'운영팀',s:'review',d:'2026-08-04'}
+      {t:'김도윤 · 기획 · UI/UX',w:'김도윤',s:'live',d:'2026-07-20',
+       ini:'도',name:'김도윤',role:'기획 · UI/UX',state:'active',photo:false,
+       bio:'문제 정의와 사용자 흐름을 화면 구조로 바꾸는 빌더.'},
+      {t:'이서진 · Web · Admin',w:'이서진',s:'live',d:'2026-07-20',
+       ini:'서',name:'이서진',role:'Web · Admin',state:'active',photo:false,
+       bio:'프론트엔드와 운영 어드민을 함께 구현하는 빌더.'},
+      {t:'박하늘 · Automation · API',w:'박하늘',s:'review',d:'2026-08-04',
+       ini:'하',name:'박하늘',role:'Automation · API',state:'active',photo:false,
+       bio:'AI 자동화와 데이터 흐름을 서비스에 연결하는 빌더.'},
+      {t:'정유선 · 미배정',w:'정유선',s:'draft',d:'2026-08-07',
+       ini:'유',name:'정유선',role:'미배정',state:'invited',photo:false,
+       bio:''}
     ]
   };
   const SLABEL={draft:'작성 중',review:'검토 요청',live:'공개'};
+  /* 계정 상태는 콘텐츠 상태와 별개다. 초대만 보내고 아직 안 들어온 사람이 있다. */
+  const ASTATE={active:'활동 중',invited:'초대됨 · 미수락',inactive:'비활성'};
+  let admInvite=false;
   /* 역할. 실제 인증은 Phase 2 다(§8). 여기서는 "무엇이 다르게 보이는가"만 보여준다 —
      동작하지 않는 로그인 화면을 만드는 것보다 권한 설계를 드러내는 쪽이 낫다. */
   let admRole='admin', admTab='work', admFilter='all', admPick=0;
   const ROLE_CAN={
     admin  :{tabs:['work','insight','builder'], seeAll:true,  publish:true },
-    builder:{tabs:['work','insight'],           seeAll:false, publish:false}
+    builder:{tabs:['work','insight','builder'], seeAll:false, publish:false}
   };
 
   /* 빌더는 자기 것만 본다. 화면에서 거르는 것은 시안이라 가능한 방식이고,
@@ -2035,7 +2075,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       '<span><span class="adm-row__t">'+esc(r.t)+'</span>'+
       '<span class="adm-row__m">'+esc(r.w)+'</span></span>'+
       '<span class="adm-state" data-s="'+r.s+'">'+SLABEL[r.s]+'</span>'+
-      '<span class="adm-row__w">'+esc(r.d)+'</span></button>').join('')
+      '<span class="adm-row__w">'+(admTab==='builder'&&r.state?esc(ASTATE[r.state]):esc(r.d))+'</span></button>').join('')
       : '<p style="padding:28px 10px;color:var(--muted);font-size:14px">이 상태의 항목이 없습니다.</p>';
     const cur=rows[admPick];
     const panel=cur?(
@@ -2046,7 +2086,26 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
         '<div><span>최종 수정</span><b>'+esc(cur.d)+'</b></div>'+
         '<div><span>공개 여부</span><b>'+(cur.s==='live'?'공개됨':'비공개')+'</b></div>'+
       '</div>'+
-      '<div class="adm__editor">본문 편집 영역 — 제목·본문·이미지까지 글쓰기 수준으로 다룹니다.</div>'+
+      (admTab==='builder'
+        /* 프로필도 공개 페이지(#builders)에 그대로 나간다. 그래서 글과 같은 검토 게이트를 탄다 —
+           한 줄 소개에 §7.5 가 막는 표현("엄격히 선별된" · 검증 불가 수치)이 들어갈 수 있다. */
+        ? '<div class="adm__profile">'+
+            '<div class="adm__ava">'+
+              '<span class="adm-avatar"'+(cur.photo?' data-photo="1"':'')+'>'+esc(cur.ini||'?')+'</span>'+
+              '<div><button class="adm__mini" data-act="photo">사진 변경</button>'+
+              '<p class="adm__hint">정사각 400px 이상 · 5MB 이하. 없으면 이름 첫 글자로 표시됩니다.</p></div>'+
+            '</div>'+
+            '<label class="adm__field"><span>이름</span>'+
+              '<input type="text" value="'+esc(cur.name||'')+'" data-p="name"></label>'+
+            '<label class="adm__field"><span>역할</span>'+
+              '<input type="text" value="'+esc(cur.role||'')+'" data-p="role"></label>'+
+            '<label class="adm__field"><span>한 줄 소개</span>'+
+              '<input type="text" maxlength="70" value="'+esc(cur.bio||'')+'" data-p="bio">'+
+              /* 길이를 안 막으면 #builders 카드가 줄바꿈으로 깨진다. 카드는 두 줄까지다. */
+              '<em class="adm__count">'+String((cur.bio||'').length)+' / 70자</em></label>'+
+            '<p class="adm__hint">공개 페이지의 빌더 카드에 그대로 나갑니다. 검증할 수 없는 수치나 단정 표현은 쓰지 않습니다.</p>'+
+          '</div>'
+        : '<div class="adm__editor">본문 편집 영역 — 제목·본문·이미지까지 글쓰기 수준으로 다룹니다.</div>')+
       '<div class="adm__acts">'+
         (ROLE_CAN[admRole].publish
           ? (cur.s==='live'
@@ -2085,16 +2144,59 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
         : '빌더 — 자기가 작성한 항목만 보입니다. 검토 요청까지 올릴 수 있고, 공개는 관리자가 결정합니다.')+'</p>'+
       '<div class="adm__layout">'+
         '<nav class="adm__nav" aria-label="콘텐츠 종류">'+
-          ROLE_CAN[admRole].tabs.map(k=>tab(k,{work:'Work',insight:'Insight',builder:'빌더'}[k])).join('')+
+          /* 같은 탭이라도 역할에 따라 다른 것을 뜻한다 — 관리자는 빌더 전체를 관리하고,
+             빌더는 자기 프로필 하나만 고친다. 라벨이 같으면 무엇을 보는지 오해한다. */
+          ROLE_CAN[admRole].tabs.map(k=>tab(k,{work:'Work',insight:'Insight',
+            builder:admRole==='admin'?'빌더':'내 프로필'}[k])).join('')+
         '</nav>'+
         '<div><div class="adm__filters" role="group" aria-label="상태 필터">'+
           filt('all','전체')+filt('draft','작성 중')+filt('review','검토 요청')+filt('live','공개')+
-        '</div><div class="adm__list" id="admList">'+list+'</div></div>'+
+        '</div>'+
+        /* 초대는 관리자만 한다. 공개 가입을 열지 않는 것이 1차 방어선이다 —
+           등록되지 않은 이메일은 로그인 링크조차 받지 못한다. */
+        (admTab==='builder'&&ROLE_CAN[admRole].publish
+          ? '<div class="adm__invite">'+
+            (admInvite
+              ? '<form class="adm__inviteForm" data-act="send"><input type="email" placeholder="빌더 이메일" aria-label="초대할 빌더 이메일">'+
+                '<button type="submit">초대 보내기</button><button type="button" data-act="cancel">취소</button>'+
+                '<p class="adm__hint">비밀번호를 만들지 않습니다. 받은 메일의 링크를 누르면 바로 들어옵니다.</p></form>'
+              : '<button class="adm__mini" data-act="invite">+ 빌더 초대</button>')+
+            '</div>'
+          : '')+
+        '<div class="adm__list" id="admList">'+list+'</div></div>'+
         '<aside class="adm__panel" id="admPanel" aria-label="선택한 항목">'+panel+'</aside>'+
       '</div>'+
       '<p class="edu-note" style="margin-top:32px">※ Phase 1 화면 시안입니다. 인증·저장은 연결돼 있지 않고, 상태 변경은 이 화면 안에서만 유지됩니다.</p>'+
       '</div></article>';
   };
+
+  const admRepaint=()=>{ if(location.hash==='#/admin') view.innerHTML=renderAdmin(); };
+
+  /* 아바타 이니셜. 한글 세 글자 이름은 성을 빼고 이름 첫 글자를 쓴다(김도윤 → 도) —
+     #builders 의 아바타와 같은 규칙이라야 같은 사람으로 읽힌다.
+     두 글자 성이나 영문 이름은 첫 글자를 쓴다. 규칙을 늘리기보다 프로필에서 고치게 두는 편이 낫다. */
+  const initialOf=n=>{
+    n=String(n||'').trim();
+    return /^[가-힣]{3}$/.test(n)?n.charAt(1):(n.charAt(0)||'?');
+  };
+
+  /* 프로필 입력은 데이터에 바로 반영한다. 그래야 다른 항목을 눌렀다 돌아와도 남아 있고,
+     목록 제목과 아바타가 그 자리에서 따라온다.
+     ⚠️ 여기서 재렌더하지 않는다 — 입력 중에 DOM 을 갈아끼우면 포커스와 커서가 날아간다. */
+  document.addEventListener('input',e=>{
+    const t=e.target.closest&&e.target.closest('[data-p]');
+    if(!t||location.hash!=='#/admin') return;
+    const cur=admRows()[admPick]; if(!cur) return;
+    cur[t.dataset.p]=t.value;
+    if(t.dataset.p==='name') cur.ini=initialOf(t.value);
+    cur.t=(cur.name||'')+' · '+(cur.role||'');
+    const row=document.querySelector('.adm-row[aria-current="true"] .adm-row__t');
+    if(row) row.textContent=cur.t;
+    const av=document.querySelector('.adm-avatar');
+    if(av&&t.dataset.p==='name') av.textContent=cur.ini;
+    const c=document.querySelector('.adm__count');
+    if(c&&t.dataset.p==='bio') c.textContent=t.value.length+' / 70자';
+  });
 
   /* 어드민 내부 조작은 라우트를 바꾸지 않는다 — 목록 필터는 §6.3 이 URL 에 넣지 말라고 한
      UI 상태다. 위임으로 받아 화면만 다시 그린다. */
@@ -2106,13 +2208,21 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       admRole=t.dataset.role; admFilter='all'; admPick=0;
       /* 빌더로 바꿨는데 빌더 탭에 있으면 볼 수 없는 화면에 남는다. 허용된 첫 탭으로 옮긴다. */
       if(!ROLE_CAN[admRole].tabs.includes(admTab)) admTab=ROLE_CAN[admRole].tabs[0];
-      /* 역할이 바뀌면 화면 구성 자체가 달라진다(탭 · 안내 · 버튼). 부분 갱신으로는 모자라 다시 그린다. */
-      showDetail(renderAdmin(),'콘텐츠 운영');
+      admInvite=false;
+      admRepaint();
       return;
     }
     if(t.dataset.tab){ admTab=t.dataset.tab; admFilter='all'; admPick=0; }
     else if(t.dataset.f){ admFilter=t.dataset.f; admPick=0; }
     else if(t.dataset.i!==undefined){ admPick=+t.dataset.i; }
+    else if(t.dataset.act==='invite'||t.dataset.act==='cancel'){
+      admInvite=t.dataset.act==='invite';
+      admRepaint();
+      /* 초대 폼을 열면 바로 입력할 수 있어야 한다. 열어놓고 다시 클릭하게 만들지 않는다. */
+      if(admInvite){ const i=document.querySelector('.adm__inviteForm input'); if(i) i.focus(); }
+      return;
+    }
+    else if(t.dataset.act==='photo'){ return; }   // 업로드는 Phase 2 — 시안에서는 자리만 보인다
     else if(t.dataset.act){
       const cur=admRows()[admPick]; if(!cur) return;
       cur.s = t.dataset.act==='publish' ? 'live'
@@ -2124,14 +2234,21 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       admFilter='all';
       admPick=Math.max(0,admRows().indexOf(cur));
     }
-    const {list,panel}=renderAdminBody();
-    const L=document.getElementById('admList'), P=document.getElementById('admPanel');
-    if(L) L.innerHTML=list;
-    if(P) P.innerHTML=panel;
-    document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===admTab)));
-    document.querySelectorAll('[data-f]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===admFilter)));
+    /* showDetail 을 쓰지 않는 이유는 포커스다 — 탭이나 필터를 누를 때마다 제목으로 포커스가
+       튀면 키보드 사용자는 매번 화면 맨 앞으로 돌아간다. 화면만 다시 그린다. */
+    admRepaint();
   });
 
+
+  /* 초대 폼은 실제로 보내지 않는다(§8). submit 을 막지 않으면 페이지가 새로고침되며
+     해시가 날아가 홈으로 튄다 — 시안에서 가장 눈에 띄는 고장이 된다. */
+  document.addEventListener('submit',e=>{
+    const f=e.target.closest&&e.target.closest('.adm__inviteForm');
+    if(!f) return;
+    e.preventDefault();
+    const v=(f.querySelector('input')||{}).value||'';
+    f.innerHTML='<p class="adm__sent">'+esc(v||'입력한 주소')+' 로 초대를 보냈습니다. <span>— 시안이라 실제로 발송되지는 않습니다.</span></p>';
+  });
 
   /* ═══ 목록 페이지 — 상단 메뉴가 여기로 온다 ═══
      홈의 Work · Insight 는 미리보기이고, 전체 목록은 이 화면이다.
