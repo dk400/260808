@@ -847,15 +847,54 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     window.dataLayer.push({event,...payload});
     if(typeof window.gtag==='function') window.gtag('event',event,payload);
   };
+  /* ═══ pluuug 문의 연동 ═══════════════════════════════════════════════
+     🔴 TODO(미확정) — 폼 URL 이 확정되면 아래 상수 하나만 채운다. PRD §12 🔴
+        예: const PLUUUG_FORM_URL='https://pluuug.com/form/XXXXXXXX';
+
+     비어 있는 동안에는 지금과 완전히 같이 동작한다 — CTA 는 #contact 로 스크롤하고
+     final·chat 의 href="#" 는 최상단 점프만 막는다. 값을 넣는 순간 모든 *_contact
+     버튼이 UTM 을 실은 pluuug 폼으로 이동하고 pluuug_out 이 발화한다.
+
+     주소를 미리 박아두지 않는 이유: 틀린 폼으로 문의가 흘러가면 되돌릴 수 없다.
+     CLAUDE.md §4 도 미확정을 추측으로 채우지 말라고 규정한다. */
+  const PLUUUG_FORM_URL='';
+
+  /* §6.5 파라미터.
+     utm_source 는 "우리 사이트에서 왔다"를 뜻하므로 고정값이다. 방문자가 달고 들어온
+     inbound utm_source 는 덮어쓰지 않고 entry_utm_source 로 따로 넘긴다 — 둘은 질문이
+     다르다(우리가 보낸 트래픽인가 vs 이 사람은 어디서 왔나). */
+  let refContent='';                       // 마지막으로 관심을 보인 Work/Insight
+  const pluuugUrl=section=>{
+    if(!PLUUUG_FORM_URL) return '';
+    const u=new URL(PLUUUG_FORM_URL);
+    u.searchParams.set('utm_source','ai-builder-origin');
+    u.searchParams.set('utm_medium','website');
+    u.searchParams.set('utm_campaign','launch');
+    u.searchParams.set('entry_section',section);   // 어느 CTA 가 전환을 만드는가
+    if(refContent) u.searchParams.set('ref_content',refContent);
+    if(utmSource) u.searchParams.set('entry_utm_source',utmSource);
+    return u.toString();
+  };
+
   /* href="#" 는 pluuug URL 미확정에 따른 의도적 공란이다(PRD §12 🔴).
      기본 동작을 막지 않으면 최종 CTA 클릭이 페이지 최상단 점프가 된다 — 심사자가 가장 확실히
      누르는 버튼이라 손실이 크다. insight-item 과 동일한 처리다.
-     링크가 확정되면 href 가 '#' 이 아니게 되므로 이 분기는 자연히 통과한다.
      이동을 막아도 track 은 항상 발화한다 — 연결 전에도 문의 의도는 집계돼야 §6.5 가 성립한다. */
   document.querySelectorAll('[data-track]').forEach(el=>el.addEventListener('click',e=>{
+    const section=el.dataset.track;
     const href=el.getAttribute('href');
+    const form=section.endsWith('_contact')?pluuugUrl(section):'';
+    if(form){
+      /* 연결 후: 폼으로 보낸다. cta_click 은 그대로 두고 pluuug_out 을 함께 싣는다
+         — §6.4 가 요구한 이벤트이고, 사이트를 벗어나는 지점은 따로 세어야 한다. */
+      e.preventDefault();
+      track('cta_click',{section,destination:form});
+      track('pluuug_out',{section,destination:form,content_id:refContent});
+      location.href=form;
+      return;
+    }
     if(href==='#') e.preventDefault();
-    track('cta_click',{section:el.dataset.track,destination:href});
+    track('cta_click',{section,destination:href});
   }));
 
   const setUrl=(key,value)=>{
@@ -939,8 +978,10 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   /* 카드는 아직 링크가 아니다(Phase 1 에 Work 상세 페이지 없음). 이동은 없지만
      어떤 작업물이 관심을 받는지는 지금부터 쌓아야 §6.5 의 ref_content 분석이 성립한다.
      Phase 2 에서 <a> 로 승격되면 destination 을 함께 싣는다. */
-  workCards.forEach(card=>card.addEventListener('click',()=>
-    track('work_card_click',{section:'work',content_id:card.dataset.id||''})));
+  workCards.forEach(card=>card.addEventListener('click',()=>{
+    refContent=card.dataset.id||refContent;   // 문의로 이어지면 ref_content 로 실린다(§6.5)
+    track('work_card_click',{section:'work',content_id:card.dataset.id||''});
+  }));
 
   // How steps: bidirectional scroll activation
   const howSteps=[...document.querySelectorAll('.how-step')];
@@ -971,6 +1012,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
      클릭이 페이지 최상단 점프로 이어져 완성도 인상을 해친다. */
   insightItems.forEach(item=>item.addEventListener('click',e=>{
     e.preventDefault();
+    refContent=item.dataset.id||refContent;   // 문의로 이어지면 ref_content 로 실린다(§6.5)
     track('insight_click',{section:'insight',content_id:item.dataset.id||'',
       destination:item.getAttribute('href')});
   }));
