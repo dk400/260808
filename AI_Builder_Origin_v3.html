@@ -592,7 +592,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
         <a href="#contact" class="btn-primary" data-track="hero_contact">프로젝트 문의하기 <span>↗</span></a>
         <a href="#work" class="btn-link" data-track="hero_work">Work 살펴보기 <span>↓</span></a>
       </div>
-      <p class="hero__note">본 화면은 제출용 콘셉트 시안입니다. 빌더·프로젝트 실데이터와 pluuug URL은 확정 후 연결합니다.</p>
+      <p class="hero__note">본 화면은 제출용 콘셉트 시안입니다. 빌더·프로젝트는 실데이터 확정 후 반영합니다. 문의는 pluuug 폼으로 연결됩니다.</p>
     </div>
 
     <div class="hero-stage" aria-label="AI Builder Origin 콘셉트 화면">
@@ -769,9 +769,9 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 
 <section class="final" id="contact" aria-labelledby="contact-title">
   <div class="container">
-    <div class="final__box"><h2 id="contact-title">무엇을 만들지부터 정리해 드립니다.</h2><div class="final__right"><p>프로젝트의 현재 단계와 필요한 기능을 알려주세요. 상담 과정에서 이번에 만들 범위와 다음 단계로 넘길 범위를 함께 정리합니다.</p><!-- TODO(미확정): pluuug 폼 URL. 확정 시 href 를 교체하고 §6.5 UTM 파라미터를 붙인다.
-     연동 방식(A 리다이렉트 / B 임베드)도 미정 — PRD §6.5 는 B(임베드) 권장. PRD §12 🔴 -->
-      <div class="final__actions"><a class="btn-primary" href="#" data-track="final_contact">프로젝트 문의하기 ↗</a><a class="btn-link" href="#work">Work 다시 보기 ↑</a></div><p class="final__micro">※ 실제 pluuug 폼 URL 확정 후 문의 버튼에 연결합니다.</p></div></div>
+    <div class="final__box"><h2 id="contact-title">무엇을 만들지부터 정리해 드립니다.</h2><div class="final__right"><p>프로젝트의 현재 단계와 필요한 기능을 알려주세요. 상담 과정에서 이번에 만들 범위와 다음 단계로 넘길 범위를 함께 정리합니다.</p><!-- pluuug 폼 연결 완료(2026-08-07 · 리다이렉트). href 는 로드 시 JS 가 폼 주소로 바꾸고,
+     클릭 시 entry_section·ref_content 까지 붙인 주소로 교체한다 — §6.5. -->
+      <div class="final__actions"><a class="btn-primary" href="#" data-track="final_contact">프로젝트 문의하기 ↗</a><a class="btn-link" href="#work">Work 다시 보기 ↑</a></div><p class="final__micro">※ 문의하기를 누르면 pluuug 폼으로 이동합니다.</p></div></div>
     <footer class="footer"><div><strong>AI BUILDER ORIGIN ✱</strong><span>누가, 어떻게 만드는지 보여주는 개발 파트너</span></div><nav class="footer-nav"><a href="#work">Work</a><a href="#insight">Insight</a><a href="#faq">FAQ</a><a href="#contact">문의하기</a></nav><span>Concept prototype</span>
       <!-- 사업자 정보 — 사용자 제공(2026-08-07). 메일 주소는 aibuilder@origin.com 으로 지정받았다.
            mailto 링크로 걸지 않는다: 문의를 대체하는 부차 전환 경로를 만들지 않는다는 PRD §6.2 금지 조항.
@@ -801,7 +801,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
-<!-- 상담 위젯 — 콘셉트. 실제 상담 연결은 pluuug 폼 확정 후(PRD §12 🔴).
+<!-- 상담 위젯 — 콘셉트. 패널의 CTA 는 pluuug 폼으로 이동한다(2026-08-07 연결).
      패널 안의 행동은 문의 하나뿐이다: 문의를 대체하는 경로를 만들지 않는다(§6.2 🔴).
      CTA 는 data-track 규격에 얹어 기존 cta_click 으로 잡힌다 — 새 이벤트 타입을 만들지 않았다. -->
 <div class="chat" id="chat">
@@ -816,7 +816,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     <div class="chat__body">
       <p>현재 단계와 필요한 기능만 알려주시면, 이번에 만들 범위와 다음 단계로 넘길 범위를 함께 정리해 드립니다.</p>
       <a class="chat__cta" href="#" data-track="chat_contact">프로젝트 문의하기 <span aria-hidden="true">↗</span></a>
-      <p class="chat__micro">※ 콘셉트 시안입니다. 문의는 pluuug 폼 확정 후 연결됩니다.</p>
+      <p class="chat__micro">※ 콘셉트 시안입니다. 문의하기를 누르면 pluuug 폼으로 이동합니다.</p>
     </div>
   </div>
   <button class="chat__launcher" id="chatBtn" aria-expanded="false" aria-controls="chatPanel" aria-label="상담 창 열기">
@@ -853,17 +853,15 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     window.dataLayer.push({event,...payload});
     if(typeof window.gtag==='function') window.gtag('event',event,payload);
   };
-  /* ═══ pluuug 문의 연동 ═══════════════════════════════════════════════
-     🔴 TODO(미확정) — 폼 URL 이 확정되면 아래 상수 하나만 채운다. PRD §12 🔴
-        예: const PLUUUG_FORM_URL='https://pluuug.com/form/XXXXXXXX';
+  /* ═══ pluuug 문의 연동 — 2026-08-07 연결 완료 ═══════════════════════
+     연동 방식: 리다이렉트(§6.5 A). 같은 탭에서 폼으로 이동한다.
 
-     비어 있는 동안에는 지금과 완전히 같이 동작한다 — CTA 는 #contact 로 스크롤하고
-     final·chat 의 href="#" 는 최상단 점프만 막는다. 값을 넣는 순간 모든 *_contact
-     버튼이 UTM 을 실은 pluuug 폼으로 이동하고 pluuug_out 이 발화한다.
+     www 를 붙인 정규 주소를 쓴다. pluuug.com/form/... 은 301 로 www 에 넘기는데,
+     리다이렉트 한 번을 더 타면 그만큼 이탈 지점이 늘고 파라미터 전달도 한 단계 더 거친다.
 
-     주소를 미리 박아두지 않는 이유: 틀린 폼으로 문의가 흘러가면 되돌릴 수 없다.
-     CLAUDE.md §4 도 미확정을 추측으로 채우지 말라고 규정한다. */
-  const PLUUUG_FORM_URL='';
+     ID 검증(2026-08-07): 존재하지 않는 ID 는 404 를 주는데 이 ID 는 200 이다.
+     임베드 코드의 data-postoo-id 가 공개 폼 경로와 같은 체계임을 대조로 확인했다. */
+  const PLUUUG_FORM_URL='https://www.pluuug.com/form/GIKwoZoN2r';
 
   /* §6.5 파라미터.
      utm_source 는 "우리 사이트에서 왔다"를 뜻하므로 고정값이다. 방문자가 달고 들어온
@@ -886,6 +884,12 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
      기본 동작을 막지 않으면 최종 CTA 클릭이 페이지 최상단 점프가 된다 — 심사자가 가장 확실히
      누르는 버튼이라 손실이 크다. insight-item 과 동일한 처리다.
      이동을 막아도 track 은 항상 발화한다 — 연결 전에도 문의 의도는 집계돼야 §6.5 가 성립한다. */
+  /* 앵커의 href 를 실제 폼 주소로 바꿔둔다. JS 로만 이동시키면 링크가 아니게 되어
+     새 탭으로 열기·주소 복사·상태표시줄 미리보기가 모두 죽는다. 클릭 시에는 아래 핸들러가
+     entry_section·ref_content 까지 붙인 주소로 교체한다(그 값들은 클릭 시점에야 정해진다). */
+  if(PLUUUG_FORM_URL) document.querySelectorAll('a[data-track$="_contact"]')
+    .forEach(a=>a.setAttribute('href',PLUUUG_FORM_URL));
+
   document.querySelectorAll('[data-track]').forEach(el=>el.addEventListener('click',e=>{
     const section=el.dataset.track;
     const href=el.getAttribute('href');
