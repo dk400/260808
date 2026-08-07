@@ -20,7 +20,7 @@ const OUT = path.join(ROOT, 'deploy');
 
 const FILES = [
   ['AI_Builder_Origin_v3.html', 'index.html'],  // 루트 주소로 열리도록 이름을 바꾼다
-  ['og-cover.jpg', 'og-cover.jpg'],
+  ['og-cover-v2.png', 'og-cover-v2.png'],
 ];
 
 // 폴더 통째로 복사할 대상
