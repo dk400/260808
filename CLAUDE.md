@@ -188,7 +188,7 @@ prefers-reduced-motion: reduce  → 모든 모션 비활성
 
 추가 시 이 규칙을 따른다.
 ```
-work_card_click · insight_click · youtube_out · tab_change · pluuug_out · faq_toggle
+work_card_click · insight_click · youtube_out · tab_change · pluuug_out · faq_toggle · chat_start
 파라미터: section / content_id / destination / utm_source
 ```
 
@@ -212,6 +212,7 @@ URL 분기는 **분석 가치가 있는 상태만** 반영한다. 정렬·아코
 | ~~pluuug 폼 URL / 연동 방식~~ | ✅ 확정 — 리다이렉트로 `www.pluuug.com/form/GIKwoZoN2r` 연결(2026-08-07). 상수 `PLUUUG_FORM_URL` 한 곳만 고치면 된다 |
 | **에셋 원본 제공 주체** | 콘셉트 프리뷰 유지 |
 | GA4 측정 ID | `<head>` 에 삽입 위치만 주석 |
+| **채널톡 플러그인 키** | 상수 `CHANNEL_PLUGIN_KEY` 공란. 채우면 자체 위젯이 채널톡으로 자동 전환된다. **잘못된 키는 에러 없이 조용히 실패하므로 넣은 뒤 반드시 런처를 눌러 확인할 것** |
 | Work 표기 방식 (똑개 실적 사용 시) | 임의 표기 금지 |
 
 **추측으로 채우지 말고 TODO 로 남기고 보고하라.**
