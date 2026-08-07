@@ -120,7 +120,7 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .btn-link{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:800;padding:14px 2px;border-bottom:1px solid var(--ink)}
 /* 색은 #777a74(약 4.0:1)로 AA 미달이었다. 모바일에서는 이 문구가 유일한 콘셉트 고지라
    기존 토큰인 --muted 로 올린다(약 5.4:1). 새 색 추가 아님. */
-.hero__note{margin-top:28px;display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--muted);max-width:46ch}
+.hero__note{margin-top:28px;display:flex;gap:8px;align-items:flex-start;font-size:14px;line-height:1.65;color:var(--muted);max-width:46ch}
 .hero__note::before{content:'i';width:18px;height:18px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-weight:800;flex:0 0 auto}
 
 .hero-stage{position:relative;min-height:610px;perspective:1200px}
@@ -326,11 +326,19 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 /* ═══ 상담 위젯 — 콘셉트 (배분표 밖 전역 레이어. 강도 "약") ═══ */
 /* 패널 안의 행동은 pluuug 문의 하나뿐이다. 부차 전환 경로를 만들지 않는다 — PRD §6.2 🔴 */
 /* z-index 75 = dock(70) 위, header(80) 아래. 무한 애니메이션 없음(딸깍 신호 회피). */
-.chat{position:fixed;right:20px;bottom:20px;z-index:75;display:flex;flex-direction:column;align-items:flex-end;gap:12px;transition:bottom .3s cubic-bezier(.2,.8,.2,1)}
+/* 🔴 pointer-events:none 이 없으면 닫힌 패널의 레이아웃 박스(약 336x400)가 그대로 남아
+   우하단 클릭·호버를 통째로 삼킨다. 배경이 없어도 히트테스트 대상이다.
+   컨테이너는 투명하게 두고 실제 컨트롤에만 되돌린다. .rail 과 같은 처리. */
+.chat{position:fixed;right:20px;bottom:20px;z-index:75;display:flex;flex-direction:column;align-items:flex-end;gap:12px;pointer-events:none;transition:bottom .3s cubic-bezier(.2,.8,.2,1)}
+.chat__launcher,.chat.open .chat__panel{pointer-events:auto}
 /* dock 이 떠 있는 동안에는 런처를 그 위로 올린다. 720px 이하에서 dock 이 화면 폭을
    거의 채우므로 이 회피가 없으면 두 요소가 포개진다. DOM 에서 .dock 다음이라 ~ 로 잡힌다. */
 .dock.show ~ .chat{bottom:88px}
 body.chat-open .dock{transform:translate(-50%,140%)}
+/* dock 은 transform 으로만 내려가고 .show 는 남는다. 위 회피 규칙이 계속 살아 있으면
+   dock 이 사라진 자리 위 88px 에 버튼만 떠 빈 띠가 생긴다. chat-open 일 때 되돌린다. */
+body.chat-open .dock.show ~ .chat,
+body.chat-open .dock.show ~ .totop{bottom:20px}
 
 /* ═══ 위로가기 — 전역 레이어. 채팅 런처와 좌우 대칭 ═══ */
 /* 순수 내비게이션이라 §6.2 의 "문의를 대체하는 부차 전환 경로"에 해당하지 않는다.
@@ -348,8 +356,18 @@ body.chat-open .dock{transform:translate(-50%,140%)}
 .totop.show:hover{background:var(--bg);transform:translateY(-3px)}
 .totop svg{width:20px;height:20px}
 .dock.show ~ .totop{bottom:88px}
+/* 레일이 보이는 폭에서는 하단 카운터(화면 아래 26~64px)를 세로로 비켜 항상 88px 에 둔다.
+   dock 이 숨는 최종 CTA 구간에서 .totop 이 20px 로 내려앉아 01/09 를 덮던 문제다(z 75 > 60).
+   가로로 밀지 않는 이유: 1360px 에서는 콘텐츠가 x77 부터 시작해 left:64 면 본문을 침범한다.
+   뒤 선택자는 위의 chat-open 되돌림 규칙과 같은 특정성이라 나중에 선언된 이쪽이 이긴다. */
+@media(min-width:1360px){
+  .totop,
+  body.chat-open .dock.show ~ .totop{bottom:88px}
+}
 
-.chat__launcher{width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--lime);display:grid;place-items:center;box-shadow:0 14px 34px rgba(17,19,17,.26);transition:transform .22s,background .22s}
+/* border 가 없으면 --ink 배경인 #problem · #builders 위에서 원형 몸통이 배경과 같은 색이라
+   사라지고 lime 아이콘만 떠 보인다. 같은 어두운 배경 위의 .dock 이 쓰는 처리와 맞춘다. */
+.chat__launcher{width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--lime);border:1px solid rgba(255,255,255,.16);display:grid;place-items:center;box-shadow:0 14px 34px rgba(17,19,17,.26);transition:transform .22s,background .22s}
 .chat__launcher:hover{background:#2c302a;transform:translateY(-3px)}
 .chat__ico{width:23px;height:23px}
 .chat__ico--close{display:none}
@@ -358,7 +376,11 @@ body.chat-open .dock{transform:translate(-50%,140%)}
 
 /* visibility 로 닫는다 — display:none 과 달리 전환이 보이고, hidden 과 달리 포커스·
    스크린리더에서도 함께 빠진다. */
-.chat__panel{width:min(336px,calc(100vw - 40px));background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(10px) scale(.98);transform-origin:100% 100%;transition:opacity .24s,transform .24s cubic-bezier(.2,.8,.2,1),visibility 0s .24s}
+/* max-height 가 없으면 패널이 위로만 자라 세로가 짧은 화면에서 헤드가 고정 헤더 밑으로
+   들어가거나 화면 밖으로 잘린다. 헤더(72px)와 하단 여백을 뺀 만큼으로 묶고 본문을 스크롤시킨다. */
+.chat__panel{width:min(336px,calc(100vw - 40px));max-height:calc(100svh - 190px);display:flex;flex-direction:column;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;opacity:0;visibility:hidden;transform:translateY(10px) scale(.98);transform-origin:100% 100%;transition:opacity .24s,transform .24s cubic-bezier(.2,.8,.2,1),visibility 0s .24s}
+.chat__head{flex:0 0 auto}
+.chat__body{flex:1 1 auto;min-height:0;overflow-y:auto}
 .chat.open .chat__panel{opacity:1;visibility:visible;transform:none;transition:opacity .24s,transform .24s cubic-bezier(.2,.8,.2,1),visibility 0s}
 .chat__head{background:var(--ink);color:var(--white);padding:20px}
 .chat__label{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)}
@@ -367,7 +389,10 @@ body.chat-open .dock{transform:translate(-50%,140%)}
 .chat__body>p{font-size:13.5px;line-height:1.7;color:var(--muted)}
 .chat__cta{margin-top:16px;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--ink);color:var(--white);border-radius:999px;padding:13px 18px;font-size:14px;font-weight:800;min-height:48px;transition:transform .2s,background .2s}
 .chat__cta:hover{background:#2c302a;transform:translateY(-2px)}
-.chat__micro{margin-top:12px;font-size:11px;line-height:1.6;color:#7b7e78}
+/* 11px · #7b7e78 은 흰 패널 위에서 4.08:1 로 AA 미달이었다. --muted 로 올린다(5.5:1,
+   기존 토큰이라 새 색 추가 아님). 크기는 지정하지 않는다 — .chat__body>p 가 특정성에서
+   앞서 어차피 13.5px 로 렌더되므로, 여기 숫자를 적으면 코드와 실제가 어긋난다. */
+.chat__micro{margin-top:12px;line-height:1.65;color:var(--muted)}
 
 /* Reveal helpers */
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .72s,transform .72s cubic-bezier(.2,.8,.2,1)}
@@ -482,7 +507,9 @@ body.chat-open .dock{transform:translate(-50%,140%)}
   position:fixed;left:0;top:0;bottom:0;width:48px;z-index:60;
   display:none;                       /* 기본 숨김 */
   flex-direction:column;align-items:center;justify-content:space-between;
-  padding:22px 0 26px;pointer-events:none;
+  /* 위 여백이 22px 이면 ORIGIN 표기(y22~97)가 z-index 80 인 고정 헤더(y0~72) 밑으로
+     들어가 어두운 섹션에서 반전을 걸어도 읽히지 않는다. 헤더 높이만큼 내려 시작한다. */
+  padding:88px 0 26px;pointer-events:none;
 }
 .rail__mark{writing-mode:vertical-rl;font-size:9.5px;letter-spacing:.32em;
   color:var(--muted);font-weight:600;opacity:.75}
@@ -506,11 +533,14 @@ body.chat-open .dock{transform:translate(-50%,140%)}
    #problem · #builders 는 배경이 --ink 라 눈금·번호가 배경과 같은 색으로 칠해져 대비 1:1 이었다.
    레일은 "정지 화면 한 장으로도 손이 갔다가 드러나는" 장치(§4.2)라 안 보이면 존재 의미가 없다.
    새 색을 만들지 않고 --white 와 흰색 알파만 쓴다(§5.1). */
-.rail.on-dark .rail__mark{color:rgba(255,255,255,.62)}
-.rail.on-dark .rail__tick{background:rgba(255,255,255,.24)}
-.rail.on-dark .rail__tick.on{background:var(--white)}
-.rail.on-dark .rail__now{color:var(--white)}
-.rail.on-dark .rail__total{color:rgba(255,255,255,.58)}
+   🔴 레일 전체에 한 클래스를 걸면 안 된다. 레일은 뷰포트 전체 높이라 위·중간·아래가
+   서로 다른 섹션 위에 놓인다. 활성 섹션 하나로 판정하면 밝은↔어두운 경계마다 반대로 걸려
+   오히려 사라진다. 부위별로 실제 뒤에 있는 배경을 각각 읽어 따로 반전한다. */
+.rail__mark.on-dark{color:rgba(255,255,255,.62)}
+.rail__ticks.on-dark .rail__tick{background:rgba(255,255,255,.24)}
+.rail__ticks.on-dark .rail__tick.on{background:var(--white)}
+.rail__count.on-dark .rail__now{color:var(--white)}
+.rail__count.on-dark .rail__total{color:rgba(255,255,255,.58)}
 
 /* 컨테이너(1320px) 좌측 여백이 레일보다 넓어지는 지점부터 노출 */
 @media(min-width:1360px){ .rail{display:flex} }
@@ -768,7 +798,10 @@ body.chat-open .dock{transform:translate(-50%,140%)}
      패널 안의 행동은 문의 하나뿐이다: 문의를 대체하는 경로를 만들지 않는다(§6.2 🔴).
      CTA 는 data-track 규격에 얹어 기존 cta_click 으로 잡힌다 — 새 이벤트 타입을 만들지 않았다. -->
 <div class="chat" id="chat">
-  <div class="chat__panel" id="chatPanel" role="dialog" aria-labelledby="chatTitle">
+  <!-- role="dialog" 였다. 모달도 아니고 포커스 트랩·배경 비활성화도 없어 계약을 지키지 못한다.
+       insight 탭에서 불완전한 ARIA 를 걷어낸 것과 같은 기준으로 역할을 뺀다.
+       열림 상태는 런처의 aria-expanded + aria-controls 가 이미 알린다. -->
+  <div class="chat__panel" id="chatPanel">
     <div class="chat__head">
       <span class="chat__label">Direct line</span>
       <p class="chat__title" id="chatTitle">프로젝트 이야기를<br>지금 시작해 보세요.</p>
@@ -836,8 +869,10 @@ body.chat-open .dock{transform:translate(-50%,140%)}
     const pastHero=scrollY>innerHeight*.82;
     const atFinal=contact.getBoundingClientRect().top<innerHeight*.82;
     dock.classList.toggle('show',pastHero&&!atFinal);
-    /* dock 과 달리 최종 CTA 구간에서도 남긴다 — 페이지 끝이 위로가기가 가장 필요한 지점이다. */
-    toTop.classList.toggle('show',pastHero);
+    /* dock 과 달리 최종 CTA 구간에서도 남긴다 — 페이지 끝이 위로가기가 가장 필요한 지점이다.
+       단, 포커스를 가진 동안에는 숨기지 않는다. visibility:hidden 이 되면 브라우저가 포커스를
+       body 로 되돌려 Tab 순서가 문서 맨 앞으로 되감기기 때문이다. */
+    if(!(!pastHero&&document.activeElement===toTop)) toTop.classList.toggle('show',pastHero);
   };
   addEventListener('scroll',onScroll,{passive:true}); onScroll();
 
@@ -846,7 +881,9 @@ body.chat-open .dock{transform:translate(-50%,140%)}
      버튼은 맨 위에서 사라지므로 포커스를 로고로 넘겨 포커스가 사라진 요소에 남지 않게 한다. */
   toTop.addEventListener('click',()=>{
     scrollTo({top:0});
-    document.querySelector('.logo').focus();
+    /* preventScroll 이 없으면 focus() 가 진행 중인 부드러운 스크롤을 취소할 수 있다. */
+    document.querySelector('.logo').focus({preventScroll:true});
+    toTop.classList.remove('show');      // 포커스가 옮겨갔으니 이제 숨겨도 안전하다
   });
 
   menuBtn.addEventListener('click',()=>{
@@ -871,7 +908,12 @@ body.chat-open .dock{transform:translate(-50%,140%)}
   };
   chatBtn.addEventListener('click',()=>setChat(chatBtn.getAttribute('aria-expanded')!=='true'));
   addEventListener('keydown',e=>{
-    if(e.key==='Escape'&&chat.classList.contains('open')){setChat(false);chatBtn.focus()}
+    if(e.key!=='Escape'||!chat.classList.contains('open')) return;
+    /* 포커스가 위젯 밖에 있을 때 런처로 끌어오면 읽던 자리를 빼앗는다.
+       안에 있을 때만 런처로 되돌리고, 밖이면 닫기만 한다. */
+    const inside=chat.contains(document.activeElement);
+    setChat(false);
+    if(inside) chatBtn.focus();
   });
 
   if(!reduce){
@@ -976,13 +1018,35 @@ body.chat-open .dock{transform:translate(-50%,140%)}
   if(!box||!idx||!total||!rail) return;
   let io=null;
 
-  /* 섹션 배경의 상대 밝기로 어두운 구간을 판정한다. 색을 목록으로 박아두면
-     토큰이 바뀔 때 조용히 어긋나므로, 실제 계산된 배경색에서 매번 읽는다. */
-  const isDark=el=>{
-    const c=getComputedStyle(el).backgroundColor.match(/[\d.]+/g);
-    if(!c||c.length<3||(c[3]!==undefined&&Number(c[3])<0.5)) return false;
-    return (0.2126*+c[0]+0.7152*+c[1]+0.0722*+c[2])<128;
+  const mark=rail.querySelector('.rail__mark');
+  const count=rail.querySelector('.rail__count');
+
+  /* 좌표 하나 뒤에 실제로 깔린 배경색을 찾는다. 색을 목록으로 박아두면 토큰이 바뀔 때
+     조용히 어긋나므로 계산된 값에서 읽는다. 레일은 pointer-events:none 이라 자기 자신은
+     잡히지 않는다. x=24 는 레일 기둥 중앙이고 .totop(≥1360 에서 left:64) 과 겹치지 않는다. */
+  const darkAt=y=>{
+    let n=document.elementFromPoint(24,y);
+    while(n&&n!==document.documentElement){
+      const c=getComputedStyle(n).backgroundColor.match(/[\d.]+/g);
+      if(c&&c.length>=3&&(c[3]===undefined||Number(c[3])>=0.5))
+        return (0.2126*+c[0]+0.7152*+c[1]+0.0722*+c[2])<128;
+      n=n.parentElement;
+    }
+    return false;
   };
+  const mid=el=>{const r=el.getBoundingClientRect();return r.top+r.height/2};
+
+  /* 부위별로 따로 칠한다 — 레일이 화면 전체 높이라 위·아래가 다른 섹션 위에 있다. */
+  let queued=false;
+  const paint=()=>{
+    queued=false;
+    if(!mq.matches) return;
+    mark.classList.toggle('on-dark',darkAt(mid(mark)));
+    count.classList.toggle('on-dark',darkAt(mid(count)));
+    const on=box.querySelector('.rail__tick.on');
+    box.classList.toggle('on-dark',darkAt(mid(on||box)));
+  };
+  const schedule=()=>{ if(!queued){queued=true;requestAnimationFrame(paint)} };
 
   const build=()=>{
     if(io) return;                                  // 중복 생성 방지
@@ -998,17 +1062,25 @@ body.chat-open .dock{transform:translate(-50%,140%)}
         const i=secs.indexOf(e.target);
         ticks.forEach((t,n)=>t.classList.toggle('on',n===i));
         idx.textContent=String(i+1).padStart(2,'0');
-        rail.classList.toggle('on-dark',isDark(e.target));
+        schedule();
       });
     },{rootMargin:'-45% 0px -45% 0px'});
     secs.forEach(el=>io.observe(el));
+    /* 활성 섹션이 바뀌지 않는 구간에서도 레일 뒤 배경은 계속 바뀐다 — 스크롤마다 다시 칠한다. */
+    addEventListener('scroll',schedule,{passive:true});
+    addEventListener('resize',schedule);
+    schedule();
   };
 
   const teardown=()=>{
     if(io){io.disconnect();io=null;}
+    removeEventListener('scroll',schedule);
+    removeEventListener('resize',schedule);
     box.innerHTML='';
     idx.textContent='01';
-    rail.classList.remove('on-dark');
+    mark.classList.remove('on-dark');
+    box.classList.remove('on-dark');
+    count.classList.remove('on-dark');
   };
 
   const sync=()=>mq.matches?build():teardown();
