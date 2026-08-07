@@ -220,6 +220,9 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .work-card h3{margin-top:16px;font-size:26px;letter-spacing:-.015em;line-height:1.28}
 .work-card p{margin-top:11px;color:var(--muted);font-size:14px;line-height:1.65}
 .work-card__foot{margin-top:22px;display:flex;gap:7px;flex-wrap:wrap}
+/* 콘셉트 고지 — .builders__note 와 같은 역할. 밝은 배경이라 색만 --muted 로 바꾸고,
+   12px 은 가독성 기준에 미달이라(헤더·푸터 정비와 같은 기준) 14px 로 둔다. */
+.work__note{margin-top:20px;font-size:14px;line-height:1.7;color:var(--muted);max-width:60ch}
 
 /* How */
 .how{background:#dce0d7}
@@ -613,9 +616,17 @@ body.chat-open .dock{transform:translate(-50%,140%)}
 <section class="work section" id="work" aria-labelledby="work-title">
   <div class="container">
     <div class="work__head reveal">
-      <div><span class="eyebrow">Selected work</span><h2 class="section-title" id="work-title" style="margin-top:24px">실제로 만든 것만 보여줍니다.</h2></div>
+      <!-- 이전 카피는 "실제로 만든 것만 보여줍니다." 였다. 카드가 전부 Concept preview 라
+           같은 화면 안에서 스스로를 반증했다(PRD §7.6 자기모순 리스크).
+           Work 표기 방식이 §12 🟡 미확정이라 표기를 정하는 대신, 완료된 실적을 주장하지 않는
+           현재형 문장으로 바꿨다. 실데이터가 붙어도 이 문장은 그대로 참이다.
+           "Selected work" 도 선별된 실적을 함의해 "Work" 로 줄였다. -->
+      <div><span class="eyebrow">Work</span><h2 class="section-title" id="work-title" style="margin-top:24px">어떤 문제를 어떤 구조로 푸는지 보여줍니다.</h2></div>
       <p class="section-copy">카테고리별로 나눠 보실 수 있습니다. 선택한 화면은 주소 그대로 공유됩니다.</p>
     </div>
+    <!-- 고지는 #builders 의 note 와 같은 패턴이다(§10 이미 구현된 패턴 재사용).
+         실데이터 연결 시 이 한 줄만 지우면 된다. -->
+    <p class="work__note">※ 아래 작업물은 작업 범위와 구성을 보여주기 위한 콘셉트 화면입니다. 실제 사례는 확정 후 연결합니다.</p>
     <div class="work-layout">
       <aside class="work-filter" aria-label="Work 카테고리">
         <button class="active" data-filter="all">전체</button>
