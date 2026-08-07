@@ -120,11 +120,20 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .mobile-menu a{padding:15px 0;border-bottom:1px solid var(--line);font-size:26px;font-weight:800}
 
 /* Hero */
-.hero{min-height:100svh;padding-top:72px;display:flex;align-items:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:
+.hero{--hero-pointer-x:76%;--hero-pointer-y:34%;--hero-pointer-opacity:0;--hero-glow-opacity:.26;
+  --hero-stage-x:0px;--hero-stage-y:0px;--hero-stage-rx:0deg;--hero-stage-ry:0deg;
+  min-height:100svh;padding-top:72px;display:flex;align-items:center;position:relative;overflow:hidden;isolation:isolate}
+.hero::before{content:'';position:absolute;inset:0;z-index:0;background:
   radial-gradient(circle at 75% 18%,rgba(215,255,89,.58),transparent 25%),
   radial-gradient(circle at 88% 72%,rgba(185,216,255,.55),transparent 28%);pointer-events:none}
-.hero__grid{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(420px,.97fr);gap:clamp(42px,6vw,92px);align-items:center;padding-block:clamp(78px,10vw,132px)}
+.hero::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(17,19,17,.19) 1px,transparent 1.5px);
+  background-size:18px 18px;
+  opacity:var(--hero-pointer-opacity);
+  mask-image:radial-gradient(circle 230px at var(--hero-pointer-x) var(--hero-pointer-y),#000 0%,rgba(0,0,0,.72) 42%,transparent 76%);
+  -webkit-mask-image:radial-gradient(circle 230px at var(--hero-pointer-x) var(--hero-pointer-y),#000 0%,rgba(0,0,0,.72) 42%,transparent 76%);
+  transition:opacity .32s ease}
+.hero__grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.03fr) minmax(420px,.97fr);gap:clamp(42px,6vw,92px);align-items:center;padding-block:clamp(78px,10vw,132px)}
 .hero__copy{position:relative;z-index:2}
 .hero__title{margin-top:24px;font-size:clamp(54px,8.2vw,116px);line-height:1.12;letter-spacing:-.025em;font-weight:900;max-inline-size:10ch}
 .hero__title .stroke{-webkit-text-stroke:0;color:var(--lime-2)}
@@ -139,6 +148,11 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .hero__note::before{content:'i';width:18px;height:18px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-weight:800;flex:0 0 auto}
 
 .hero-stage{position:relative;min-height:610px;perspective:1200px}
+.hero-stage__motion{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform;
+  transform:translate3d(var(--hero-stage-x),var(--hero-stage-y),0) rotateX(var(--hero-stage-rx)) rotateY(var(--hero-stage-ry))}
+.hero-stage__motion::before{content:'';position:absolute;inset:5% -3% 3% 8%;z-index:-1;pointer-events:none;
+  border-radius:42%;background:radial-gradient(circle at var(--hero-pointer-x) var(--hero-pointer-y),rgba(215,255,89,.34),transparent 58%);
+  filter:blur(34px);opacity:var(--hero-glow-opacity);transition:opacity .32s ease}
 .stage-card{position:absolute;border:1px solid rgba(17,19,17,.16);border-radius:24px;box-shadow:var(--shadow);overflow:hidden;transition:transform .55s cubic-bezier(.2,.8,.2,1)}
 .stage-card--main{width:min(94%,580px);right:0;top:40px;background:#121612;color:var(--white);padding:28px;transform:rotateY(-7deg) rotateX(3deg)}
 .stage-card--main:hover{transform:rotateY(-2deg) rotateX(1deg) translateY(-8px)}
@@ -1036,6 +1050,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     </div>
 
     <div class="hero-stage reveal reveal--right" style="--d:.18s" aria-label="AI Builder Origin 작업 화면">
+      <div class="hero-stage__motion">
       <article class="stage-card stage-card--main">
         <div class="stage-top"><b>BUILD EVIDENCE 01</b><span>AI BUILDER ORIGIN</span></div>
         <div class="stage-screen">
@@ -1055,6 +1070,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
         <div class="ticket-seal"><b>Ready to build</b><span>01/04</span></div>
       </article>
       <div class="stage-card stage-card--tag" aria-hidden="true">WORK WITH EVIDENCE ✱</div>
+      </div>
     </div>
   </div>
 </section>
@@ -1458,6 +1474,48 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   const mobileMenu = document.getElementById('mobileMenu');
   const dock = document.getElementById('dock');
   const contact = document.getElementById('contact');
+
+  /* 메인 배너 실험판 — Higgsfield 계열의 커서 스포트라이트에 미세한 깊이 이동만 더한다.
+     영상이나 3D 렌더를 실시간으로 돌리는 방식이 아니라 pointer 좌표를 CSS 변수로 전달한다.
+     마우스를 급히 움직여도 카드가 딱 붙어오지 않도록 lerp 로 감속하고, 포인터가 나가면 중앙으로
+     복귀한다. 터치 환경과 모션 감소 설정에서는 효과를 만들지 않는다. */
+  const hero=document.querySelector('.hero');
+  const finePointer=matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if(hero&&!reduce&&finePointer){
+    let targetX=0,targetY=0,currentX=0,currentY=0,frame=0;
+    const renderHeroPointer=()=>{
+      currentX+=(targetX-currentX)*.085;
+      currentY+=(targetY-currentY)*.085;
+      hero.style.setProperty('--hero-stage-x',(currentX*12).toFixed(2)+'px');
+      hero.style.setProperty('--hero-stage-y',(currentY*9).toFixed(2)+'px');
+      hero.style.setProperty('--hero-stage-rx',(currentY*-1.1).toFixed(3)+'deg');
+      hero.style.setProperty('--hero-stage-ry',(currentX*1.5).toFixed(3)+'deg');
+      if(Math.abs(targetX-currentX)>.001||Math.abs(targetY-currentY)>.001) frame=requestAnimationFrame(renderHeroPointer);
+      else frame=0;
+    };
+    const requestHeroPointer=()=>{if(!frame) frame=requestAnimationFrame(renderHeroPointer)};
+    hero.addEventListener('pointerenter',()=>{
+      hero.style.setProperty('--hero-pointer-opacity','1');
+      hero.style.setProperty('--hero-glow-opacity','.88');
+    });
+    hero.addEventListener('pointermove',e=>{
+      if(e.pointerType&&e.pointerType!=='mouse') return;
+      const rect=hero.getBoundingClientRect();
+      const px=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+      const py=Math.max(0,Math.min(1,(e.clientY-rect.top)/rect.height));
+      targetX=(px-.5)*2;
+      targetY=(py-.5)*2;
+      hero.style.setProperty('--hero-pointer-x',(px*100).toFixed(2)+'%');
+      hero.style.setProperty('--hero-pointer-y',(py*100).toFixed(2)+'%');
+      requestHeroPointer();
+    },{passive:true});
+    hero.addEventListener('pointerleave',()=>{
+      targetX=0;targetY=0;
+      hero.style.setProperty('--hero-pointer-opacity','0');
+      hero.style.setProperty('--hero-glow-opacity','.26');
+      requestHeroPointer();
+    });
+  }
 
   /* 파라미터 규격 — PRD §6.4: section / content_id / destination / utm_source
      utm_source 는 진입 URL 에서 한 번만 읽어 모든 이벤트에 공통으로 싣는다.
