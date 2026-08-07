@@ -456,6 +456,67 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 }
 @media(max-width:720px){ .edu-track{grid-template-columns:1fr} }
 
+/* ═══ 어드민 화면 시안 ═══════════════════════════════════════════════
+   §8 이 Phase 1 에서 "인증 · 로그인 · DB 연동 · 관리자 실동작"을 제외한다.
+   저장도 로그인도 없고 상태 변경은 화면 안에서만 일어난다.
+   보여주려는 것은 기능이 아니라 §4 proof 04 의 "공개 전 검수 흐름"이다. 새 색 없음. */
+.adm{padding:clamp(96px,11vw,132px) 0 clamp(64px,8vw,96px)}
+.adm__bar{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  padding-bottom:22px;border-bottom:1px solid var(--line)}
+.adm__title{font-size:clamp(28px,3.4vw,40px);letter-spacing:-.025em;font-weight:850}
+.adm__badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
+  border:1px solid var(--line);font-size:12px;font-weight:800;color:var(--muted)}
+.adm__badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--orange)}
+.adm__layout{margin-top:32px;display:grid;grid-template-columns:190px minmax(0,1fr) minmax(0,330px);
+  gap:26px;align-items:start}
+.adm__nav{display:grid;gap:2px;position:sticky;top:110px}
+.adm__nav button{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 14px;border-radius:12px;font-size:14px;font-weight:750;color:var(--muted);text-align:left;
+  transition:background .2s,color .2s}
+.adm__nav button::after{content:attr(data-n);font-size:12px;font-variant-numeric:tabular-nums;opacity:.7}
+.adm__nav button:hover{background:var(--panel);color:var(--ink)}
+.adm__nav button[aria-pressed="true"]{background:var(--ink);color:var(--white)}
+.adm__filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.adm__filters button{padding:8px 13px;border:1px solid var(--line);border-radius:999px;
+  font-size:13px;font-weight:750;color:var(--muted);transition:background .2s,color .2s,border-color .2s}
+.adm__filters button[aria-pressed="true"]{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.adm__list{border-top:1px solid var(--line)}
+.adm-row{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 118px 92px;gap:14px;align-items:center;
+  padding:16px 10px;border-bottom:1px solid var(--line);text-align:left;
+  transition:background .2s,padding-left .2s}
+.adm-row:hover{background:var(--panel);padding-left:16px}
+.adm-row[aria-current="true"]{background:var(--panel)}
+.adm-row__t{display:block;font-size:15px;font-weight:750;line-height:1.4}
+.adm-row__m{display:block;margin-top:5px;font-size:12px;color:var(--muted)}
+.adm-row__w{font-size:12px;color:var(--muted)}
+.adm-state{justify-self:start;display:inline-flex;align-items:center;gap:6px;padding:5px 10px;
+  border-radius:999px;font-size:11px;font-weight:800;border:1px solid var(--line);white-space:nowrap}
+.adm-state::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.adm-state[data-s="draft"]{color:var(--muted)}
+.adm-state[data-s="review"]{color:#8a6a1f;background:rgba(255,196,154,.3);border-color:transparent}
+.adm-state[data-s="live"]{color:#3f5a20;background:rgba(215,255,89,.45);border-color:transparent}
+.adm__panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--white);
+  padding:22px;position:sticky;top:110px}
+.adm__panel h3{font-size:18px;letter-spacing:-.02em;line-height:1.35}
+.adm__meta{margin-top:18px;display:grid;gap:10px;font-size:13px}
+.adm__meta div{display:flex;justify-content:space-between;gap:12px}
+.adm__meta span{color:var(--muted)}
+.adm__editor{margin-top:18px;padding:14px;border:1px dashed var(--line);border-radius:12px;
+  font-size:13px;line-height:1.75;color:var(--muted);min-height:104px}
+.adm__acts{margin-top:18px;display:flex;gap:8px;flex-wrap:wrap}
+.adm__acts button{padding:11px 16px;border-radius:999px;font-size:13px;font-weight:800;
+  border:1px solid var(--line);transition:background .2s,color .2s,transform .2s}
+.adm__acts button:hover{transform:translateY(-2px)}
+.adm__acts button[data-act="publish"]{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.adm__log{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);
+  font-size:12px;line-height:1.7;color:var(--muted);display:grid;gap:6px}
+@media(max-width:1050px){
+  .adm__layout{grid-template-columns:1fr}
+  .adm__nav{position:static;grid-auto-flow:column;overflow:auto}
+  .adm__panel{position:static}
+}
+@media(max-width:720px){ .adm-row{grid-template-columns:minmax(0,1fr) auto} .adm-row__w{display:none} }
+
 /* ═══ 상세 뷰 — 서브페이지 ═══════════════════════════════════════════
    해시 라우팅(#/work/… · #/insight/… · #/faq)으로 그린다. 새 HTML 파일을 만들지 않은
    이유는 §9.1 이다 — 심사자가 파일 하나만 열어도 전부 동작해야 한다.
@@ -964,7 +1025,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     <div class="final__box"><h2 id="contact-title">무엇을 만들지부터 정리해 드립니다.</h2><div class="final__right"><p>프로젝트의 현재 단계와 필요한 기능을 알려주세요. 상담 과정에서 이번에 만들 범위와 다음 단계로 넘길 범위를 함께 정리합니다.</p><!-- pluuug 폼 연결 완료(2026-08-07 · 리다이렉트). href 는 로드 시 JS 가 폼 주소로 바꾸고,
      클릭 시 entry_section·ref_content 까지 붙인 주소로 교체한다 — §6.5. -->
       <div class="final__actions"><a class="btn-primary" href="#" data-track="final_contact">프로젝트 문의하기 ↗</a><a class="btn-link" href="#work">Work 다시 보기 ↑</a></div></div></div>
-    <footer class="footer"><div><strong>AI BUILDER ORIGIN ✱</strong><span>누가, 어떻게 만드는지 보여주는 개발 파트너</span></div><nav class="footer-nav"><a href="#work">Work</a><a href="#insight">Insight</a><a href="#faq">FAQ</a><a href="#contact">문의하기</a></nav>
+    <footer class="footer"><div><strong>AI BUILDER ORIGIN ✱</strong><span>누가, 어떻게 만드는지 보여주는 개발 파트너</span></div><nav class="footer-nav"><a href="#work">Work</a><a href="#insight">Insight</a><a href="#faq">FAQ</a><a href="#contact">문의하기</a><a href="#/admin">관리자 화면 시안</a></nav>
       <!-- 사업자 정보 — 사용자 제공(2026-08-07). 메일 주소는 aibuilder@origin.com 으로 지정받았다.
            mailto 링크로 걸지 않는다: 문의를 대체하는 부차 전환 경로를 만들지 않는다는 PRD §6.2 금지 조항.
            TODO: 저작권 표기 주체·연도 — 브랜드명은 AI BUILDER ORIGIN 으로 확정됐는데
@@ -1452,6 +1513,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     removeEventListener('resize',schedule);
     box.innerHTML='';
     idx.textContent='01';
+    total.textContent='00';   // 총 구간 수도 되돌린다 — 남으면 다음 화면에서 잘못된 분모가 보인다
     mark.classList.remove('on-dark');
     box.classList.remove('on-dark');
     count.classList.remove('on-dark');
@@ -1598,6 +1660,105 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       '<section><h2>실전 과정 · 2개월</h2><p>기초 과정을 마친 뒤 8월부터 10월까지 실제 프로젝트를 진행합니다. 만든 것과 판단 근거가 함께 기록되고, 그 기록이 빌더 프로필로 이어집니다.</p></section>'+
     '</div>'+ctaBlock);
 
+  /* ═══ 어드민 화면 시안 ═══
+     저장도 로그인도 없다(§8 Phase 1 제외 항목). 상태는 이 배열 안에서만 바뀌고
+     새로고침하면 처음으로 돌아간다. 보여주려는 것은 §4 proof 04 의 검수 흐름이다.
+     PRD §2 확정 사항이 "관리자 = Tiptap 글쓰기 수준"이므로 편집기는 자리만 표시한다. */
+  const ADMIN={
+    work:[
+      {t:'Aerok Admin',w:'Builder A',s:'live',d:'2026-08-02'},
+      {t:'NICE 정보통신',w:'Builder B',s:'live',d:'2026-08-01'},
+      {t:'패밀리케어',w:'Builder A',s:'live',d:'2026-07-28'},
+      {t:'Btv 우리동네광고',w:'Builder C',s:'review',d:'2026-08-06'},
+      {t:'마크스폰 EDK',w:'Builder B',s:'review',d:'2026-08-05'},
+      {t:'CANAPE',w:'Builder C',s:'draft',d:'2026-08-06'}
+    ],
+    insight:[
+      {t:'바이브코딩 외주사를 고를 때 확인해야 할 네 가지',w:'운영팀',s:'live',d:'2026-07-30'},
+      {t:'AI를 써도 품질이 흔들리지 않게 만드는 검수 방식',w:'Builder A',s:'review',d:'2026-08-06'},
+      {t:'요구를 잘라내는 판단은 어디서 오는가',w:'Builder C',s:'draft',d:'2026-08-07'}
+    ],
+    builder:[
+      {t:'Builder A · 기획 · UI/UX',w:'운영팀',s:'live',d:'2026-07-20'},
+      {t:'Builder B · Web · Admin',w:'운영팀',s:'live',d:'2026-07-20'},
+      {t:'Builder C · Automation · API',w:'운영팀',s:'review',d:'2026-08-04'}
+    ]
+  };
+  const SLABEL={draft:'작성 중',review:'검토 요청',live:'공개'};
+  let admTab='work', admFilter='all', admPick=0;
+
+  const admRows=()=>ADMIN[admTab].filter(r=>admFilter==='all'||r.s===admFilter);
+  const renderAdminBody=()=>{
+    const rows=admRows();
+    const list=rows.length?rows.map((r,i)=>
+      '<button class="adm-row" data-i="'+i+'"'+(i===admPick?' aria-current="true"':'')+'>'+
+      '<span><span class="adm-row__t">'+esc(r.t)+'</span>'+
+      '<span class="adm-row__m">'+esc(r.w)+'</span></span>'+
+      '<span class="adm-state" data-s="'+r.s+'">'+SLABEL[r.s]+'</span>'+
+      '<span class="adm-row__w">'+esc(r.d)+'</span></button>').join('')
+      : '<p style="padding:28px 10px;color:var(--muted);font-size:14px">이 상태의 항목이 없습니다.</p>';
+    const cur=rows[admPick];
+    const panel=cur?(
+      '<h3>'+esc(cur.t)+'</h3>'+
+      '<span class="adm-state" data-s="'+cur.s+'" style="margin-top:12px">'+SLABEL[cur.s]+'</span>'+
+      '<div class="adm__meta">'+
+        '<div><span>작성자</span><b>'+esc(cur.w)+'</b></div>'+
+        '<div><span>최종 수정</span><b>'+esc(cur.d)+'</b></div>'+
+        '<div><span>공개 여부</span><b>'+(cur.s==='live'?'공개됨':'비공개')+'</b></div>'+
+      '</div>'+
+      '<div class="adm__editor">본문 편집 영역 — 제목·본문·이미지까지 글쓰기 수준으로 다룹니다.</div>'+
+      '<div class="adm__acts">'+
+        (cur.s==='live'
+          ? '<button data-act="unpublish">공개 내리기</button>'
+          : '<button data-act="publish">공개하기</button><button data-act="reject">반려</button>')+
+      '</div>'+
+      '<div class="adm__log"><b>기록</b>'+
+        '<span>'+esc(cur.d)+' · '+esc(cur.w)+' 수정</span>'+
+        '<span>'+esc(cur.d)+' · 상태 '+SLABEL[cur.s]+'</span></div>'
+    ):'<p style="color:var(--muted);font-size:14px">항목을 선택하면 여기에 표시됩니다.</p>';
+    return {list,panel};
+  };
+
+  const renderAdmin=()=>{
+    const {list,panel}=renderAdminBody();
+    const tab=(k,label)=>'<button data-tab="'+k+'" data-n="'+ADMIN[k].length+'" aria-pressed="'+(admTab===k)+'">'+label+'</button>';
+    const filt=(k,label)=>'<button data-f="'+k+'" aria-pressed="'+(admFilter===k)+'">'+label+'</button>';
+    return '<article class="adm"><div class="container">'+
+      '<div class="adm__bar"><h1 class="adm__title" id="detailTitle" tabindex="-1">콘텐츠 운영</h1>'+
+      '<span class="adm__badge">화면 시안 — 저장·로그인 없음</span></div>'+
+      '<div class="adm__layout">'+
+        '<nav class="adm__nav" aria-label="콘텐츠 종류">'+tab('work','Work')+tab('insight','Insight')+tab('builder','빌더')+'</nav>'+
+        '<div><div class="adm__filters" role="group" aria-label="상태 필터">'+
+          filt('all','전체')+filt('draft','작성 중')+filt('review','검토 요청')+filt('live','공개')+
+        '</div><div class="adm__list" id="admList">'+list+'</div></div>'+
+        '<aside class="adm__panel" id="admPanel" aria-label="선택한 항목">'+panel+'</aside>'+
+      '</div>'+
+      '<p class="edu-note" style="margin-top:32px">※ Phase 1 화면 시안입니다. 인증·저장은 연결돼 있지 않고, 상태 변경은 이 화면 안에서만 유지됩니다.</p>'+
+      '</div></article>';
+  };
+
+  /* 어드민 내부 조작은 라우트를 바꾸지 않는다 — 목록 필터는 §6.3 이 URL 에 넣지 말라고 한
+     UI 상태다. 위임으로 받아 화면만 다시 그린다. */
+  document.addEventListener('click',e=>{
+    if(location.hash!=='#/admin') return;
+    const t=e.target.closest&&e.target.closest('[data-tab],[data-f],[data-i],[data-act]');
+    if(!t) return;
+    if(t.dataset.tab){ admTab=t.dataset.tab; admFilter='all'; admPick=0; }
+    else if(t.dataset.f){ admFilter=t.dataset.f; admPick=0; }
+    else if(t.dataset.i!==undefined){ admPick=+t.dataset.i; }
+    else if(t.dataset.act){
+      const cur=admRows()[admPick]; if(!cur) return;
+      cur.s = t.dataset.act==='publish' ? 'live' : t.dataset.act==='unpublish' ? 'draft' : 'draft';
+      admPick=0;
+    }
+    const {list,panel}=renderAdminBody();
+    const L=document.getElementById('admList'), P=document.getElementById('admPanel');
+    if(L) L.innerHTML=list;
+    if(P) P.innerHTML=panel;
+    document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.tab===admTab)));
+    document.querySelectorAll('[data-f]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===admFilter)));
+  });
+
   const renderFaq=()=>{
     const groups=[['project','프로젝트'],['builder','빌더'],['process','진행 방식']];
     const items=[...home.querySelectorAll('.faq-item')];
@@ -1645,6 +1806,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       }
     }else if(h==='#/faq'){ showDetail(renderFaq(),'FAQ'); handled=true; }
     else if(h==='#/education'){ showDetail(renderEducation(),'AI 빌더 스쿨 부트캠프'); handled=true; }
+    else if(h==='#/admin'){ showDetail(renderAdmin(),'콘텐츠 운영'); handled=true; }
     if(!handled){
       showHome();
       /* 라우트가 아니면 홈 내부 앵커다(#work · #contact). 기존 동작을 그대로 둔다. */
