@@ -36,8 +36,9 @@
        gtag('config', 'G-XXXXXXXXXX');
      </script>
 
-     본 파일의 track() 은 이미 window.dataLayer 로 push 하므로,
-     위 스니펫만 삽입하면 별도 수정 없이 GA4 로 흘러간다.
+     track() 은 dataLayer.push 와 gtag('event') 양쪽으로 보낸다.
+     → GTM 컨테이너를 쓰든 위 gtag 스니펫을 쓰든 그대로 동작한다.
+     ⚠️ 둘 다 설치하면 이중 집계되니 하나만 붙일 것.
      ═══════════════════════════════════════════════════════════════ -->
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -697,12 +698,12 @@ body.chat-open .dock{transform:translate(-50%,140%)}
         <button class="active" data-faq="project">프로젝트</button><button data-faq="builder">빌더</button><button data-faq="process">진행 방식</button>
       </aside>
       <div class="faq-list" id="faqList">
-        <article class="faq-item" data-faq-kind="project"><button class="faq-q" aria-expanded="false">어떤 규모의 프로젝트를 의뢰할 수 있나요?</button><div class="faq-a"><div><p>현재 범위와 목표를 먼저 확인한 뒤, AI 빌더가 수행하기 적합한 범위와 개발자 협업이 필요한 범위를 구분해 안내하는 구조를 제안합니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="project"><button class="faq-q" aria-expanded="false">문의 후에는 어떤 방식으로 상담하나요?</button><div class="faq-a"><div><p>문의는 pluuug 폼으로 접수하고, 이후 영업 담당자가 직접 연락해 범위와 일정을 확인하는 흐름입니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="builder" hidden><button class="faq-q" aria-expanded="false">빌더의 작업 이력을 확인할 수 있나요?</button><div class="faq-a"><div><p>Work의 참여 프로젝트와 Insight의 작성 콘텐츠를 빌더 프로필에 연결하는 방향이 제안돼 있습니다. 실제 공개 범위는 운영 정책 확정 후 반영합니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="builder" hidden><button class="faq-q" aria-expanded="false">모든 빌더가 바로 프로젝트에 참여하나요?</button><div class="faq-a"><div><p>선별·배정 기준은 실제 운영 정책과 공개 카피가 일치하도록 최종 확인이 필요합니다. 시안에서는 검증되지 않은 단정 표현을 사용하지 않습니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="process" hidden><button class="faq-q" aria-expanded="false">개발 이후 수정과 확장이 가능한가요?</button><div class="faq-a"><div><p>결정과 작업 범위를 기록하고 전달하는 구조를 전제로 하므로 이후 확장과 인수인계가 가능하도록 설계합니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="process" hidden><button class="faq-q" aria-expanded="false">프로젝트 현황은 어디에서 관리하나요?</button><div class="faq-a"><div><p>이번 v1 사이트의 관리자 범위는 빌더·Work·Insight 콘텐츠 운영입니다. 리드와 영업 관리는 pluuug에서 처리하며 프로젝트 관리 기능은 현재 범위에 포함하지 않습니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="project" data-id="faq-01"><button class="faq-q" aria-expanded="false">어떤 규모의 프로젝트를 의뢰할 수 있나요?</button><div class="faq-a"><div><p>현재 범위와 목표를 먼저 확인한 뒤, AI 빌더가 수행하기 적합한 범위와 개발자 협업이 필요한 범위를 구분해 안내하는 구조를 제안합니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="project" data-id="faq-02"><button class="faq-q" aria-expanded="false">문의 후에는 어떤 방식으로 상담하나요?</button><div class="faq-a"><div><p>문의는 pluuug 폼으로 접수하고, 이후 영업 담당자가 직접 연락해 범위와 일정을 확인하는 흐름입니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="builder" data-id="faq-03" hidden><button class="faq-q" aria-expanded="false">빌더의 작업 이력을 확인할 수 있나요?</button><div class="faq-a"><div><p>Work의 참여 프로젝트와 Insight의 작성 콘텐츠를 빌더 프로필에 연결하는 방향이 제안돼 있습니다. 실제 공개 범위는 운영 정책 확정 후 반영합니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="builder" data-id="faq-04" hidden><button class="faq-q" aria-expanded="false">모든 빌더가 바로 프로젝트에 참여하나요?</button><div class="faq-a"><div><p>선별·배정 기준은 실제 운영 정책과 공개 카피가 일치하도록 최종 확인이 필요합니다. 시안에서는 검증되지 않은 단정 표현을 사용하지 않습니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="process" data-id="faq-05" hidden><button class="faq-q" aria-expanded="false">개발 이후 수정과 확장이 가능한가요?</button><div class="faq-a"><div><p>결정과 작업 범위를 기록하고 전달하는 구조를 전제로 하므로 이후 확장과 인수인계가 가능하도록 설계합니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="process" data-id="faq-06" hidden><button class="faq-q" aria-expanded="false">프로젝트 현황은 어디에서 관리하나요?</button><div class="faq-a"><div><p>이번 v1 사이트의 관리자 범위는 빌더·Work·Insight 콘텐츠 운영입니다. 리드와 영업 관리는 pluuug에서 처리하며 프로젝트 관리 기능은 현재 범위에 포함하지 않습니다.</p></div></div></article>
       </div>
     </div>
   </div>
@@ -774,11 +775,22 @@ body.chat-open .dock{transform:translate(-50%,140%)}
 
   /* 파라미터 규격 — PRD §6.4: section / content_id / destination / utm_source
      utm_source 는 진입 URL 에서 한 번만 읽어 모든 이벤트에 공통으로 싣는다.
-     GA4 스니펫은 <head> 의 TODO 위치에 넣으면 이 dataLayer 를 그대로 받는다. */
+
+     🔴 이전 판은 dataLayer.push 만 하고 "gtag 스니펫만 넣으면 GA4 로 흘러간다"고 적었다.
+     사실이 아니다. dataLayer 에 평범한 객체를 push 하는 건 GTM 문법이고, gtag.js 는
+     dataLayer 를 arguments 큐로 읽기 때문에(gtag() 가 arguments 를 push 한다) 이 객체들을
+     이벤트로 처리하지 않는다. 측정 ID 를 받아 스니펫만 붙였다면 대시보드가 비어 있었을 것이다.
+     성공조건 ② 가 달린 지점이라 어느 쪽을 붙여도 동작하도록 양쪽으로 보낸다.
+
+     GTM 컨테이너만 설치 → dataLayer.push 가 트리거를 태운다. window.gtag 없음 → 중복 없음.
+     gtag.js 만 설치      → gtag('event') 가 기록된다. push 는 gtag.js 가 무시 → 중복 없음.
+     ⚠️ 둘 다 설치하면 이중 집계된다. 하나만 붙일 것. */
   const utmSource=new URL(location.href).searchParams.get('utm_source')||'';
   const track=(event,params={})=>{
+    const payload={utm_source:utmSource,...params};
     window.dataLayer=window.dataLayer||[];
-    window.dataLayer.push({event,utm_source:utmSource,...params});
+    window.dataLayer.push({event,...payload});
+    if(typeof window.gtag==='function') window.gtag('event',event,payload);
   };
   /* href="#" 는 pluuug URL 미확정에 따른 의도적 공란이다(PRD §12 🔴).
      기본 동작을 막지 않으면 최종 CTA 클릭이 페이지 최상단 점프가 된다 — 심사자가 가장 확실히
@@ -914,7 +926,9 @@ body.chat-open .dock{transform:translate(-50%,140%)}
   document.querySelectorAll('.faq-q').forEach(q=>q.addEventListener('click',()=>{
     const item=q.closest('.faq-item'); const open=item.classList.toggle('open');
     q.setAttribute('aria-expanded',String(open));
-    track('faq_toggle',{section:'faq',content_id:q.textContent.trim(),open});
+    /* content_id 는 질문 문장이 아니라 data-id 에서 온다. 문장을 쓰면 카피를 한 글자만
+       고쳐도 GA4 에서 다른 항목으로 집계돼 이력이 끊긴다. work·insight 와 같은 규약이다. */
+    track('faq_toggle',{section:'faq',content_id:item.dataset.id||'',open});
   }));
 
   // Respect browser navigation of query states

@@ -163,9 +163,16 @@ prefers-reduced-motion: reduce  → 모든 모션 비활성
 
 추가 시 이 규칙을 따른다.
 ```
-work_card_click · insight_click · youtube_out · tab_change · pluuug_out
+work_card_click · insight_click · youtube_out · tab_change · pluuug_out · faq_toggle
 파라미터: section / content_id / destination / utm_source
 ```
+
+`content_id` 는 **문장이 아니라 `data-id`** 를 쓴다(`work-01` · `insight-01` · `faq-01`).
+문장을 넣으면 카피를 한 글자만 고쳐도 GA4 에서 다른 항목이 되어 이력이 끊긴다.
+
+**`track()` 은 `dataLayer.push` 와 `gtag('event')` 양쪽으로 보낸다.** GTM 컨테이너를 쓰든
+gtag 스니펫을 쓰든 동작하게 하려는 것이다. **둘 다 설치하면 이중 집계되니 하나만 붙일 것.**
+근거는 PRD §6.4 "GA4 결선".
 
 URL 분기는 **분석 가치가 있는 상태만** 반영한다. 정렬·아코디언 같은 UI 상태는 넣지 마라.
 
