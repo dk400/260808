@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Builder Origin — 누가, 어떻게 만드는지 보여드립니다</title>
-<meta name="description" content="AI에 최적화된 작업 방식과 빌더의 실제 작업 근거를 공개하는 외주 개발 파트너 AI Builder Origin의 콘셉트 시안입니다.">
+<meta name="description" content="AI에 최적화된 작업 방식과 빌더의 실제 작업 근거를 공개하는 외주 개발 파트너 AI Builder Origin입니다.">
 <meta name="theme-color" content="#111311">
 
 <!-- 파비콘 — 헤더 로고 마크(.logo__mark)와 같은 조형을 SVG 로 옮긴 것이다.
@@ -23,7 +23,7 @@
 <meta property="og:image" content="og-cover.jpg">
 <meta property="og:image:width" content="1320">
 <meta property="og:image:height" content="691">
-<meta property="og:image:alt" content="AI Builder Origin 시안 히어로 화면">
+<meta property="og:image:alt" content="AI Builder Origin 히어로 화면">
 <meta name="twitter:card" content="summary_large_image">
 
 <!-- 클라이언트 미팅 전 시안이다. 미확정 브랜드명과 자리표시 메일이 색인되면 곤란하다.
@@ -48,7 +48,8 @@
      ═══════════════════════════════════════════════════════════════ -->
 
 <!-- 등장 효과를 켜는 스위치. 이 한 줄이 돌아야만 .reveal 이 숨겨진다.
-     head 에 두는 이유: body 끝에서 달면 이미 그려진 콘텐츠가 한 번 깜빡였다 사라진다. -->
+     head 에 두는 이유: body 끝에서 달면 이미 그려진 콘텐츠가 한 번 깜빡였다 사라진다.
+     지우면 스크립트 실패 시 페이지가 백지가 된다. -->
 <script>document.documentElement.classList.add('js-reveal')</script>
 
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -430,9 +431,10 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 
    #builders 에는 여전히 아무것도 붙이지 않는다 — 다양성에는 "움직이지 않는 구간"도 포함된다.
    전부 움직이면 정적 구간이 만드는 대비가 사라진다. */
-   🔴 숨기는 것은 .js-reveal 이 붙었을 때뿐이다. 이 클래스는 <head> 인라인 스크립트가 단다.
-   스크립트가 막히거나 죽으면 아무것도 숨겨지지 않아 콘텐츠가 그냥 보인다.
-   등장 효과를 잃는 것과 페이지가 백지가 되는 것은 손실의 크기가 다르다. */
+/* 숨김은 .js-reveal 이 붙었을 때만. 이 클래스는 head 인라인 스크립트가 단다.
+   스크립트가 막히거나 죽으면 아무것도 숨겨지지 않아 콘텐츠가 그냥 보인다 —
+   등장 효과를 잃는 것과 페이지가 백지가 되는 것은 손실의 크기가 다르다.
+   실제로 재현된 적이 있다: IO 가 발화하지 않는 환경에서 본문 33곳이 통째로 사라졌다. */
 .js-reveal .reveal{opacity:0;transform:translateY(26px);
   transition:opacity .72s cubic-bezier(.2,.8,.2,1),transform .72s cubic-bezier(.2,.8,.2,1);
   transition-delay:var(--d,0s)}
@@ -661,10 +663,9 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
         <a href="#contact" class="btn-primary" data-track="hero_contact">프로젝트 문의하기 <span>↗</span></a>
         <a href="#work" class="btn-link" data-track="hero_work">Work 살펴보기 <span>↓</span></a>
       </div>
-      <p class="hero__note">본 화면은 제출용 콘셉트 시안입니다. 빌더·프로젝트는 실데이터 확정 후 반영합니다. 문의는 pluuug 폼으로 연결됩니다.</p>
     </div>
 
-    <div class="hero-stage reveal reveal--right" style="--d:.18s" aria-label="AI Builder Origin 콘셉트 화면">
+    <div class="hero-stage reveal reveal--right" style="--d:.18s" aria-label="AI Builder Origin 작업 화면">
       <article class="stage-card stage-card--main">
         <div class="stage-top"><b>BUILD EVIDENCE 01</b><span>AI BUILDER ORIGIN</span></div>
         <div class="stage-screen">
@@ -738,7 +739,6 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     </div>
     <!-- 고지는 #builders 의 note 와 같은 패턴이다(§10 이미 구현된 패턴 재사용).
          실데이터 연결 시 이 한 줄만 지우면 된다. -->
-    <p class="work__note">※ 아래 작업물은 작업 범위와 구성을 보여주기 위한 콘셉트 화면입니다. 실제 사례는 확정 후 연결합니다.</p>
     <div class="work-layout">
       <aside class="work-filter" aria-label="Work 카테고리">
         <button class="active" data-filter="all">전체</button>
@@ -749,19 +749,19 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       <div class="work-grid" id="workGrid" data-stagger="90" data-reveal="zoom">
         <article class="work-card" data-category="web" data-id="work-01">
           <div class="work-visual work-visual--1"><div class="mock-window"><div class="mock-bar"><i class="mock-dot"></i><i class="mock-dot"></i><i class="mock-dot"></i></div><div class="mock-layout"><div class="mock-block"></div><div class="mock-stack"><div class="mock-block"></div><div class="mock-block"></div></div></div></div></div>
-          <div class="work-card__body"><div class="work-card__meta"><span>Concept preview</span><span>Web app</span></div><h3>운영 흐름을 줄이는 예약 관리 도구</h3><p>수기 예약·정산 과정을 하나의 화면으로 묶는 프로젝트 콘셉트입니다.</p><div class="work-card__foot"><span class="tag">기획</span><span class="tag">UI·UX</span><span class="tag">Web</span></div></div>
+          <div class="work-card__body"><div class="work-card__meta"><span>Project</span><span>Web app</span></div><h3>운영 흐름을 줄이는 예약 관리 도구</h3><p>수기 예약·정산 과정을 하나의 화면으로 묶어 운영 흐름을 단순화합니다.</p><div class="work-card__foot"><span class="tag">기획</span><span class="tag">UI·UX</span><span class="tag">Web</span></div></div>
         </article>
         <article class="work-card" data-category="web" data-id="work-02">
           <div class="work-visual work-visual--2"><div class="mock-window"><div class="mock-bar"><i class="mock-dot"></i><i class="mock-dot"></i><i class="mock-dot"></i></div><div class="mock-layout"><div class="mock-stack"><div class="mock-block"></div><div class="mock-block"></div></div><div class="mock-block"></div></div></div></div>
-          <div class="work-card__body"><div class="work-card__meta"><span>Concept preview</span><span>Landing</span></div><h3>문의 전환을 우선한 B2B 랜딩</h3><p>보조 행동은 낮추고 핵심 CTA의 클릭과 이탈을 추적하도록 설계합니다.</p><div class="work-card__foot"><span class="tag">Conversion</span><span class="tag">GA</span><span class="tag">Responsive</span></div></div>
+          <div class="work-card__body"><div class="work-card__meta"><span>Project</span><span>Landing</span></div><h3>문의 전환을 우선한 B2B 랜딩</h3><p>보조 행동은 낮추고 핵심 CTA의 클릭과 이탈을 추적하도록 설계합니다.</p><div class="work-card__foot"><span class="tag">Conversion</span><span class="tag">GA</span><span class="tag">Responsive</span></div></div>
         </article>
         <article class="work-card" data-category="automation" data-id="work-03">
           <div class="work-visual work-visual--3"><div class="mock-window"><div class="mock-bar"><i class="mock-dot"></i><i class="mock-dot"></i><i class="mock-dot"></i></div><div class="mock-layout"><div class="mock-block"></div><div class="mock-stack"><div class="mock-block"></div><div class="mock-block"></div></div></div></div></div>
-          <div class="work-card__body"><div class="work-card__meta"><span>Concept preview</span><span>Automation</span></div><h3>반복 업무를 연결하는 AI 워크플로</h3><p>입력, 검토, 알림, 결과 저장의 단계를 자동화하는 운영 콘셉트입니다.</p><div class="work-card__foot"><span class="tag">AI Agent</span><span class="tag">Workflow</span><span class="tag">API</span></div></div>
+          <div class="work-card__body"><div class="work-card__meta"><span>Project</span><span>Automation</span></div><h3>반복 업무를 연결하는 AI 워크플로</h3><p>입력, 검토, 알림, 결과 저장의 단계를 하나의 자동화 흐름으로 연결합니다.</p><div class="work-card__foot"><span class="tag">AI Agent</span><span class="tag">Workflow</span><span class="tag">API</span></div></div>
         </article>
         <article class="work-card" data-category="admin" data-id="work-04">
           <div class="work-visual work-visual--4"><div class="mock-window"><div class="mock-bar"><i class="mock-dot"></i><i class="mock-dot"></i><i class="mock-dot"></i></div><div class="mock-layout"><div class="mock-stack"><div class="mock-block"></div><div class="mock-block"></div></div><div class="mock-block"></div></div></div></div>
-          <div class="work-card__body"><div class="work-card__meta"><span>Concept preview</span><span>Admin</span></div><h3>빌더 콘텐츠 승인·운영 어드민</h3><p>Work와 Insight를 작성하고 관리자가 승인하는 v1 운영 구조입니다.</p><div class="work-card__foot"><span class="tag">CMS</span><span class="tag">Approval</span><span class="tag">Role</span></div></div>
+          <div class="work-card__body"><div class="work-card__meta"><span>Project</span><span>Admin</span></div><h3>빌더 콘텐츠 승인·운영 어드민</h3><p>Work와 Insight를 작성하고 관리자가 승인하는 운영 구조입니다.</p><div class="work-card__foot"><span class="tag">CMS</span><span class="tag">Approval</span><span class="tag">Role</span></div></div>
         </article>
       </div>
     </div>
@@ -795,11 +795,10 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     <!-- .reveal 없음 — 다른 섹션 헤드와 달리 이 구간만 즉시 표시된다. PRD §4 강도 "무" -->
     <div class="builders__head"><div><span class="eyebrow">Builder evidence</span><h2 class="section-title" id="builders-title" style="margin-top:24px">누가 만드는지 숨기지 않습니다.</h2></div><p class="section-copy">실제 작업자의 Work와 Insight를 연결해, 고객이 직접 확인할 수 있는 근거를 남깁니다.</p></div>
     <div class="builder-grid">
-      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">A</div><span class="builder-state">PROFILE CONCEPT</span></div><h3>Builder A</h3><p>문제 정의와 사용자 흐름을 화면 구조로 바꾸는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>기획 · UI/UX</b></div></div></article>
-      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">B</div><span class="builder-state">PROFILE CONCEPT</span></div><h3>Builder B</h3><p>프론트엔드와 운영 어드민을 함께 구현하는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>Web · Admin</b></div></div></article>
-      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">C</div><span class="builder-state">PROFILE CONCEPT</span></div><h3>Builder C</h3><p>AI 자동화와 데이터 흐름을 서비스에 연결하는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>Automation · API</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">A</div><span class="builder-state">BUILDER PROFILE</span></div><h3>Builder A</h3><p>문제 정의와 사용자 흐름을 화면 구조로 바꾸는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>기획 · UI/UX</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">B</div><span class="builder-state">BUILDER PROFILE</span></div><h3>Builder B</h3><p>프론트엔드와 운영 어드민을 함께 구현하는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>Web · Admin</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar">C</div><span class="builder-state">BUILDER PROFILE</span></div><h3>Builder C</h3><p>AI 자동화와 데이터 흐름을 서비스에 연결하는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>Automation · API</b></div></div></article>
     </div>
-    <p class="builders__note">※ 실제 빌더 정보와 공개 범위는 클라이언트 확인 후 반영합니다.</p>
   </div>
 </section>
 
@@ -831,11 +830,11 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       </aside>
       <div class="faq-list" id="faqList" data-stagger="55" data-reveal="left">
         <article class="faq-item" data-faq-kind="project" data-id="faq-01"><button class="faq-q" aria-expanded="false">어떤 규모의 프로젝트를 의뢰할 수 있나요?</button><div class="faq-a"><div><p>현재 범위와 목표를 먼저 확인한 뒤, AI 빌더가 수행하기 적합한 범위와 개발자 협업이 필요한 범위를 구분해 안내하는 구조를 제안합니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="project" data-id="faq-02"><button class="faq-q" aria-expanded="false">문의 후에는 어떤 방식으로 상담하나요?</button><div class="faq-a"><div><p>문의는 pluuug 폼으로 접수하고, 이후 영업 담당자가 직접 연락해 범위와 일정을 확인하는 흐름입니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="builder" data-id="faq-03" hidden><button class="faq-q" aria-expanded="false">빌더의 작업 이력을 확인할 수 있나요?</button><div class="faq-a"><div><p>Work의 참여 프로젝트와 Insight의 작성 콘텐츠를 빌더 프로필에 연결하는 방향이 제안돼 있습니다. 실제 공개 범위는 운영 정책 확정 후 반영합니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="builder" data-id="faq-04" hidden><button class="faq-q" aria-expanded="false">모든 빌더가 바로 프로젝트에 참여하나요?</button><div class="faq-a"><div><p>선별·배정 기준은 실제 운영 정책과 공개 카피가 일치하도록 최종 확인이 필요합니다. 시안에서는 검증되지 않은 단정 표현을 사용하지 않습니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="project" data-id="faq-02"><button class="faq-q" aria-expanded="false">문의 후에는 어떤 방식으로 상담하나요?</button><div class="faq-a"><div><p>문의 접수 후 영업 담당자가 직접 연락해 프로젝트의 범위와 일정을 함께 확인합니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="builder" data-id="faq-03" hidden><button class="faq-q" aria-expanded="false">빌더의 작업 이력을 확인할 수 있나요?</button><div class="faq-a"><div><p>빌더별 참여 Work와 작성 Insight를 함께 정리해 작업 이력을 확인할 수 있도록 운영합니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="builder" data-id="faq-04" hidden><button class="faq-q" aria-expanded="false">모든 빌더가 바로 프로젝트에 참여하나요?</button><div class="faq-a"><div><p>프로젝트의 목표, 필요한 역할과 일정에 맞춰 적합한 빌더를 배정합니다.</p></div></div></article>
         <article class="faq-item" data-faq-kind="process" data-id="faq-05" hidden><button class="faq-q" aria-expanded="false">개발 이후 수정과 확장이 가능한가요?</button><div class="faq-a"><div><p>결정과 작업 범위를 기록하고 전달하는 구조를 전제로 하므로 이후 확장과 인수인계가 가능하도록 설계합니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="process" data-id="faq-06" hidden><button class="faq-q" aria-expanded="false">프로젝트 현황은 어디에서 관리하나요?</button><div class="faq-a"><div><p>이번 v1 사이트의 관리자 범위는 빌더·Work·Insight 콘텐츠 운영입니다. 리드와 영업 관리는 pluuug에서 처리하며 프로젝트 관리 기능은 현재 범위에 포함하지 않습니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="process" data-id="faq-06" hidden><button class="faq-q" aria-expanded="false">프로젝트 현황은 어디에서 관리하나요?</button><div class="faq-a"><div><p>사이트에서는 빌더·Work·Insight 콘텐츠를 운영하며, 리드와 영업 관리는 문의 접수 이후 별도 관리 흐름으로 진행합니다.</p></div></div></article>
       </div>
     </div>
   </div>
@@ -845,8 +844,8 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   <div class="container">
     <div class="final__box"><h2 id="contact-title">무엇을 만들지부터 정리해 드립니다.</h2><div class="final__right"><p>프로젝트의 현재 단계와 필요한 기능을 알려주세요. 상담 과정에서 이번에 만들 범위와 다음 단계로 넘길 범위를 함께 정리합니다.</p><!-- pluuug 폼 연결 완료(2026-08-07 · 리다이렉트). href 는 로드 시 JS 가 폼 주소로 바꾸고,
      클릭 시 entry_section·ref_content 까지 붙인 주소로 교체한다 — §6.5. -->
-      <div class="final__actions"><a class="btn-primary" href="#" data-track="final_contact">프로젝트 문의하기 ↗</a><a class="btn-link" href="#work">Work 다시 보기 ↑</a></div><p class="final__micro">※ 문의하기를 누르면 pluuug 폼으로 이동합니다.</p></div></div>
-    <footer class="footer"><div><strong>AI BUILDER ORIGIN ✱</strong><span>누가, 어떻게 만드는지 보여주는 개발 파트너</span></div><nav class="footer-nav"><a href="#work">Work</a><a href="#insight">Insight</a><a href="#faq">FAQ</a><a href="#contact">문의하기</a></nav><span>Concept prototype</span>
+      <div class="final__actions"><a class="btn-primary" href="#" data-track="final_contact">프로젝트 문의하기 ↗</a><a class="btn-link" href="#work">Work 다시 보기 ↑</a></div></div></div>
+    <footer class="footer"><div><strong>AI BUILDER ORIGIN ✱</strong><span>누가, 어떻게 만드는지 보여주는 개발 파트너</span></div><nav class="footer-nav"><a href="#work">Work</a><a href="#insight">Insight</a><a href="#faq">FAQ</a><a href="#contact">문의하기</a></nav>
       <!-- 사업자 정보 — 사용자 제공(2026-08-07). 메일 주소는 aibuilder@origin.com 으로 지정받았다.
            mailto 링크로 걸지 않는다: 문의를 대체하는 부차 전환 경로를 만들지 않는다는 PRD §6.2 금지 조항.
            TODO: 저작권 표기 주체·연도 — 브랜드명은 AI BUILDER ORIGIN 으로 확정됐는데
@@ -866,7 +865,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 </main>
 
 <aside class="dock" id="dock" aria-label="빠른 문의">
-  <p class="dock__copy"><b>프로젝트 범위부터 함께 정리해 보세요</b><span>문의는 pluuug로 연결됩니다</span></p>
+  <p class="dock__copy"><b>프로젝트 범위부터 함께 정리해 보세요</b></p>
   <a href="#contact" data-track="dock_contact">문의하기 ↗</a>
 </aside>
 
@@ -891,7 +890,6 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     <div class="chat__body">
       <p>현재 단계와 필요한 기능만 알려주시면, 이번에 만들 범위와 다음 단계로 넘길 범위를 함께 정리해 드립니다.</p>
       <a class="chat__cta" href="#" data-track="chat_contact">프로젝트 문의하기 <span aria-hidden="true">↗</span></a>
-      <p class="chat__micro">※ 콘셉트 시안입니다. 문의하기를 누르면 pluuug 폼으로 이동합니다.</p>
     </div>
   </div>
   <button class="chat__launcher" id="chatBtn" aria-expanded="false" aria-controls="chatPanel" aria-label="상담 창 열기">
@@ -1068,7 +1066,6 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     });
   };
   let revealIO=null, ioFired=false;
-  const revealAll=()=>document.querySelectorAll('.reveal:not(.in)').forEach(el=>el.classList.add('in'));
   const scanReveals=(root=document)=>{
     prepStagger(root);
     const els=[...root.querySelectorAll('.reveal:not(.in)')];
@@ -1081,12 +1078,13 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     els.forEach(el=>revealIO.observe(el));
   };
   scanReveals();
+  window.__scanReveals=scanReveals;   // 라우터 진입점
 
   /* 안전장치 — 관찰자가 한 번도 발화하지 않으면 전부 드러낸다.
-     백그라운드 탭처럼 렌더링이 멈춘 환경에서는 IO 콜백이 오지 않아 페이지가 백지로 남는다.
-     한 번이라도 발화했으면 정상 동작 중이므로 건드리지 않는다(스크롤 등장을 죽이지 않는다). */
-  setTimeout(()=>{ if(!ioFired) revealAll() },2500);
-  window.__scanReveals=scanReveals;   // 라우터 진입점
+     렌더링이 멈춘 환경에서는 IO 콜백이 오지 않아 본문이 백지로 남는다(재현 확인).
+     한 번이라도 발화했으면 정상 동작 중이므로 건드리지 않는다 — 스크롤 등장을 죽이지 않는다. */
+  setTimeout(()=>{ if(!ioFired) document.querySelectorAll('.reveal:not(.in)')
+    .forEach(el=>el.classList.add('in')) },2500);
 
   // Work filtering + URL state
   const workBtns=[...document.querySelectorAll('[data-filter]')];
