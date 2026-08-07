@@ -789,14 +789,14 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       <span class="logo__mark">✱</span><span>AI BUILDER ORIGIN</span>
     </a>
     <nav class="nav" aria-label="주요 메뉴">
-      <a href="#work">Work</a><a href="#education">Education</a><a href="#insight">Insight</a><a href="#faq">FAQ</a>
+      <a href="#/work">Work</a><a href="#/education">Education</a><a href="#/insight">Insight</a><a href="#/faq">FAQ</a>
     </nav>
     <a class="header__cta" href="#contact" data-track="header_contact">프로젝트 문의 <span>↗</span></a>
     <button class="menu-btn" id="menuBtn" aria-label="메뉴 열기" aria-expanded="false"><span></span></button>
   </div>
 </header>
 <nav class="mobile-menu" id="mobileMenu" aria-label="모바일 메뉴">
-  <a href="#work">Work</a><a href="#education">Education</a><a href="#insight">Insight</a><a href="#faq">FAQ</a><a href="#contact">문의하기</a>
+  <a href="#/work">Work</a><a href="#/education">Education</a><a href="#/insight">Insight</a><a href="#/faq">FAQ</a><a href="#contact">문의하기</a>
 </nav>
 
 <main id="top">
@@ -886,7 +886,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
            현재형 문장으로 바꿨다. 실데이터가 붙어도 이 문장은 그대로 참이다.
            "Selected work" 도 선별된 실적을 함의해 "Work" 로 줄였다. -->
       <div><span class="eyebrow">Work</span><h2 class="section-title" id="work-title" style="margin-top:24px">어떤 문제를 어떤 구조로 푸는지 보여줍니다.</h2></div>
-      <p class="section-copy">카테고리별로 나눠 보실 수 있습니다. 선택한 화면은 주소 그대로 공유됩니다.</p>
+      <p class="section-copy">아래는 일부입니다. <a class="edu-link" href="#/work">전체 보기 →</a></p>
     </div>
     <!-- 수행 주체 표기 — PRD §7.6 이 ✅ 로 규정한 시나리오다.
          "표기 없이 자사 실적처럼 게시"는 ❌("비판한 업체와 같은 구조")이므로 이 줄을 지우지 마라.
@@ -1021,15 +1021,21 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     <div class="reveal"><span class="eyebrow">FAQ</span><h2 class="section-title" id="faq-title" style="margin-top:24px">문의 전에 궁금한 것부터.</h2></div>
     <div class="faq__layout">
       <aside class="faq-tabs" aria-label="FAQ 카테고리">
-        <button class="active" data-faq="project">프로젝트</button><button data-faq="builder">빌더</button><button data-faq="process">진행 방식</button>
+        <button class="active" data-faq="project">프로젝트</button><button data-faq="builder">빌더</button><button data-faq="process">진행 방식</button><button data-faq="education">교육</button>
       </aside>
       <div class="faq-list" id="faqList" data-stagger="55" data-reveal="left">
-        <article class="faq-item" data-faq-kind="project" data-id="faq-01"><button class="faq-q" aria-expanded="false">어떤 규모의 프로젝트를 의뢰할 수 있나요?</button><div class="faq-a"><div><p>현재 범위와 목표를 먼저 확인한 뒤, AI 빌더가 수행하기 적합한 범위와 개발자 협업이 필요한 범위를 구분해 안내하는 구조를 제안합니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="project" data-id="faq-02"><button class="faq-q" aria-expanded="false">문의 후에는 어떤 방식으로 상담하나요?</button><div class="faq-a"><div><p>문의 접수 후 영업 담당자가 직접 연락해 프로젝트의 범위와 일정을 함께 확인합니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="builder" data-id="faq-03" hidden><button class="faq-q" aria-expanded="false">빌더의 작업 이력을 확인할 수 있나요?</button><div class="faq-a"><div><p>빌더별 참여 Work와 작성 Insight를 함께 정리해 작업 이력을 확인할 수 있도록 운영합니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="builder" data-id="faq-04" hidden><button class="faq-q" aria-expanded="false">모든 빌더가 바로 프로젝트에 참여하나요?</button><div class="faq-a"><div><p>프로젝트의 목표, 필요한 역할과 일정에 맞춰 적합한 빌더를 배정합니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="process" data-id="faq-05" hidden><button class="faq-q" aria-expanded="false">개발 이후 수정과 확장이 가능한가요?</button><div class="faq-a"><div><p>결정과 작업 범위를 기록하고 전달하는 구조를 전제로 하므로 이후 확장과 인수인계가 가능하도록 설계합니다.</p></div></div></article>
-        <article class="faq-item" data-faq-kind="process" data-id="faq-06" hidden><button class="faq-q" aria-expanded="false">프로젝트 현황은 어디에서 관리하나요?</button><div class="faq-a"><div><p>사이트에서는 빌더·Work·Insight 콘텐츠를 운영하며, 리드와 영업 관리는 문의 접수 이후 별도 관리 흐름으로 진행합니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="project" data-id="faq-01"><button class="faq-q" aria-expanded="false">비용은 어떻게 산정되나요?</button><div class="faq-a"><div><p>총액을 먼저 던지지 않습니다. 진단에서 이번에 만들 범위와 다음 단계로 넘길 범위를 나눈 뒤, 기획·디자인·개발·검수 단계별로 쪼갠 산정을 드립니다. AI 기능이 들어가면 구축 비용만이 아니라 이후 모델 사용료와 운영 비용까지 함께 계산합니다. 예산이 정해져 있으면 그 안에서 만들 범위를 먼저 잡는 방식도 제안합니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="project" data-id="faq-02"><button class="faq-q" aria-expanded="false">기간은 어떻게 잡나요?</button><div class="faq-a"><div><p>기간을 좌우하는 것은 개발 속도보다 요구사항이 얼마나 정리돼 있는지입니다. 착수 전에 화면 구조와 데이터 구조를 확정하고, 작은 단위로 나눠 만들면서 주간 결과물을 공유합니다. 막판에 일정이 밀리는 상황은 대부분 범위가 중간에 늘어났는데 기록이 남지 않아 생깁니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="project" data-id="faq-03"><button class="faq-q" aria-expanded="false">소스코드와 계정은 누가 갖게 되나요?</button><div class="faq-a"><div><p>발주사입니다. 저장소와 배포·서버 계정을 발주사 명의로 세팅하고, 인수인계 문서를 함께 전달합니다. 이후에 내부 개발팀을 꾸리거나 다른 곳으로 옮기더라도 그대로 이어받을 수 있는 상태를 기본으로 봅니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="project" data-id="faq-04"><button class="faq-q" aria-expanded="false">이미 쓰고 있는 시스템과 연동되나요?</button><div class="faq-a"><div><p>기존 시스템을 갈아엎지 않는 방향을 먼저 검토합니다. 쓰던 화면과 동선 위에 얹는 설계가 가능하면 그쪽을 택합니다. 새 시스템을 하나 더 열어야 하는 구조는 도입 직후에는 돌아가도 몇 달 뒤에 아무도 쓰지 않게 되는 경우가 많습니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="process" data-id="faq-05" hidden><button class="faq-q" aria-expanded="false">기획서가 없어도 의뢰할 수 있나요?</button><div class="faq-a"><div><p>가능합니다. 진단 단계에서 목표와 사용자, 지금 가장 큰 병목을 먼저 확인하고 요구사항 요약·우선순위·제외 범위를 함께 정리해 드립니다. 이 단계에 시간을 아끼면 이후에 범위 다툼으로 더 큰 시간을 씁니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="process" data-id="faq-06" hidden><button class="faq-q" aria-expanded="false">진행 상황은 어떻게 확인하나요?</button><div class="faq-a"><div><p>주간 결과물과 결정 기록, 변경사항을 함께 전달합니다. 무엇을 만들었는지뿐 아니라 왜 그렇게 정했는지가 남아야 나중에 인수인계와 확장이 됩니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="process" data-id="faq-07" hidden><button class="faq-q" aria-expanded="false">진행 중에 범위가 바뀌면 어떻게 되나요?</button><div class="faq-a"><div><p>바뀐 내용과 판단 근거를 기록하고, 이번 릴리즈에 넣을지 다음 단계로 넘길지를 그 자리에서 나눕니다. 범위 변경 자체가 문제가 되는 경우는 드물고, 기록 없이 넘어가는 것이 문제가 됩니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="process" data-id="faq-08" hidden><button class="faq-q" aria-expanded="false">AI로 빠르게 만들면 품질이 흔들리지 않나요?</button><div class="faq-a"><div><p>검수를 사람의 집중력이 아니라 규칙에 맡깁니다. 통과 기준을 문장이 아니라 확인 항목으로 적고, 같은 입력에 같은 결과가 나오도록 둡니다. 생성한 쪽이 자기 결과를 평가하면 통과 쪽으로 기울기 때문에 검수는 생성과 분리합니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="builder" data-id="faq-09" hidden><button class="faq-q" aria-expanded="false">빌더의 작업 이력을 확인할 수 있나요?</button><div class="faq-a"><div><p>Work 의 참여 프로젝트와 Insight 의 작성 콘텐츠를 빌더 프로필에 연결하는 방향으로 설계돼 있습니다. 실제 공개 범위는 운영 정책 확정 후 반영합니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="builder" data-id="faq-10" hidden><button class="faq-q" aria-expanded="false">어떤 빌더가 참여하게 되나요?</button><div class="faq-a"><div><p>프로젝트에 필요한 역할을 먼저 정하고 그 역할을 맡을 사람을 배정합니다. 기획·UI/UX, 웹·어드민, 자동화·API 처럼 작업 범위가 다르기 때문입니다. 배정 기준과 공개 범위는 운영 정책 확정 후 안내드립니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="education" data-id="faq-11" hidden><button class="faq-q" aria-expanded="false">교육 프로그램은 누구를 위한 건가요?</button><div class="faq-a"><div><p>AI 빌더 스쿨 부트캠프는 비개발자와 입문자를 대상으로 합니다. 3개월 동안 기초 4주와 실전 2개월로 나뉘고, 주말 대면 실습과 평일 비대면 이론으로 진행합니다. 과정을 마치면 직접 배포한 프로덕트가 하나 남습니다.</p></div></div></article>
+        <article class="faq-item" data-faq-kind="education" data-id="faq-12" hidden><button class="faq-q" aria-expanded="false">교육과 실제 작업은 어떻게 이어지나요?</button><div class="faq-a"><div><p>과정에서 만든 결과물과 그때의 판단 기록이 그대로 근거가 됩니다. 무엇을 만들어 봤고 어떤 기준으로 정했는지가 남기 때문입니다. 참여 방식과 범위는 운영 정책에 따릅니다.</p></div></div></article>
       </div>
     </div>
   </div>
@@ -1040,7 +1046,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     <div class="final__box"><h2 id="contact-title">무엇을 만들지부터 정리해 드립니다.</h2><div class="final__right"><p>프로젝트의 현재 단계와 필요한 기능을 알려주세요. 상담 과정에서 이번에 만들 범위와 다음 단계로 넘길 범위를 함께 정리합니다.</p><!-- pluuug 폼 연결 완료(2026-08-07 · 리다이렉트). href 는 로드 시 JS 가 폼 주소로 바꾸고,
      클릭 시 entry_section·ref_content 까지 붙인 주소로 교체한다 — §6.5. -->
       <div class="final__actions"><a class="btn-primary" href="#" data-track="final_contact">프로젝트 문의하기 ↗</a><a class="btn-link" href="#work">Work 다시 보기 ↑</a></div></div></div>
-    <footer class="footer"><div><strong>AI BUILDER ORIGIN ✱</strong><span>누가, 어떻게 만드는지 보여주는 개발 파트너</span></div><nav class="footer-nav"><a href="#work">Work</a><a href="#insight">Insight</a><a href="#faq">FAQ</a><a href="#contact">문의하기</a><a href="#/admin">관리자 화면 시안</a></nav>
+    <footer class="footer"><div><strong>AI BUILDER ORIGIN ✱</strong><span>누가, 어떻게 만드는지 보여주는 개발 파트너</span></div><nav class="footer-nav"><a href="#/work">Work</a><a href="#/education">Education</a><a href="#/insight">Insight</a><a href="#/faq">FAQ</a><a href="#contact">문의하기</a><a href="#/admin">관리자 화면 시안</a></nav>
       <!-- 사업자 정보 — 사용자 제공(2026-08-07). 메일 주소는 aibuilder@origin.com 으로 지정받았다.
            mailto 링크로 걸지 않는다: 문의를 대체하는 부차 전환 경로를 만들지 않는다는 PRD §6.2 금지 조항.
            TODO: 저작권 표기 주체·연도 — 브랜드명은 AI BUILDER ORIGIN 으로 확정됐는데
@@ -1774,8 +1780,61 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     document.querySelectorAll('[data-f]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===admFilter)));
   });
 
+
+  /* ═══ 목록 페이지 — 상단 메뉴가 여기로 온다 ═══
+     홈의 Work · Insight 는 미리보기이고, 전체 목록은 이 화면이다.
+     카드/행 마크업은 홈과 같은 클래스를 쓴다 — 두 벌로 두면 한쪽만 고쳐져 갈라진다.
+     목록 데이터는 홈 DOM 에서 읽는다. 배열을 따로 두면 같은 이유로 어긋난다. */
+  const listShell=(eyebrow,title,lead,filters,body)=>wrap(
+    '<a class="detail__back" href="#/">← 홈</a>'+
+    '<span class="eyebrow">'+esc(eyebrow)+'</span>'+
+    '<h1 class="detail__title" id="detailTitle" tabindex="-1">'+esc(title)+'</h1>'+
+    '<p class="detail__lead">'+esc(lead)+'</p>'+
+    (filters?'<div class="adm__filters" role="group" aria-label="분류" style="margin-top:34px">'+filters+'</div>':'')+
+    body);
+
+  let workListFilter='all', insightListFilter='all';
+
+  const renderWorkList=()=>{
+    const cards=[...home.querySelectorAll('.work-card')];
+    const cats=[['all','전체'],['web','Web · App'],['automation','AI Automation'],['admin','Admin · Ops']];
+    const filters=cats.map(([k,l])=>{
+      const n=k==='all'?cards.length:cards.filter(c=>c.dataset.category===k).length;
+      return '<button data-wl="'+k+'" aria-pressed="'+(workListFilter===k)+'">'+l+' <span style="opacity:.6">'+String(n).padStart(2,'0')+'</span></button>';
+    }).join('');
+    const shown=cards.filter(c=>workListFilter==='all'||c.dataset.category===workListFilter);
+    const grid='<div class="work-grid" style="margin-top:26px">'+
+      shown.map(c=>c.outerHTML.replace(/ hidden(=""|)/g,'')).join('')+'</div>';
+    return listShell('Work','실제로 진행한 프로젝트',
+      '주식회사 똑똑한개발자가 수행한 작업입니다. 카테고리로 나눠 보실 수 있습니다.',
+      filters,grid);
+  };
+
+  const renderInsightList=()=>{
+    const rows=[...home.querySelectorAll('.insight-item')];
+    const kinds=[['all','전체'],['article','Article'],['video','YouTube']];
+    const filters=kinds.map(([k,l])=>{
+      const n=k==='all'?rows.length:rows.filter(r=>r.dataset.kind===k).length;
+      return '<button data-il="'+k+'" aria-pressed="'+(insightListFilter===k)+'">'+l+' <span style="opacity:.6">'+String(n).padStart(2,'0')+'</span></button>';
+    }).join('');
+    const shown=rows.filter(r=>insightListFilter==='all'||r.dataset.kind===insightListFilter);
+    const list='<div class="insight-list" style="margin-top:26px;border-top:1px solid var(--ink)">'+
+      shown.map(r=>r.outerHTML.replace(/ hidden(=""|)/g,'')).join('')+'</div>';
+    return listShell('Insight','일하는 방식을 콘텐츠로',
+      '글과 영상을 한곳에 모았습니다. 영상은 유튜브에서 열립니다.',
+      filters,list);
+  };
+
+  /* 목록 페이지의 필터는 URL 에 넣지 않는다 — §6.3 이 배제한 UI 상태다. */
+  document.addEventListener('click',e=>{
+    const t=e.target.closest&&e.target.closest('[data-wl],[data-il]');
+    if(!t) return;
+    if(t.dataset.wl!==undefined&&location.hash==='#/work'){ workListFilter=t.dataset.wl; showDetail(renderWorkList(),'Work'); }
+    if(t.dataset.il!==undefined&&location.hash==='#/insight'){ insightListFilter=t.dataset.il; showDetail(renderInsightList(),'Insight'); }
+  });
+
   const renderFaq=()=>{
-    const groups=[['project','프로젝트'],['builder','빌더'],['process','진행 방식']];
+    const groups=[['project','프로젝트'],['process','진행 방식'],['builder','빌더'],['education','교육']];
     const items=[...home.querySelectorAll('.faq-item')];
     const body=groups.map(([key,label])=>{
       const qs=items.filter(el=>el.dataset.faqKind===key).map(el=>{
@@ -1820,6 +1879,8 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
         showDetail(m[1]==='work'?renderWork(item):renderInsight(item),item.title); handled=true;
       }
     }else if(h==='#/faq'){ showDetail(renderFaq(),'FAQ'); handled=true; }
+    else if(h==='#/work'){ showDetail(renderWorkList(),'Work'); handled=true; }
+    else if(h==='#/insight'){ showDetail(renderInsightList(),'Insight'); handled=true; }
     else if(h==='#/education'){ showDetail(renderEducation(),'AI 빌더 스쿨 부트캠프'); handled=true; }
     else if(h==='#/admin'){ showDetail(renderAdmin(),'콘텐츠 운영'); handled=true; }
     if(!handled){
