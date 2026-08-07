@@ -192,8 +192,8 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 
 /* Proof/static section */
 .proof{background:var(--white)}
-.proof__head{display:block}
-.proof__head .section-copy{margin-top:24px}
+.proof__head{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end}
+.proof__head .section-copy{justify-self:end}
 .proof-grid{margin-top:64px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr)}
 .proof-item{padding:30px 24px 36px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-height:260px;display:flex;flex-direction:column;position:relative;transition:background .25s}
 .proof-item:last-child{border-right:0}
@@ -282,8 +282,8 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 
 /* Builders */
 .builders{background:var(--ink);color:var(--white)}
-.builders__head{display:block}
-.builders__head .section-copy{color:rgba(255,255,255,.58);margin-top:24px}
+.builders__head{display:grid;grid-template-columns:1fr .8fr;gap:48px;align-items:end}
+.builders__head .section-copy{color:rgba(255,255,255,.58);justify-self:end}
 .builder-grid{margin-top:60px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 /* PRD §4 — 이 구간의 인터랙션 강도는 "무"다. hover · transition · 등장 효과를 넣지 않는다.
    빈 구간이 아니라 판별 기준이다: "애니메이션을 넣는 판단만큼 안 넣는 판단도 기준이다"
@@ -768,6 +768,8 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   .problem-card{min-height:520px}
   .proof-grid{grid-template-columns:repeat(2,1fr)}
   .proof-item:nth-child(2){border-right:0}
+  .builders__head,.proof__head{grid-template-columns:1fr}
+  .builders__head .section-copy,.proof__head .section-copy{justify-self:start}
   .builder-grid{grid-template-columns:repeat(2,1fr)}
   .builder-card:last-child{grid-column:1/-1}
 }
@@ -1005,7 +1007,8 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 <section class="proof section" aria-labelledby="proof-title">
   <div class="container">
     <div class="proof__head reveal reveal--left">
-      <div><span class="eyebrow">What we prove</span><h2 class="section-title" id="proof-title" style="margin-top:24px">회사의 약속을 넘어, 작업의 근거까지.</h2><p class="section-copy">고객이 직접 확인할 수 있는 네 가지 근거를 먼저 설계했습니다.</p></div>
+      <div><span class="eyebrow">What we prove</span><h2 class="section-title" id="proof-title" style="margin-top:24px">회사의 약속을 넘어, 작업의 근거까지.</h2></div>
+      <p class="section-copy">고객이 직접 확인할 수 있는 네 가지 근거를 먼저 설계했습니다.</p>
     </div>
     <div class="proof-grid" data-stagger="80" data-reveal="down">
       <article class="proof-item"><div class="proof-item__icon">01</div><div class="proof-item__label">Scope</div><h3>무엇을 만들지 먼저 나눕니다</h3><p>지금 필요한 범위와 다음 단계로 넘길 범위를 분리해 일정과 비용의 불확실성을 줄입니다.</p></article>
@@ -1092,7 +1095,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 <section class="builders section" aria-labelledby="builders-title">
   <div class="container">
     <!-- .reveal 없음 — 다른 섹션 헤드와 달리 이 구간만 즉시 표시된다. PRD §4 강도 "무" -->
-    <div class="builders__head"><div><span class="eyebrow">Builder evidence</span><h2 class="section-title" id="builders-title" style="margin-top:24px">누가 만드는지 숨기지 않습니다.</h2><p class="section-copy">실제 작업자의 Work와 Insight를 연결해, 고객이 직접 확인할 수 있는 근거를 남깁니다.</p></div></div>
+    <div class="builders__head"><div><span class="eyebrow">Builder evidence</span><h2 class="section-title" id="builders-title" style="margin-top:24px">누가 만드는지 숨기지 않습니다.</h2></div><p class="section-copy">실제 작업자의 Work와 Insight를 연결해, 고객이 직접 확인할 수 있는 근거를 남깁니다.</p></div>
     <!-- ⚠️ 가상의 빌더다. 1기가 진행 중이라 실제 프로필이 아직 없어 표기 방식을 보여주는
          예시로 채웠다. 아래 note 가 그 사실을 고지한다 — 지우지 마라(§7.6).
          연결된 Work · Insight 는 실제 항목이고 누르면 그 상세로 간다.
