@@ -158,8 +158,8 @@ prefers-reduced-motion: reduce  → 모든 모션 비활성
 
 ### 3.4 전환 트래킹
 
-현재 `data-track` 6종: `header_contact` `hero_contact` `hero_work` `dock_contact` `final_contact`
-`chat_contact`
+현재 `data-track` 7종: `header_contact` `hero_contact` `hero_work` `dock_contact` `final_contact`
+`chat_contact` `detail_contact`
 
 추가 시 이 규칙을 따른다.
 ```
