@@ -313,7 +313,7 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
    외부 이미지가 뜨지 않는 환경(오프라인 file://)에서도 배경과 테두리가 남아 자리가 무너지지 않는다. */
 .insight-thumb{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;
   background:var(--panel);border:1px solid var(--line)}
-.insight-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.insight-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .55s cubic-bezier(.2,.7,.2,1)}
 .insight-thumb--yt::after{content:'';position:absolute;left:50%;top:50%;width:34px;height:24px;
   transform:translate(-50%,-50%);border-radius:6px;background:rgba(17,19,17,.72)}
 .insight-thumb--yt::before{content:'';position:absolute;left:50%;top:50%;z-index:1;
@@ -333,7 +333,16 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .cover--08{background:radial-gradient(circle,rgba(17,19,17,.24) 1.6px,transparent 1.7px) 0 0/13px 13px,linear-gradient(160deg,#d7ff59,#c8ed45)}
 .detail__cover{margin-top:36px;aspect-ratio:21/9;border-radius:var(--radius);
   border:1px solid var(--line);overflow:hidden}
+/* Work 상세 히어로 — 실제 화면 캡처다(그린 표지가 아니다).
+   세로 비율이 900×264 부터 900×1150 까지 섞여 있어 고정 비율로 자르면 어떤 것은
+   거의 남지 않는다. 그래서 높이만 제한하고 위쪽을 남긴다 — 캡처의 상단이 대개 히어로다. */
+.detail__shot{margin-top:36px;border-radius:var(--radius);border:1px solid var(--line);
+  overflow:hidden;background:var(--panel)}
+.detail__shot img{display:block;width:100%;height:auto;
+  max-height:clamp(340px,52vh,620px);object-fit:cover;object-position:top}
+.detail__cover img{width:100%;height:100%;object-fit:cover;display:block}
 .insight-item:hover .insight-thumb{border-color:rgba(17,19,17,.28)}
+.insight-item:hover .insight-thumb img{transform:scale(1.035)}
 .insight-type{font-size:11px;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:#6d716a}
 .insight-item h3{font-size:clamp(20px,2.2vw,29px);letter-spacing:-.015em;line-height:1.32}
 .insight-meta{margin-top:8px;color:#7b7e78;font-size:12px}
@@ -1250,7 +1259,8 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     const thumb=video
       ? '<span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/'+esc(it.vid)+
         '/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span>'
-      : '<span class="insight-thumb insight-thumb--cover cover--'+esc(it.cover||'01')+'" aria-hidden="true"></span>';
+      : '<span class="insight-thumb insight-thumb--cover cover--'+esc(it.cover||'01')+'" aria-hidden="true">'+
+        '<img src="assets/insight/'+esc(it.id)+'.jpg" alt="" loading="lazy" decoding="async" width="1672" height="941"></span>';
     return '<a class="insight-item" href="'+esc(href)+'"'+
       (video?' target="_blank" rel="noopener"':'')+
       ' data-kind="'+esc(it.kind)+'" data-id="'+esc(it.id)+'">'+thumb+
@@ -1792,6 +1802,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     '<span class="eyebrow">'+esc(item.cat)+'</span>'+
     '<h1 class="detail__title" id="detailTitle" tabindex="-1">'+esc(item.title)+'</h1>'+
     '<p class="detail__lead">'+esc(item.lead)+'</p>'+
+    '<div class="detail__shot"><img src="assets/work/'+esc(item.id)+'.jpg" alt="'+esc(item.title)+' 화면" loading="lazy"></div>'+
     '<dl class="detail__meta">'+item.meta.map(([k,v])=>'<div><dt>'+esc(k)+'</dt><dd>'+esc(v)+'</dd></div>').join('')+'</dl>'+
     '<div class="detail__body">'+sections(item.body)+'</div>'+
     navBlock(WORK,i,'work','Work')+ctaBlock);};
@@ -1801,7 +1812,8 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     '<span class="eyebrow">'+esc(item.type)+'</span>'+
     '<h1 class="detail__title" id="detailTitle" tabindex="-1">'+esc(item.title)+'</h1>'+
     '<p class="detail__lead">'+esc(item.lead)+'</p>'+
-    '<div class="detail__cover cover--'+esc(item.cover||'01')+'" aria-hidden="true"></div>'+
+    '<div class="detail__cover cover--'+esc(item.cover||'01')+'" aria-hidden="true">'+
+      '<img src="assets/insight/'+esc(item.id)+'.jpg" alt="" decoding="async" width="1672" height="941"></div>'+
     '<dl class="detail__meta"><div><dt>유형</dt><dd>'+esc(item.type)+'</dd></div>'+
     '<div><dt>작성</dt><dd>'+esc(item.by)+'</dd></div>'+
     '<div><dt>발행</dt><dd>'+esc(item.date)+'</dd></div></dl>'+
@@ -2049,6 +2061,10 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     const h=view.querySelector('#detailTitle'); if(h) h.focus({preventScroll:true});
     /* 새로 그린 CTA 도 진짜 링크로 만들어 준다. 클릭 자체는 위임으로 이미 잡힌다. */
     if(window.__wireContact) window.__wireContact(view);
+    /* 캡처 파일이 없으면 액자째 걷어낸다. 깨진 이미지 아이콘이 남는 것보다 없는 편이 낫다 —
+       Work 를 추가하면서 캡처를 빠뜨려도 상세 화면이 무너지지 않는다. */
+    const shot=view.querySelector('.detail__shot img');
+    if(shot) shot.addEventListener('error',()=>{const f=shot.closest('.detail__shot'); if(f) f.remove()});
   };
 
   const route=()=>{
