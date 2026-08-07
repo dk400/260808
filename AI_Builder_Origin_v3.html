@@ -633,10 +633,59 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   color:var(--muted);transition:background .18s,color .18s}
 .adm__who button[aria-pressed="true"]{background:var(--ink);color:var(--white)}
 .adm__note{margin-top:14px;font-size:13px;line-height:1.7;color:var(--muted)}
+.adm__rejectForm{display:grid;gap:10px}
 .adm__wait{display:inline-flex;align-items:center;gap:8px;padding:11px 16px;border-radius:999px;
   border:1px dashed var(--line);font-size:13px;font-weight:750;color:var(--muted)}
 /* 프로필 편집 — 아바타는 사진이 없을 때 이름 첫 글자로 대체한다.
    #builders 가 이미 같은 방식이라 시안 화면이 곧 "사진 미등록 상태"다. */
+/* ═══ 빌더 스페이스 ═══
+   관리자 화면은 검수용이라 목록+패널이 맞지만, 빌더에게는 자기 것이 한두 건뿐이라
+   그 구조가 텅 빈 화면이 된다. 여기서는 프로필이 앞에 오고 작업물이 뒤에 온다. */
+.space{padding-top:clamp(96px,11vw,132px)}
+.space__top{display:flex;align-items:flex-start;justify-content:space-between;gap:28px;flex-wrap:wrap}
+.space__id{display:flex;gap:22px;align-items:flex-start;min-width:0}
+.space__ava{width:96px;height:96px;flex:0 0 96px;border-radius:28px;display:grid;place-items:center;
+  background:linear-gradient(145deg,#d7ff59,#9bb73b);color:var(--ink);font-weight:900;font-size:34px;
+  background-size:cover;background-position:center}
+.space__name{margin-top:10px;font-size:clamp(30px,3.8vw,44px);letter-spacing:-.03em;font-weight:850;line-height:1.1}
+.space__role{margin-top:8px;font-size:14px;font-weight:800;color:#5c7500}
+.space__bio{margin-top:8px;font-size:15px;line-height:1.65;color:var(--muted);max-width:46ch}
+.space__acts{display:flex;gap:8px;flex-wrap:wrap}
+.space__stats{margin-top:38px;padding:24px 0;border-block:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.space__stats div{display:grid;gap:6px}
+.space__stats dt{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.space__stats dd{font-size:clamp(26px,3vw,34px);font-weight:850;letter-spacing:-.03em;line-height:1}
+.space__alert{margin-top:20px;padding:14px 18px;border-radius:14px;background:#ffe9df;
+  font-size:13.5px;line-height:1.7}
+.space__sec{margin-top:44px}
+.space__sec h2{font-size:clamp(19px,2.2vw,24px);letter-spacing:-.02em;font-weight:850}
+.space__list{margin-top:16px;display:grid;gap:10px}
+/* 항목 한 줄 — 썸네일 · 내용 · 행동. 카드로 키우면 두세 건에 화면이 다 찬다. */
+.space__item{display:grid;grid-template-columns:104px minmax(0,1fr) auto;gap:18px;align-items:center;
+  padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--white);
+  transition:border-color .2s}
+.space__item:hover{border-color:rgba(17,19,17,.28)}
+.space__thumb{aspect-ratio:16/10;border-radius:10px;overflow:hidden;background:var(--panel);
+  display:grid;place-items:center}
+.space__thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.space__mark{font-size:13px;font-weight:850;color:var(--muted);letter-spacing:.08em}
+.space__meta{min-width:0}
+.space__meta h3{margin-top:8px;font-size:16px;font-weight:800;letter-spacing:-.01em;line-height:1.4}
+.space__meta p{margin-top:5px;font-size:12px;color:var(--muted)}
+.space__reason{margin-top:8px;padding:9px 12px;border-radius:10px;background:#ffe9df;
+  font-size:12.5px;line-height:1.6;color:#5a2c17}
+.space__reason b{font-weight:850;margin-right:5px}
+.space__go{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.space__wait{display:inline-flex;align-items:center;padding:9px 14px;border-radius:999px;
+  border:1px dashed var(--line);font-size:12.5px;font-weight:750;color:var(--muted)}
+@media(max-width:780px){
+  .space__id{gap:16px}
+  .space__ava{width:72px;height:72px;flex:0 0 72px;border-radius:22px;font-size:26px}
+  .space__stats{grid-template-columns:1fr 1fr}
+  .space__item{grid-template-columns:80px minmax(0,1fr)}
+  .space__go{grid-column:1/-1;justify-content:flex-start}
+}
 .adm__profile{margin-top:18px;display:grid;gap:14px}
 .adm__ava{display:flex;align-items:center;gap:14px}
 .adm-avatar{width:64px;height:64px;flex:0 0 64px;border-radius:20px;display:grid;place-items:center;
@@ -2110,7 +2159,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   /* 역할은 골라 쓰되 목록에 없는 것도 적을 수 있게 둔다. 목록만 두면 새 역할이 생길 때마다
      코드를 고쳐야 하고, 자유 입력만 두면 같은 역할이 표기만 달리해 여러 개로 갈라진다. */
   const ROLES=['기획 · UI/UX','Web · Admin','Automation · API','콘텐츠 · 마케팅','교육생','미배정'];
-  let admInvite=false;
+  let admInvite=false, admReject=false;
   /* 역할. 실제 인증은 Phase 2 다(§8). 여기서는 "무엇이 다르게 보이는가"만 보여준다 —
      동작하지 않는 로그인 화면을 만드는 것보다 권한 설계를 드러내는 쪽이 낫다. */
   /* 로그인 상태. null 이면 로그인 화면이 먼저 뜬다.
@@ -2148,48 +2197,25 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
         '<div><span>최종 수정</span><b>'+esc(cur.d)+'</b></div>'+
         '<div><span>공개 여부</span><b>'+(cur.s==='live'?'공개됨':'비공개')+'</b></div>'+
       '</div>'+
-      (admTab==='builder'
-        /* 프로필도 공개 페이지(#builders)에 그대로 나간다. 그래서 글과 같은 검토 게이트를 탄다 —
-           한 줄 소개에 §7.5 가 막는 표현("엄격히 선별된" · 검증 불가 수치)이 들어갈 수 있다. */
-        ? '<div class="adm__profile">'+
-            '<div class="adm__ava">'+
-              '<span class="adm-avatar"'+(cur.photo?' data-photo="1" style="background-image:url('+cur.photo+')"':'')+'>'+
-                (cur.photo?'':esc(cur.ini||'?'))+'</span>'+
-              '<div><div class="adm__avaBtns">'+
-                '<button class="adm__mini" data-act="photo">'+(cur.photo?'사진 변경':'사진 올리기')+'</button>'+
-                (cur.photo?'<button class="adm__mini" data-act="photoclear">제거</button>':'')+
-                '<input type="file" id="admPhoto" accept="image/*" hidden>'+
-              '</div>'+
-              '<p class="adm__hint">정사각으로 잘라 400px 로 줄여 저장합니다. 5MB 이하. 없으면 이름 첫 글자로 표시됩니다.</p>'+
-              '<p class="adm__hint adm__photoMsg" role="status" hidden></p></div>'+
-            '</div>'+
-            '<label class="adm__field"><span>이름</span>'+
-              '<input type="text" value="'+esc(cur.name||'')+'" data-p="name"></label>'+
-            (()=>{
-              const other=cur.roleOther||!ROLES.includes(cur.role||'');
-              return '<label class="adm__field"><span>역할</span>'+
-                '<select data-p="role">'+
-                  ROLES.map(r=>'<option value="'+esc(r)+'"'+(!other&&cur.role===r?' selected':'')+'>'+esc(r)+'</option>').join('')+
-                  '<option value="__other"'+(other?' selected':'')+'>기타 — 직접 입력</option>'+
-                '</select></label>'+
-                (other
-                  ? '<label class="adm__field"><span>역할 직접 입력</span>'+
-                    '<input type="text" maxlength="30" data-p="roleCustom" value="'+esc(cur.role||'')+'" '+
-                    'placeholder="예: 데이터 · 리서치"></label>'
-                  : '');
-            })()+
-            '<label class="adm__field"><span>한 줄 소개</span>'+
-              '<input type="text" maxlength="70" value="'+esc(cur.bio||'')+'" data-p="bio">'+
-              /* 길이를 안 막으면 #builders 카드가 줄바꿈으로 깨진다. 카드는 두 줄까지다. */
-              '<em class="adm__count">'+String((cur.bio||'').length)+' / 70자</em></label>'+
-            '<p class="adm__hint">공개 페이지의 빌더 카드에 그대로 나갑니다. 검증할 수 없는 수치나 단정 표현은 쓰지 않습니다.</p>'+
-          '</div>'
+      (admTab==='builder' ? profileForm(cur)
         : '<div class="adm__editor">본문 편집 영역 — 제목·본문·이미지까지 글쓰기 수준으로 다룹니다.</div>')+
       '<div class="adm__acts">'+
         (ROLE_CAN[admRole].publish
-          ? (cur.s==='live'
-              ? '<button data-act="unpublish">공개 내리기</button>'
-              : '<button data-act="publish">공개하기</button><button data-act="reject">반려</button>')
+          ? (admReject
+              /* 사유 없는 반려는 빌더에게 "안 됨"만 전달한다. 무엇을 고쳐야 하는지 없으면
+                 다시 올라오는 것도 같은 상태다 — 사유를 받아야 반려가 일이 된다. */
+              ? '<form class="adm__rejectForm">'+
+                  '<label class="adm__field"><span>반려 사유</span>'+
+                  '<input type="text" maxlength="80" required placeholder="무엇을 고쳐야 하는지 적어주세요"></label>'+
+                  '<div class="adm__avaBtns" style="margin:0">'+
+                    '<button type="submit" class="adm__mini">반려 보내기</button>'+
+                    '<button type="button" class="adm__mini" data-act="rejectCancel">취소</button>'+
+                  '</div>'+
+                  '<p class="adm__hint">사유는 작성자에게 전달되고 빌더 스페이스에 표시됩니다.</p>'+
+                '</form>'
+              : cur.s==='live'
+                ? '<button data-act="unpublish">공개 내리기</button>'
+                : '<button data-act="publish">공개하기</button><button data-act="reject">반려</button>')
           /* 빌더는 검토 요청까지만 올린다. 공개 버튼을 보여주고 막는 대신 아예 두지 않는다 —
              누를 수 없는 버튼은 "권한이 없다"가 아니라 "고장났다"로 읽힌다. */
           : cur.s==='draft'
@@ -2198,6 +2224,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
                 ? '<span class="adm__wait">관리자 검토 대기 중</span>'
                 : '<span class="adm__wait">공개됨 — 내리기는 관리자만</span>')+
       '</div>'+
+      (cur.reason?'<p class="space__reason" style="margin-top:14px"><b>반려 사유</b> '+esc(cur.reason)+'</p>':'')+
       '<div class="adm__log"><b>기록</b>'+
         '<span>'+esc(cur.d)+' · '+esc(cur.w)+' 수정</span>'+
         '<span>'+esc(cur.d)+' · 상태 '+SLABEL[cur.s]+'</span></div>'
@@ -2234,6 +2261,123 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
         '</div>'+
       '</div>'+
     '</div></article>';
+
+  /* 프로필 편집 폼. 관리자 패널과 빌더 스페이스가 같은 것을 쓴다 —
+     두 벌로 두면 한쪽만 고쳐져 갈라진다. Insight 목록에서 실제로 겪은 문제다.
+     프로필도 공개 페이지(#builders)에 그대로 나가므로 글과 같은 검토 게이트를 탄다 —
+     한 줄 소개에 §7.5 가 막는 표현("엄격히 선별된" · 검증 불가 수치)이 들어갈 수 있다. */
+  const profileForm=cur=>'<div class="adm__profile">'+
+    '<div class="adm__ava">'+
+      '<span class="adm-avatar"'+(cur.photo?' data-photo="1" style="background-image:url('+cur.photo+')"':'')+'>'+
+        (cur.photo?'':esc(cur.ini||'?'))+'</span>'+
+      '<div><div class="adm__avaBtns">'+
+        '<button class="adm__mini" data-act="photo">'+(cur.photo?'사진 변경':'사진 올리기')+'</button>'+
+        (cur.photo?'<button class="adm__mini" data-act="photoclear">제거</button>':'')+
+        '<input type="file" id="admPhoto" accept="image/*" hidden>'+
+      '</div>'+
+      '<p class="adm__hint">정사각으로 잘라 400px 로 줄여 저장합니다. 5MB 이하. 없으면 이름 첫 글자로 표시됩니다.</p>'+
+      '<p class="adm__hint adm__photoMsg" role="status" hidden></p></div>'+
+    '</div>'+
+    '<label class="adm__field"><span>이름</span>'+
+      '<input type="text" value="'+esc(cur.name||'')+'" data-p="name"></label>'+
+    (()=>{
+      const other=cur.roleOther||!ROLES.includes(cur.role||'');
+      return '<label class="adm__field"><span>역할</span>'+
+        '<select data-p="role">'+
+          ROLES.map(r=>'<option value="'+esc(r)+'"'+(!other&&cur.role===r?' selected':'')+'>'+esc(r)+'</option>').join('')+
+          '<option value="__other"'+(other?' selected':'')+'>기타 — 직접 입력</option>'+
+        '</select></label>'+
+        (other
+          ? '<label class="adm__field"><span>역할 직접 입력</span>'+
+            '<input type="text" maxlength="30" data-p="roleCustom" value="'+esc(cur.role||'')+'" '+
+            'placeholder="예: 데이터 · 리서치"></label>'
+          : '');
+    })()+
+    '<label class="adm__field"><span>한 줄 소개</span>'+
+      '<input type="text" maxlength="70" value="'+esc(cur.bio||'')+'" data-p="bio">'+
+      '<em class="adm__count">'+String((cur.bio||'').length)+' / 70자</em></label>'+
+    '<p class="adm__hint">공개 페이지의 빌더 카드에 그대로 나갑니다. 검증할 수 없는 수치나 단정 표현은 쓰지 않습니다.</p>'+
+  '</div>';
+
+  /* ═══ 빌더 스페이스 ═══════════════════════════════════════════
+     빌더에게 관리자용 CMS(목록+패널)를 그대로 보여주면 자기 것이 한두 건뿐이라 화면이 비고,
+     자기가 누구인지는 목록의 한 줄로만 남는다. 빌더는 검수자가 아니라 작업자다 —
+     자기 프로필과 작업물이 앞에 오고, 할 일이 뒤에 온다. */
+  let spaceEdit=false;
+  const myProfile=()=>ADMIN.builder.find(b=>b.name===ME)||ADMIN.builder[0];
+  /* 원본 인덱스를 들고 다닌다. 상태를 바꿀 때 걸러낸 배열의 인덱스로는 원본을 못 찾는다. */
+  const myItems=k=>ADMIN[k].map((r,i)=>({r,k,i})).filter(x=>x.r.w===ME);
+  const idByTitle=(list,t)=>(list.find(x=>x.title===t)||{}).id||'';
+
+  const spaceRow=({r,k,i})=>{
+    const id=idByTitle(k==='work'?WORK:ARTICLES,r.t);
+    const thumb=k==='work'&&id
+      ? '<img src="assets/work/'+esc(id)+'.jpg" alt="" aria-hidden="true" loading="lazy">'
+      : '<span class="space__mark" aria-hidden="true">'+(k==='work'?'W':'A')+'</span>';
+    return '<article class="space__item">'+
+      '<div class="space__thumb">'+thumb+'</div>'+
+      '<div class="space__meta">'+
+        '<span class="adm-state" data-s="'+r.s+'">'+SLABEL[r.s]+'</span>'+
+        '<h3>'+esc(r.t)+'</h3>'+
+        '<p>'+esc(r.d)+'</p>'+
+        (r.reason?'<p class="space__reason"><b>반려 사유</b> '+esc(r.reason)+'</p>':'')+
+      '</div>'+
+      '<div class="space__go">'+
+        (id?'<a class="adm__mini" href="#/'+(k==='work'?'work':'insight')+'/'+esc(id)+'">공개 화면 ↗</a>':'')+
+        (r.s==='draft'?'<button class="adm__mini" data-sub="'+k+'|'+i+'">검토 요청</button>':'')+
+        (r.s==='review'?'<span class="space__wait">검토 대기</span>':'')+
+      '</div>'+
+    '</article>';
+  };
+
+  const renderSpace=()=>{
+    const me=myProfile();
+    const works=myItems('work'), posts=myItems('insight');
+    const all=works.concat(posts);
+    const n=x=>String(x).padStart(2,'0');
+    const waiting=all.filter(x=>x.r.s==='review').length;
+    const back=all.filter(x=>x.r.reason&&x.r.s==='draft');
+
+    return '<article class="adm space"><div class="container">'+
+      '<div class="space__top">'+
+        '<div class="space__id">'+
+          '<span class="space__ava"'+(me.photo?' data-photo="1" style="background-image:url('+me.photo+')"':'')+'>'+
+            (me.photo?'':esc(me.ini||'?'))+'</span>'+
+          '<div>'+
+            '<span class="eyebrow">Builder space</span>'+
+            '<h1 class="space__name" id="detailTitle" tabindex="-1">'+esc(me.name||'')+'</h1>'+
+            '<p class="space__role">'+esc(me.role||'미배정')+'</p>'+
+            '<p class="space__bio">'+esc(me.bio||'한 줄 소개가 아직 없습니다.')+'</p>'+
+          '</div>'+
+        '</div>'+
+        '<div class="space__acts">'+
+          '<button class="adm__mini" data-space="edit" aria-pressed="'+spaceEdit+'">'+(spaceEdit?'편집 닫기':'프로필 편집')+'</button>'+
+          '<a class="adm__mini" href="#/">공개 화면 보기 ↗</a>'+
+          '<button class="adm__mini" data-signout="1">로그아웃</button>'+
+        '</div>'+
+      '</div>'+
+      '<dl class="space__stats">'+
+        '<div><dt>참여 작업</dt><dd>'+n(works.length)+'</dd></div>'+
+        '<div><dt>작성한 글</dt><dd>'+n(posts.length)+'</dd></div>'+
+        '<div><dt>검토 대기</dt><dd>'+n(waiting)+'</dd></div>'+
+      '</dl>'+
+      (back.length
+        /* 반려는 알려주지 않으면 모른다. 목록에만 묻어두면 빌더는 왜 안 올라갔는지 알 수 없다. */
+        ? '<p class="space__alert"><b>반려 '+back.length+'건</b> — 사유를 확인하고 고친 뒤 다시 검토를 요청하세요.</p>'
+        : '')+
+      (spaceEdit?'<section class="space__sec"><h2>프로필</h2>'+profileForm(me)+
+        '<p class="adm__hint">고친 내용은 검토를 거쳐 공개 화면에 반영됩니다.</p></section>':'')+
+      '<section class="space__sec"><h2>내 작업물</h2>'+
+        (works.length?'<div class="space__list">'+works.map(spaceRow).join('')+'</div>'
+          :'<p class="adm__hint">아직 배정된 작업이 없습니다.</p>')+
+      '</section>'+
+      '<section class="space__sec"><h2>내 글</h2>'+
+        (posts.length?'<div class="space__list">'+posts.map(spaceRow).join('')+'</div>'
+          :'<p class="adm__hint">아직 작성한 글이 없습니다.</p>')+
+      '</section>'+
+      '<p class="edu-note" style="margin-top:32px">※ Phase 1 화면 시안입니다. 인증·저장은 연결돼 있지 않고, 상태 변경은 이 화면 안에서만 유지됩니다.</p>'+
+    '</div></article>';
+  };
 
   const renderAdmin=()=>{
     const {list,panel}=renderAdminBody();
@@ -2282,9 +2426,15 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       '</div></article>';
   };
 
+  /* 편집 대상. 빌더 스페이스에서는 목록 선택이라는 개념이 없다 — 항상 자기 프로필이다. */
+  const editTarget=()=>admAuth==='builder'?myProfile():admRows()[admPick];
+
   const admRepaint=()=>{
     if(location.hash!=='#/admin') return;
-    view.innerHTML=admAuth?renderAdmin():renderAdminLogin();
+    view.innerHTML=!admAuth?renderAdminLogin():admAuth==='builder'?renderSpace():renderAdmin();
+    /* 제목도 함께 바꾼다. showDetail 을 거치지 않는 경로라 여기서 안 하면 로그인·역할이 바뀌어도
+       탭 제목이 이전 화면에 머문다 — 탭을 여러 개 띄우고 비교할 때 바로 드러난다. */
+    document.title=(admAuth==='builder'?'빌더 스페이스':'콘텐츠 운영')+' — '+BASE;
   };
 
   /* 아바타 이니셜. 한글 세 글자 이름은 성을 빼고 이름 첫 글자를 쓴다(김도윤 → 도) —
@@ -2336,7 +2486,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   document.addEventListener('change',e=>{
     const sel=e.target.closest&&e.target.closest('select[data-p="role"]');
     if(!sel||location.hash!=='#/admin') return;
-    const cur=admRows()[admPick]; if(!cur) return;
+    const cur=editTarget(); if(!cur) return;
     if(sel.value==='__other'){ cur.roleOther=true; cur.role=''; }
     else { cur.roleOther=false; cur.role=sel.value; }
     cur.t=(cur.name||'')+' · '+(cur.role||'미입력');
@@ -2349,7 +2499,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   document.addEventListener('change',async e=>{
     const inp=e.target.closest&&e.target.closest('#admPhoto');
     if(!inp||!inp.files||!inp.files[0]) return;
-    const cur=admRows()[admPick]; if(!cur) return;
+    const cur=editTarget(); if(!cur) return;
     try{
       cur.photo=await readAvatar(inp.files[0]);
       syncBuilderAvatar(cur);
@@ -2368,7 +2518,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   document.addEventListener('input',e=>{
     const t=e.target.closest&&e.target.closest('[data-p]');
     if(!t||location.hash!=='#/admin') return;
-    const cur=admRows()[admPick]; if(!cur) return;
+    const cur=editTarget(); if(!cur) return;
     /* 직접 입력 칸은 별도 필드가 아니라 role 그 자체다. 따로 두면 어느 쪽이 진짜인지 갈린다. */
     if(t.dataset.p==='roleCustom') cur.role=t.value;
     else cur[t.dataset.p]=t.value;
@@ -2386,16 +2536,23 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
      UI 상태다. 위임으로 받아 화면만 다시 그린다. */
   document.addEventListener('click',e=>{
     if(location.hash!=='#/admin') return;
-    const t=e.target.closest&&e.target.closest('[data-signin],[data-signout],[data-tab],[data-f],[data-i],[data-act]');
+    const t=e.target.closest&&e.target.closest('[data-signin],[data-signout],[data-space],[data-sub],[data-tab],[data-f],[data-i],[data-act]');
     if(!t) return;
-    if(t.dataset.tab){ admTab=t.dataset.tab; admFilter='all'; admPick=0; }
+    if(t.dataset.tab){ admTab=t.dataset.tab; admFilter='all'; admPick=0; admReject=false; }
     else if(t.dataset.f){ admFilter=t.dataset.f; admPick=0; }
-    else if(t.dataset.i!==undefined){ admPick=+t.dataset.i; }
+    else if(t.dataset.i!==undefined){ admPick=+t.dataset.i; admReject=false; }
     else if(t.dataset.signin){
       admAuth=admRole=t.dataset.signin;
-      admTab=ROLE_CAN[admRole].tabs[0]; admFilter='all'; admPick=0; admInvite=false; admSent='';
+      admTab=ROLE_CAN[admRole].tabs[0]; admFilter='all'; admPick=0; admInvite=false; admSent=''; spaceEdit=false;
       admRepaint();
       return;
+    }
+    else if(t.dataset.space==='edit'){ spaceEdit=!spaceEdit; admRepaint(); return; }
+    else if(t.dataset.sub){
+      const [k,i]=t.dataset.sub.split('|');
+      const it=ADMIN[k]&&ADMIN[k][+i]; if(!it) return;
+      it.s='review'; delete it.reason;   // 다시 올리면 지난 반려 사유는 지운다
+      admRepaint(); return;
     }
     else if(t.dataset.signout){
       admAuth=null; admSent='';
@@ -2415,14 +2572,15 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       const inp=document.getElementById('admPhoto'); if(inp) inp.click(); return;
     }
     else if(t.dataset.act==='photoclear'){
-      const cur=admRows()[admPick]; if(!cur) return;
+      const cur=editTarget(); if(!cur) return;
       cur.photo=''; syncBuilderAvatar(cur); admRepaint(); return;
     }
     else if(t.dataset.act){
       const cur=admRows()[admPick]; if(!cur) return;
-      cur.s = t.dataset.act==='publish' ? 'live'
-            : t.dataset.act==='submit'   ? 'review'
-            : 'draft';                                   // unpublish · reject
+      if(t.dataset.act==='reject'){ admReject=true; admRepaint(); return; }
+      if(t.dataset.act==='rejectCancel'){ admReject=false; admRepaint(); return; }
+      cur.s = t.dataset.act==='publish' ? 'live' : t.dataset.act==='submit' ? 'review' : 'draft';
+      if(t.dataset.act==='publish') delete cur.reason;   // 공개됐으면 지난 반려 사유는 남기지 않는다
       /* 상태를 바꾸면 지금 필터에서 그 항목이 빠져 화면에서 사라진다 — 누른 사람은 무슨 일이
          일어났는지 알 수 없다("검토 요청하기"를 눌렀는데 목록이 비었다). 필터를 풀고
          방금 바꾼 항목을 계속 선택해 결과를 보여준다. */
@@ -2442,6 +2600,16 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     if(lf){
       e.preventDefault();
       admSent=(lf.querySelector('input')||{}).value||'';
+      admRepaint();
+      return;
+    }
+    const rf=e.target.closest&&e.target.closest('.adm__rejectForm');
+    if(rf){
+      e.preventDefault();
+      const cur=admRows()[admPick];
+      if(cur){ cur.reason=(rf.querySelector('input')||{}).value||''; cur.s='draft'; }
+      admReject=false; admFilter='all';
+      admPick=cur?Math.max(0,admRows().indexOf(cur)):0;
       admRepaint();
       return;
     }
@@ -2572,7 +2740,8 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     else if(h==='#/insight'){ showDetail(renderInsightList(),'Insight'); handled=true; }
     else if(h==='#/education'){ showDetail(renderEducation(),'AI 빌더 스쿨 부트캠프'); handled=true; }
     else if(h==='#/admin'){
-      showDetail(admAuth?renderAdmin():renderAdminLogin(),'콘텐츠 운영'); handled=true;
+      showDetail(!admAuth?renderAdminLogin():admAuth==='builder'?renderSpace():renderAdmin(),
+        admAuth==='builder'?'빌더 스페이스':'콘텐츠 운영'); handled=true;
     }
     if(!handled){
       showHome();
