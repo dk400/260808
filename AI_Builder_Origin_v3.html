@@ -440,9 +440,10 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 
 /* border 가 없으면 --ink 배경인 #problem · #builders 위에서 원형 몸통이 배경과 같은 색이라
    사라지고 lime 아이콘만 떠 보인다. 같은 어두운 배경 위의 .dock 이 쓰는 처리와 맞춘다. */
-/* 채널톡이 부팅되면 자체 패널은 쓰지 않는다. display:none 이라 접근 트리에서도 빠진다 —
-   화면에서만 감추면 스크린리더가 읽을 수 없는 CTA 를 계속 읽어준다. */
-.chat--channel .chat__panel{display:none}
+/* 채널톡이 부팅되면 자체 위젯을 통째로 뺀다(런처까지). display:none 이라 접근 트리에서도
+   빠진다 — 화면에서만 감추면 스크린리더가 누를 수 없는 CTA 를 계속 읽어준다.
+   키가 없거나 부팅에 실패하면 이 클래스가 붙지 않아 자체 위젯이 그대로 남는다. */
+.chat--channel{display:none}
 .chat__launcher{width:56px;height:56px;border-radius:50%;background:var(--ink);color:var(--lime);border:1px solid rgba(255,255,255,.16);display:grid;place-items:center;box-shadow:0 14px 34px rgba(17,19,17,.26);transition:transform .22s,background .22s}
 .chat__launcher:hover{background:#2c302a;transform:translateY(-3px)}
 .chat__ico{width:23px;height:23px}
@@ -528,6 +529,12 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 }
 @media(max-width:980px){ .edu-lineup{grid-template-columns:1fr} }
 @media(max-width:780px){ .edu-track{grid-template-columns:1fr} }
+/* 채널톡 기본 런처는 우하단 고정이고 setBottomMargin 으로 옮겨지지 않는다(실측).
+   좁은 화면에서는 dock 이 폭을 거의 다 차지해 런처와 겹치므로 dock 이 우측을 비운다.
+   ct-on 은 채널톡이 실제로 부팅됐을 때만 붙는다 — 키가 없으면 dock 은 원래 폭 그대로다. */
+@media(max-width:780px){
+  body.ct-on .dock{width:calc(100% - 28px - 78px);left:calc(50% - 39px)}
+}
 
 /* ═══ 어드민 화면 시안 ═══════════════════════════════════════════════
    §8 이 Phase 1 에서 "인증 · 로그인 · DB 연동 · 관리자 실동작"을 제외한다.
@@ -1333,7 +1340,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   /* 채널톡 플러그인 키. 채널톡 > 채널 설정 > 보안 및 개발 > 플러그인 키.
      비어 있으면 아래 자체 상담 위젯이 그대로 남는다 — 시안은 키 없이도 동작해야 한다.
      GA4 측정 ID 와 같은 취급이다(PRD §12 미확정). */
-  const CHANNEL_PLUGIN_KEY='';
+  const CHANNEL_PLUGIN_KEY='266b9045-f30f-46eb-a60b-c1644a3ec7e2';
 
   /* §6.5 파라미터.
      utm_source 는 "우리 사이트에서 왔다"를 뜻하므로 고정값이다. 방문자가 달고 들어온
@@ -1465,10 +1472,11 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   };
 
   /* ═══ 채널톡 ═══════════════════════════════════════════════════
-     🔴 채널톡 기본 런처(우하단 고정)를 쓰지 않는다. hideChannelButtonOnBoot 로 감추고
-     우리 라임 런처가 메신저를 연다. 이유가 둘이다.
-       1) 버튼이 둘이면 어느 쪽이 진짜인지 알 수 없다 — 자체 위젯을 지우면 브랜드 색이 사라진다
-       2) 채널톡 런처는 우하단 고정이라 .dock(하단 중앙)·.totop(좌하단)과 붙는다
+     채널톡 기본 런처를 그대로 쓴다. 채널 테마 색이 이미 브랜드 라임(#D7FF59)이라
+     자체 런처를 유지할 이유가 없고, 둘을 같이 두면 메신저가 열렸을 때 채널톡 닫기 버튼과
+     우리 런처가 우하단에서 겹친다(실측 확인).
+     대신 기본 런처는 우하단 고정이라 .dock(하단 중앙)과 부딪힌다 — dock 상태를 감시해
+     하단 여백을 맞춘다. .totop 은 좌하단이라 x 축이 달라 겹치지 않는다.
      로드에 실패하면(오프라인 · file:// · 차단) channelOn 이 false 로 남아 자체 위젯이 그대로
      동작한다. 시안을 file:// 로 여는 경우가 있어(§9.1) 이 폴백이 없으면 버튼이 먹통이 된다. */
   let channelOn=false;
@@ -1483,7 +1491,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       el.async=true; el.src='https://cdn.channel.io/plugin/ch-plugin-web.js';
       document.head.appendChild(el);
     })();
-    window.ChannelIO('boot',{pluginKey:CHANNEL_PLUGIN_KEY,hideChannelButtonOnBoot:true,language:'ko'},err=>{
+    window.ChannelIO('boot',{pluginKey:CHANNEL_PLUGIN_KEY,language:'ko'},err=>{
       /* ⚠️ 잘못된 키를 넣으면 이 콜백이 아예 오지 않는다(에러도 없다 — 실측 확인).
          그래서 실패를 감지해 되돌리는 구조가 아니라, 성공했을 때만 넘어가는 구조로 짰다.
          키를 넣은 뒤에는 반드시 런처를 눌러 메신저가 실제로 열리는지 확인할 것. */
@@ -1498,6 +1506,10 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       /* 런처의 열림 상태를 메신저와 맞춘다. 어긋나면 스크린리더가 닫힌 창을 열렸다고 읽는다. */
       window.ChannelIO('onShowMessenger',()=>setLauncher(true));
       window.ChannelIO('onHideMessenger',()=>setLauncher(false));
+      /* 기본 런처는 우하단 고정이다. ChannelIO('setBottomMargin', n) 으로 밀어보려 했으나
+         240 을 줘도 런처가 움직이지 않았다(실측). 런처를 못 옮기니 dock 을 비켜준다 —
+         body.ct-on 이 붙으면 좁은 화면에서 dock 이 우측 78px 를 비운다. 아래 CSS 참조. */
+      document.body.classList.add('ct-on');
       /* 대화가 실제로 시작된 시점 — 문의 의도가 확인되는 지점이라 §6.4 에 chat_start 를 추가했다.
          열고 닫는 것 자체는 계측하지 않는다. 아코디언과 같은 등급의 UI 상태다(§6.3). */
       window.ChannelIO('onChatCreated',()=>track('chat_start',{section:'chat',content_id:refContent||''}));
