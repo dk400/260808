@@ -301,9 +301,24 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .insight-tabs button{padding:10px 16px;border-radius:999px;font-size:13px;font-weight:800;color:#686b65}
 .insight-tabs button.active{background:var(--ink);color:var(--white)}
 .insight-list{margin-top:54px;border-top:1px solid var(--ink)}
-.insight-item{display:grid;grid-template-columns:110px minmax(0,1fr) auto;gap:28px;align-items:center;padding:26px 4px;border-bottom:1px solid var(--line);transition:background .2s,padding .2s}
+/* 썸네일 열을 앞에 둔다. 유형 라벨은 제목 위로 옮겼다 — 목록에서 먼저 읽히는 것은 제목이다. */
+.insight-item{display:grid;grid-template-columns:148px minmax(0,1fr) auto;gap:24px;align-items:center;padding:20px 4px;border-bottom:1px solid var(--line);transition:background .2s,padding .2s}
 .insight-item:hover{background:var(--panel);padding-inline:18px}
 .insight-item[hidden]{display:none}
+/* 썸네일 — 유튜브는 i.ytimg.com 실제 이미지, 아티클은 코드로 그린 목업이다.
+   외부 이미지가 뜨지 않는 환경(오프라인 file://)에서도 배경과 테두리가 남아 자리가 무너지지 않는다. */
+.insight-thumb{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;
+  background:var(--panel);border:1px solid var(--line)}
+.insight-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.insight-thumb--yt::after{content:'';position:absolute;left:50%;top:50%;width:34px;height:24px;
+  transform:translate(-50%,-50%);border-radius:6px;background:rgba(17,19,17,.72)}
+.insight-thumb--yt::before{content:'';position:absolute;left:50%;top:50%;z-index:1;
+  transform:translate(-40%,-50%);border-style:solid;border-width:5px 0 5px 8px;
+  border-color:transparent transparent transparent #fffef9}
+.insight-thumb--doc{display:grid;place-items:center;background:var(--white)}
+.insight-thumb--doc i{display:block;width:56%;height:58%;border-radius:6px;
+  background:repeating-linear-gradient(to bottom,var(--line) 0 2px,transparent 2px 9px)}
+.insight-item:hover .insight-thumb{border-color:rgba(17,19,17,.28)}
 .insight-type{font-size:11px;font-weight:850;letter-spacing:.1em;text-transform:uppercase;color:#6d716a}
 .insight-item h3{font-size:clamp(20px,2.2vw,29px);letter-spacing:-.015em;line-height:1.32}
 .insight-meta{margin-top:8px;color:#7b7e78;font-size:12px}
@@ -673,7 +688,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   .builder-grid{grid-template-columns:1fr}
   .builder-card:last-child{grid-column:auto}
   .insight-tabs{justify-self:start}
-  .insight-item{grid-template-columns:1fr auto;gap:16px}
+  .insight-item{grid-template-columns:96px minmax(0,1fr) auto;gap:14px}
   .insight-type{grid-column:1/-1}
   .faq__layout{grid-template-columns:1fr;gap:28px}
   .faq-tabs{display:flex;gap:8px;overflow:auto;border-top:0;padding-bottom:2px;scrollbar-width:none}
@@ -983,20 +998,20 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
      없고 화살표 키 이동도 없어 ARIA 탭 계약을 절반만 지킨 상태였다 — 스크린리더에 탭이라고
      알린 뒤 탭처럼 동작하지 않는 쪽이 아무 역할도 없는 것보다 나쁘다.
      실제 동작은 같은 목록을 걸러내는 필터이므로 work · faq 와 같은 토글 버튼 의미로 통일한다. -->
-<div class="insight-tabs" role="group" aria-label="Insight 유형 필터"><button class="active" aria-pressed="true" data-insight="article">Article</button><button aria-pressed="false" data-insight="video">Video</button></div></div>
+<div class="insight-tabs" role="group" aria-label="Insight 유형 필터"><button class="active" aria-pressed="true" data-insight="article">Article</button><button aria-pressed="false" data-insight="video">YouTube</button></div></div>
     <div class="insight-list" id="insightList" data-stagger="60" data-reveal="left">
       <!-- TODO(미확정): Insight 상세 URL. Phase 2 에서 /insight/[slug] 로 연결한다.
            href="#" 는 의도적 공란이며, JS 가 기본 동작을 막아 최상단 점프를 방지한다.
            data-kind="video" 는 실제 유튜브 영상이다(두 채널 RSS 최신순). 외부로 나가므로
            새 탭에서 열고 youtube_out 을 발화한다 — §6.4 가 URL 미확정으로 보류했던 이벤트다. -->
-      <a class="insight-item" href="#/insight/insight-01" data-kind="article" data-id="insight-01"><span class="insight-type">Working method</span><div><h3>바이브코딩 외주사를 고를 때 확인해야 할 네 가지</h3><p class="insight-meta">Article · 운영팀</p></div><span class="insight-arrow">↗</span></a>
-      <a class="insight-item" href="#/insight/insight-02" data-kind="article" data-id="insight-02"><span class="insight-type">AI practice</span><div><h3>AI를 써도 품질이 흔들리지 않게 만드는 검수 방식</h3><p class="insight-meta">Article · Builder</p></div><span class="insight-arrow">↗</span></a>
-      <a class="insight-item" href="https://www.youtube.com/watch?v=SJfMjwkL1Vo" target="_blank" rel="noopener" data-kind="video" data-id="yt-SJfMjwkL1Vo" hidden><span class="insight-type">Video</span><div><h3>클로드 vs GPT 뭐가 더 좋냐면요 (ft.orca IDE)</h3><p class="insight-meta">AI SEO CEO · 2026-08-06</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
-      <a class="insight-item" href="https://www.youtube.com/watch?v=gtZPILhrnl8" target="_blank" rel="noopener" data-kind="video" data-id="yt-gtZPILhrnl8" hidden><span class="insight-type">Video</span><div><h3>오르카(Orca) 설치 방법부터 AI 블로그 자동화 세팅까지 한 번에</h3><p class="insight-meta">AI SEO CEO · 2026-08-06</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
-      <a class="insight-item" href="https://www.youtube.com/watch?v=tBXaP2qBL4U" target="_blank" rel="noopener" data-kind="video" data-id="yt-tBXaP2qBL4U" hidden><span class="insight-type">Video</span><div><h3>IT 기술 영업, 이렇게 하지 마세요 (ft.포트폴리오)</h3><p class="insight-meta">AI SEO CEO · 2026-08-06</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
-      <a class="insight-item" href="https://www.youtube.com/watch?v=qSGtFmMclWE" target="_blank" rel="noopener" data-kind="video" data-id="yt-qSGtFmMclWE" hidden><span class="insight-type">Video</span><div><h3>무료 AI IDE Orca 초보자가 쓰기 좋은 기능들만 싹 정리</h3><p class="insight-meta">김이솝의 AI 가이드 · 2026-08-05</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
-      <a class="insight-item" href="https://www.youtube.com/watch?v=09Ll7wfu414" target="_blank" rel="noopener" data-kind="video" data-id="yt-09Ll7wfu414" hidden><span class="insight-type">Video</span><div><h3>슬랙으로 명령하는 에이전트 환경 세팅하기</h3><p class="insight-meta">AI SEO CEO · 2026-08-05</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
-      <a class="insight-item" href="https://www.youtube.com/watch?v=STUGsDCvwu0" target="_blank" rel="noopener" data-kind="video" data-id="yt-STUGsDCvwu0" hidden><span class="insight-type">Video</span><div><h3>24시간 일하는 AI 에이전트 시스템 파이프라인 구축하기</h3><p class="insight-meta">AI SEO CEO · 2026-08-03</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
+      <a class="insight-item" href="#/insight/insight-01" data-kind="article" data-id="insight-01"><span class="insight-thumb insight-thumb--doc" aria-hidden="true"><i></i></span><div><span class="insight-type">Working method</span><h3>바이브코딩 외주사를 고를 때 확인해야 할 네 가지</h3><p class="insight-meta">Article · 운영팀</p></div><span class="insight-arrow">↗</span></a>
+      <a class="insight-item" href="#/insight/insight-02" data-kind="article" data-id="insight-02"><span class="insight-thumb insight-thumb--doc" aria-hidden="true"><i></i></span><div><span class="insight-type">AI practice</span><h3>AI를 써도 품질이 흔들리지 않게 만드는 검수 방식</h3><p class="insight-meta">Article · Builder</p></div><span class="insight-arrow">↗</span></a>
+      <a class="insight-item" href="https://www.youtube.com/watch?v=SJfMjwkL1Vo" target="_blank" rel="noopener" data-kind="video" data-id="yt-SJfMjwkL1Vo" hidden><span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/SJfMjwkL1Vo/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span><div><span class="insight-type">YouTube</span><h3>클로드 vs GPT 뭐가 더 좋냐면요 (ft.orca IDE)</h3><p class="insight-meta">AI SEO CEO · 2026-08-06</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
+      <a class="insight-item" href="https://www.youtube.com/watch?v=gtZPILhrnl8" target="_blank" rel="noopener" data-kind="video" data-id="yt-gtZPILhrnl8" hidden><span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/gtZPILhrnl8/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span><div><span class="insight-type">YouTube</span><h3>오르카(Orca) 설치 방법부터 AI 블로그 자동화 세팅까지 한 번에</h3><p class="insight-meta">AI SEO CEO · 2026-08-06</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
+      <a class="insight-item" href="https://www.youtube.com/watch?v=tBXaP2qBL4U" target="_blank" rel="noopener" data-kind="video" data-id="yt-tBXaP2qBL4U" hidden><span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/tBXaP2qBL4U/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span><div><span class="insight-type">YouTube</span><h3>IT 기술 영업, 이렇게 하지 마세요 (ft.포트폴리오)</h3><p class="insight-meta">AI SEO CEO · 2026-08-06</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
+      <a class="insight-item" href="https://www.youtube.com/watch?v=qSGtFmMclWE" target="_blank" rel="noopener" data-kind="video" data-id="yt-qSGtFmMclWE" hidden><span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/qSGtFmMclWE/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span><div><span class="insight-type">YouTube</span><h3>무료 AI IDE Orca 초보자가 쓰기 좋은 기능들만 싹 정리</h3><p class="insight-meta">김이솝의 AI 가이드 · 2026-08-05</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
+      <a class="insight-item" href="https://www.youtube.com/watch?v=09Ll7wfu414" target="_blank" rel="noopener" data-kind="video" data-id="yt-09Ll7wfu414" hidden><span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/09Ll7wfu414/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span><div><span class="insight-type">YouTube</span><h3>슬랙으로 명령하는 에이전트 환경 세팅하기</h3><p class="insight-meta">AI SEO CEO · 2026-08-05</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
+      <a class="insight-item" href="https://www.youtube.com/watch?v=STUGsDCvwu0" target="_blank" rel="noopener" data-kind="video" data-id="yt-STUGsDCvwu0" hidden><span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/STUGsDCvwu0/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span><div><span class="insight-type">YouTube</span><h3>24시간 일하는 AI 에이전트 시스템 파이프라인 구축하기</h3><p class="insight-meta">AI SEO CEO · 2026-08-03</p></div><span class="insight-arrow" aria-hidden="true">↗</span></a>
     </div>
   </div>
 </section>
