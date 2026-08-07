@@ -23,8 +23,21 @@ const FILES = [
   ['og-cover.jpg', 'og-cover.jpg'],
 ];
 
+// 폴더 통째로 복사할 대상
+const DIRS = [
+  'assets',
+];
+
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
+
+for (const dir of DIRS) {
+  const from = path.join(ROOT, dir);
+  if (!fs.existsSync(from)) continue;
+  fs.cpSync(from, path.join(OUT, dir), { recursive: true });
+  const count = fs.readdirSync(path.join(OUT, dir), { recursive: true }).length;
+  console.log('  ' + dir + '/  →  deploy/' + dir + '/  (' + count + '개)');
+}
 
 for (const [src, dest] of FILES) {
   const from = path.join(ROOT, src);
