@@ -167,6 +167,27 @@ AI 로 만든 얼굴    → §7.5 가 AI 생성 이미지를 금지한다
 
 **한 번에 여러 항목을 동시에 고치지 마라.**
 
+#### 검사와 배포
+
+```bash
+node scripts/check.js      # 커밋 전 필수
+node scripts/publish.js    # 검사 → 배포 폴더 → Vercel → 별칭 → 접속 확인
+```
+
+`check.js` 가 세는 것은 전부 실제로 사고가 났던 항목이다. CSS 주석 짝, 주석 밖 한글,
+script 구문, div 균형, INSIGHT 데이터 무결성, 그리고 **기능 잔존 16종**.
+
+마지막 항목이 핵심이다. **Codex 가 같은 파일을 동시에 고치면서 완성된 기능이 사라진 적이
+세 번 있다.** 한 번은 브라우저 확인까지 마친 로그인 화면이 통째로 빠진 채 커밋됐고,
+커밋 메시지와 내용이 달라졌다. `git add -A` 전에 이 스크립트를 돌려라.
+
+`publish.js` 가 별칭 연결까지 하는 이유도 같다. 손으로 하면 마지막 alias 를 빠뜨리기 쉽고,
+그러면 배포는 됐는데 공유한 링크는 예전 화면을 가리킨다. 아무도 눈치채지 못한다.
+
+> ⚠️ **배포 보호.** builderschool 팀 정책이 새 배포마다 SSO 보호를 붙인다.
+> `vercel project protection disable` 로는 그 시점 배포만 풀린다. 링크를 아무나 열게 하려면
+> 팀 설정(`vercel.com/builderschool/~/settings/security`)에서 꺼야 한다 — CLI 로는 안 된다.
+
 ### 3.1-a 아티클(Insight) 추가하는 법
 
 `AI_Builder_Origin_v3.html` 안 **`INSIGHT` 배열 한 곳만** 고친다. 목록 · 필터 · 상세 페이지가

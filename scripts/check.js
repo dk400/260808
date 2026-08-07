@@ -1,0 +1,105 @@
+#!/usr/bin/env node
+/*
+ * 시안 파일을 검사한다.  실행: node scripts/check.js
+ *
+ * 브라우저 없이 도는 정적 검사다. 여기서 걸리는 것들은 전부 실제로 한 번씩 사고가 났던 항목이다.
+ *
+ *   CSS 주석 짝      닫지 않으면 뒤따르는 규칙이 통째로 사라진다. 두 번 당했다.
+ *   주석 밖 한글     같은 사고의 다른 얼굴. CSS 는 잘못된 토큰을 조용히 버린다.
+ *   script 구문      단일 파일이라 한 곳이 깨지면 페이지 전체가 죽는다.
+ *   div 균형         정규식으로 마크업을 고치다 닫는 태그를 남긴 적이 있다.
+ *   INSIGHT 데이터   실제로 실행해 필수 필드와 정렬을 확인한다.
+ *   기능 잔존        Codex 가 같은 파일을 동시에 고치면서 완성된 기능이 사라진 적이 세 번 있다.
+ *
+ * 마지막 항목이 이 파일을 만든 이유다. 커밋 전에 여기서 잡는다.
+ */
+const fs = require('fs');
+const vm = require('vm');
+const path = require('path');
+
+const P = path.join(__dirname, '..', 'AI_Builder_Origin_v3.html');
+const s = fs.readFileSync(P, 'utf8');
+let fail = 0;
+const ok = (c, m) => { console.log((c ? '  ✓ ' : '  ✗ ') + m); if (!c) fail++; };
+
+/* ── CSS ─────────────────────────────────────────────── */
+const style = s.slice(s.indexOf('<style>'), s.indexOf('</style>'));
+const open = (style.match(/\/\*/g) || []).length, close = (style.match(/\*\//g) || []).length;
+ok(open === close, 'CSS 주석 ' + open + '/' + close);
+
+let depth = 0; const leaked = [];
+style.split('\n').forEach((ln, i) => {
+  let rest = ln, outside = '';
+  while (rest.length) {
+    if (!depth) {
+      const j = rest.indexOf('/*');
+      if (j < 0) { outside += rest; break; }
+      outside += rest.slice(0, j); rest = rest.slice(j + 2); depth = 1;
+    } else {
+      const j = rest.indexOf('*/');
+      if (j < 0) break;
+      rest = rest.slice(j + 2); depth = 0;
+    }
+  }
+  if (/[가-힣]/.test(outside)) leaked.push((i + 1) + ': ' + outside.trim().slice(0, 40));
+});
+ok(!leaked.length, '주석 밖 한글 ' + leaked.length + '건' + (leaked.length ? ' → ' + leaked[0] : ''));
+
+/* ── 스크립트 ────────────────────────────────────────── */
+const scripts = [...s.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m => m[1]);
+scripts.forEach((js, i) => {
+  try { new vm.Script(js); ok(true, 'script #' + (i + 1) + ' 구문'); }
+  catch (e) { ok(false, 'script #' + (i + 1) + ' — ' + e.message); }
+});
+
+/* ── 마크업 ──────────────────────────────────────────── */
+const body = s.slice(s.indexOf('<body'), s.indexOf('<script>', s.indexOf('<body')));
+const o = (body.match(/<div\b/g) || []).length, c = (body.match(/<\/div>/g) || []).length;
+ok(o === c, 'div 균형 ' + o + '/' + c);
+
+/* ── 콘텐츠 데이터 — 실제로 실행해 본다 ──────────────── */
+const whole = scripts.find(j => j.includes('window.__INSIGHT'));
+if (!whole) ok(false, 'INSIGHT 데이터 블록을 찾지 못함');
+else {
+  const end = whole.indexOf('window.__insightRow=insightRow;');
+  const dataJs = whole.slice(0, whole.indexOf('\n', end) + 1) + '})();';
+  const sandbox = { window: {}, document: { getElementById: () => ({ set innerHTML(v) { sandbox.__html = v } }) } };
+  vm.createContext(sandbox);
+  try {
+    new vm.Script(dataJs).runInContext(sandbox);
+    const A = sandbox.window.__INSIGHT;
+    const art = A.filter(x => x.kind === 'article'), vid = A.filter(x => x.kind === 'video');
+    ok(A.length > 0, '항목 ' + A.length + '건 (아티클 ' + art.length + ' · 영상 ' + vid.length + ')');
+    ok(new Set(A.map(x => x.id)).size === A.length, 'id 중복 없음');
+    ok(art.every(x => x.title && x.lead && x.by && x.date && x.cover && x.body && x.body.length), '아티클 필수 필드');
+    ok(vid.every(x => x.vid && x.title && x.by && x.date), '영상 필수 필드');
+    const dates = art.map(x => x.date);
+    ok(dates.join('|') === [...dates].sort().reverse().join('|'), '아티클 최신순 정렬');
+    const covers = [...new Set(art.map(x => x.cover))].sort();
+    ok(covers.every(cv => style.includes('.cover--' + cv + '{')), '표지 클래스 정의 ' + covers.join(','));
+    ok(/insight-item/.test(sandbox.__html || ''), '홈 목록 렌더 (' + ((sandbox.__html || '').match(/class="insight-item"/g) || []).length + '행)');
+    /* §7.5 — 가격 소구와 검증 불가 수치는 카피에 넣지 않는다 */
+    const txt = JSON.stringify(A);
+    const banned = ['100%', '보장', '누적 매출', '평점', '만원', '천만', '선별'].filter(w => txt.includes(w));
+    ok(!banned.length, '§7.5 금지 표현 없음' + (banned.length ? ' → ' + banned.join(',') : ''));
+  } catch (e) { ok(false, '데이터 실행 — ' + e.message); }
+}
+
+ok((s.match(/const INSIGHT=\[/g) || []).length === 1, 'INSIGHT 배열 정의 1곳');
+
+/* ── 기능 잔존 ───────────────────────────────────────── */
+const MUST = {
+  '어드민 로그인': 'renderAdminLogin', '로그인 상태': 'admAuth',
+  '빌더 스페이스': 'renderSpace', '스페이스 등록': 'space__new',
+  '역할 권한': 'ROLE_CAN', '사진 업로드': 'readAvatar', '역할 목록': 'const ROLES',
+  '이니셜 규칙': 'initialOf', '빌더 초대': 'adm__inviteForm', '반려 사유': 'adm__rejectForm',
+  'dock 회피 실측': '--dock-h', '채널톡 키': 'CHANNEL_PLUGIN_KEY',
+  'INSIGHT 단일 소스': 'window.__INSIGHT', '표지 폴백': 'cover--01',
+  '작업물 연결': 'builder-work', 'Work 상세 캡처': 'detail__shot',
+};
+const gone = Object.entries(MUST).filter(([, n]) => !s.includes(n)).map(([k]) => k);
+const total = Object.keys(MUST).length;
+ok(!gone.length, '기능 잔존 ' + (total - gone.length) + '/' + total + (gone.length ? ' → 사라짐: ' + gone.join(', ') : ''));
+
+console.log(fail ? '\n실패 ' + fail + '건 — 고치고 다시 실행할 것\n' : '\n전부 통과\n');
+process.exit(fail ? 1 : 0);
