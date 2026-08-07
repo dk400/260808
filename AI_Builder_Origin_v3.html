@@ -425,6 +425,37 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
    앞서 어차피 13.5px 로 렌더되므로, 여기 숫자를 적으면 코드와 실제가 어긋난다. */
 .chat__micro{margin-top:12px;line-height:1.65;color:var(--muted)}
 
+/* ═══ 교육 — AI 빌더 스쿨 부트캠프 ═══════════════════════════════════
+   #builders 다음 구간이라 배경을 --bg 로 두어 어두운 빌더 섹션과 대비시킨다.
+   토큰만 쓰고 새 색은 없다. */
+.education{background:var(--bg)}
+.education__head{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end}
+.education__head .section-copy{justify-self:end}
+.edu-meta{margin-top:56px;padding:28px 0;border-block:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.edu-meta div{display:grid;gap:8px}
+.edu-meta dt{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.edu-meta dd{font-size:17px;font-weight:750;line-height:1.4}
+.edu-track{margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.edu-phase{padding:clamp(26px,3.4vw,40px);border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--white);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s}
+.edu-phase:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.edu-phase__no{font-size:12px;font-weight:850;letter-spacing:.12em;color:#779700}
+.edu-phase h3{margin-top:14px;font-size:clamp(22px,2.4vw,28px);letter-spacing:-.02em;line-height:1.3}
+.edu-phase p{margin-top:12px;font-size:15px;line-height:1.75;color:var(--muted)}
+.edu-note{margin-top:28px;font-size:14px;line-height:1.7;color:var(--muted)}
+.edu-note b{color:var(--ink);font-weight:800}
+/* 채움 버튼이 아니라 텍스트 링크다 — 교육 신청이 문의를 대체하는 경로가 되면 안 된다(§6.2). */
+.edu-link{font-weight:750;color:var(--ink);border-bottom:1px solid var(--line);
+  transition:border-color .22s}
+.edu-link:hover{border-color:var(--ink)}
+@media(max-width:1050px){
+  .education__head{grid-template-columns:1fr}
+  .education__head .section-copy{justify-self:start}
+  .edu-meta{grid-template-columns:1fr 1fr}
+}
+@media(max-width:720px){ .edu-track{grid-template-columns:1fr} }
+
 /* ═══ 상세 뷰 — 서브페이지 ═══════════════════════════════════════════
    해시 라우팅(#/work/… · #/insight/… · #/faq)으로 그린다. 새 HTML 파일을 만들지 않은
    이유는 §9.1 이다 — 심사자가 파일 하나만 열어도 전부 동작해야 한다.
@@ -540,9 +571,11 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   .work-filter button.active{background:var(--ink);color:var(--white)}
   .work-filter button.active::before{display:none}
 }
-/* PRD §5.3 — "720px ↓ 모바일 메뉴, 단일 컬럼".
-   실측(2026-08-06): 721px 에서 헤더 필요폭 493px / 가용 706px, 가로 넘침 없음. */
-@media(max-width:720px){
+/* PRD §5.3 은 720px 이었다. Education 이 들어가 nav 항목이 3개→4개가 되면서
+   721px 에서 헤더 필요폭이 634px, 가용 660px — 여유가 26px 밖에 남지 않았다.
+   폰트 메트릭이 조금만 달라도(실기기 iOS Safari) 넘친다. 넘치기 전에 버거로 바꾼다.
+   실측: 780px 에서 필요 634 / 가용 714 → 여유 80px. */
+@media(max-width:780px){
   .chat{right:14px;bottom:14px}
   .dock.show ~ .chat{bottom:78px}
   .totop{left:14px;bottom:14px}
@@ -680,14 +713,14 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       <span class="logo__mark">✱</span><span>AI BUILDER ORIGIN</span>
     </a>
     <nav class="nav" aria-label="주요 메뉴">
-      <a href="#work">Work</a><a href="#insight">Insight</a><a href="#faq">FAQ</a>
+      <a href="#work">Work</a><a href="#education">Education</a><a href="#insight">Insight</a><a href="#faq">FAQ</a>
     </nav>
     <a class="header__cta" href="#contact" data-track="header_contact">프로젝트 문의 <span>↗</span></a>
     <button class="menu-btn" id="menuBtn" aria-label="메뉴 열기" aria-expanded="false"><span></span></button>
   </div>
 </header>
 <nav class="mobile-menu" id="mobileMenu" aria-label="모바일 메뉴">
-  <a href="#work">Work</a><a href="#insight">Insight</a><a href="#faq">FAQ</a><a href="#contact">문의하기</a>
+  <a href="#work">Work</a><a href="#education">Education</a><a href="#insight">Insight</a><a href="#faq">FAQ</a><a href="#contact">문의하기</a>
 </nav>
 
 <main id="top">
@@ -851,6 +884,35 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       <article class="builder-card"><div class="builder-top"><div class="builder-avatar">B</div><span class="builder-state">BUILDER PROFILE</span></div><h3>Builder B</h3><p>프론트엔드와 운영 어드민을 함께 구현하는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>Web · Admin</b></div></div></article>
       <article class="builder-card"><div class="builder-top"><div class="builder-avatar">C</div><span class="builder-state">BUILDER PROFILE</span></div><h3>Builder C</h3><p>AI 자동화와 데이터 흐름을 서비스에 연결하는 빌더.</p><div class="builder-evidence"><div class="evidence-row"><span>Work</span><b>참여 프로젝트 연결</b></div><div class="evidence-row"><span>Insight</span><b>작성 콘텐츠 연결</b></div><div class="evidence-row"><span>Role</span><b>Automation · API</b></div></div></article>
     </div>
+  </div>
+</section>
+
+<!-- ═══ 교육 — AI 빌더 스쿨 부트캠프 ═══
+     빌더 섹션 바로 뒤에 둔다. "누가 만드는가" 다음에 "그 사람은 어디서 오는가"가 이어진다.
+     🔴 원문(크몽)에 있는 가격·"외주 수주 100% 보장"·"누적 매출 100억"·평점/판매 수치는
+     옮기지 않았다. §7.5 가 가격 소구와 검증 불가 수치를 금지하고, 크몽 페이지 자체가
+     "금융 수익은 보장하지 않아요"를 고지한다. 사실 정보만 쓴다.
+     §7.5 는 "엄격히 선별된 빌더" 단정도 금지한다(1기 전원 동일 진행) — 선발 표현을 쓰지 않았다.
+     §2.6 이 교육 LMS 를 범위 밖으로 두므로 소개까지만 한다. -->
+<section class="education section" id="education" aria-labelledby="education-title">
+  <div class="container">
+    <div class="education__head reveal reveal--tilt">
+      <div><span class="eyebrow">Education</span><h2 class="section-title" id="education-title" style="margin-top:24px">만드는 사람을 먼저 기릅니다.</h2></div>
+      <p class="section-copy">AI 빌더 스쿨 부트캠프를 거친 빌더가 이곳에서 작업합니다. 무엇을 배우고 무엇을 만들어 봤는지가 곧 작업의 근거입니다.</p>
+    </div>
+    <dl class="edu-meta" data-stagger="70" data-reveal="down">
+      <div><dt>대상</dt><dd>비개발자 · 입문자</dd></div>
+      <div><dt>기간</dt><dd>3개월 · 2026.7.11 ~ 10.8</dd></div>
+      <div><dt>형식</dt><dd>주말 대면 실습 + 평일 비대면 이론</dd></div>
+      <div><dt>결과물</dt><dd>직접 배포한 프로덕트 1개</dd></div>
+    </dl>
+    <div class="edu-track" data-stagger="90" data-reveal="left">
+      <article class="edu-phase"><span class="edu-phase__no">01</span><h3>기초 학습 · 4주</h3>
+        <p>환경 세팅과 첫 화면부터 시작해, 회원가입·데이터 저장·배포까지 직접 만들어 봅니다. 매주 완성물이 하나씩 남습니다.</p></article>
+      <article class="edu-phase"><span class="edu-phase__no">02</span><h3>실전 과정 · 2개월</h3>
+        <p>실제 프로젝트를 진행하며 매주 피드백 세션으로 결과물을 점검합니다. 만든 것과 판단 근거가 함께 기록됩니다.</p></article>
+    </div>
+    <p class="edu-note">과정 운영은 <b>AI 빌더 스쿨</b>이 맡습니다. <a class="edu-link" href="#/education">커리큘럼 자세히 보기 →</a></p>
   </div>
 </section>
 
@@ -1501,6 +1563,39 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     '<div class="detail__body">'+sections(item.body)+'</div>'+
     navBlock(INSIGHT,i,'insight','Insight')+ctaBlock);};
 
+  /* 커리큘럼은 실제 과정 안내에서 옮긴 것이다. 가격·"외주 수주 보장"·누적 매출·평점 같은
+     항목은 §7.5(가격 소구·검증 불가 수치 금지)에 걸려 가져오지 않았다. */
+  const EDU=[
+    {w:'1주차',d:'7/11 ~ 7/17',t:'환경 세팅 & 첫 화면',
+     items:['Claude 개발 환경 세팅과 첫 프롬프트','Slack · Figma · GitHub · Supabase 협업 도구 세팅','AI로 랜딩페이지 만들고 완성도 올리기','색·폰트·버튼 규칙을 디자인 시스템으로'],
+     out:'디자인이 깔끔한 랜딩페이지 1개 + 협업 도구 세팅 완료'},
+    {w:'2주차',d:'7/18 ~ 7/24',t:'기능 개발 & 배포',
+     items:['Supabase Auth 로 회원가입·로그인 붙이기','글 쓰기·읽기·수정·삭제(CRUD) 구현','Vercel 로 배포하고 진짜 주소 만들기','AI 결과를 믿지 않고 확인하는 검수 체크리스트'],
+     out:'회원가입·블로그가 동작하고 인터넷에 배포된 웹사이트'},
+    {w:'3주차',d:'7/25 ~ 7/31',t:'프로젝트 기획 & 설계',
+     items:['풀고 싶은 문제를 한 줄로 정의','타깃과 핵심 기능 1~3개로 좁히기(MVP)','만들 것과 만들지 않을 것의 범위 정하기','화면 목록과 이동 흐름을 와이어프레임으로'],
+     out:'만들 범위가 정해진 기획서와 화면 설계'}
+  ];
+
+  const renderEducation=()=>wrap(
+    '<a class="detail__back" href="#/">← 홈</a>'+
+    '<span class="eyebrow">Education</span>'+
+    '<h1 class="detail__title" id="detailTitle" tabindex="-1">AI 빌더 스쿨 부트캠프</h1>'+
+    '<p class="detail__lead">비개발자와 입문자가 3개월 동안 직접 만들어 배포하는 과정입니다. 이 과정을 거친 빌더가 AI Builder Origin 에서 작업합니다.</p>'+
+    '<dl class="detail__meta">'+
+      '<div><dt>대상</dt><dd>비개발자 · 입문자</dd></div>'+
+      '<div><dt>기간</dt><dd>2026.7.11 ~ 10.8</dd></div>'+
+      '<div><dt>구성</dt><dd>기초 4주 + 실전 2개월</dd></div>'+
+      '<div><dt>운영</dt><dd>AI 빌더 스쿨</dd></div>'+
+    '</dl>'+
+    '<div class="detail__body">'+
+      '<section><h2>진행 방식</h2><p>주말(토) 4시간 대면 실습과 평일 주 3일 6시간 비대면 이론으로 진행합니다. 실전 과정에서는 매주 토요일 피드백 세션으로 결과물을 점검합니다.</p></section>'+
+      EDU.map(e=>'<section><h2>'+esc(e.w)+' · '+esc(e.t)+'</h2>'+
+        '<p>'+esc(e.d)+'</p><ul>'+e.items.map(i=>'<li>'+esc(i)+'</li>').join('')+'</ul>'+
+        '<p><b>이번 주 완성물</b> — '+esc(e.out)+'</p></section>').join('')+
+      '<section><h2>실전 과정 · 2개월</h2><p>기초 과정을 마친 뒤 8월부터 10월까지 실제 프로젝트를 진행합니다. 만든 것과 판단 근거가 함께 기록되고, 그 기록이 빌더 프로필로 이어집니다.</p></section>'+
+    '</div>'+ctaBlock);
+
   const renderFaq=()=>{
     const groups=[['project','프로젝트'],['builder','빌더'],['process','진행 방식']];
     const items=[...home.querySelectorAll('.faq-item')];
@@ -1547,6 +1642,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
         showDetail(m[1]==='work'?renderWork(item):renderInsight(item),item.title); handled=true;
       }
     }else if(h==='#/faq'){ showDetail(renderFaq(),'FAQ'); handled=true; }
+    else if(h==='#/education'){ showDetail(renderEducation(),'AI 빌더 스쿨 부트캠프'); handled=true; }
     if(!handled){
       showHome();
       /* 라우트가 아니면 홈 내부 앵커다(#work · #contact). 기존 동작을 그대로 둔다. */
