@@ -95,7 +95,9 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .header{position:fixed;inset:0 0 auto;z-index:80;height:72px;transition:background .25s,border-color .25s,box-shadow .25s}
 .header.is-scrolled{background:rgba(244,242,235,.86);backdrop-filter:blur(16px);border-bottom:1px solid var(--line);box-shadow:0 8px 30px rgba(17,19,17,.04)}
 .header__inner{height:100%;display:flex;align-items:center;justify-content:space-between;gap:24px}
-.logo{display:flex;align-items:center;gap:10px;font-weight:850;letter-spacing:-.04em;font-size:16px}
+/* 로고 텍스트 높이가 25px 이라 터치 타깃 44px 에 미달했다. padding 으로 눌리는 면적만
+   키우고 같은 크기의 음수 마진으로 헤더 레이아웃을 원위치시킨다. */
+.logo{display:flex;align-items:center;gap:10px;font-weight:850;letter-spacing:-.04em;font-size:16px;padding-block:10px;margin-block:-10px}
 .logo__mark{width:22px;height:22px;background:var(--ink);color:var(--lime);border-radius:50%;display:grid;place-items:center;font-size:12px;transform:rotate(-12deg)}
 .nav{display:flex;align-items:center;gap:28px;margin-left:auto}
 /* 가독성 — 50~60대 클라이언트 기준. 12~14px·w400 조합을 키우고 굵힌다.
@@ -105,7 +107,7 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .nav a:hover::after{right:0}
 .header__cta{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--white);padding:13px 20px;border-radius:999px;font-size:15px;font-weight:800;transition:transform .2s,background .2s}
 .header__cta:hover{background:#2a2e28;transform:translateY(-2px)}
-.menu-btn{display:none;width:42px;height:42px;border:1px solid var(--line);border-radius:50%;position:relative}
+.menu-btn{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;position:relative}
 .menu-btn span,.menu-btn::before,.menu-btn::after{content:'';position:absolute;left:50%;top:50%;display:block;width:18px;height:1.5px;background:var(--ink);transform-origin:center;transition:transform .25s,opacity .2s}
 .menu-btn::before{transform:translate(-50%,-6px)}
 .menu-btn span{transform:translate(-50%,-50%)}
@@ -302,7 +304,7 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .insight{background:var(--white)}
 .insight__head{display:flex;align-items:flex-end;justify-content:space-between;gap:32px}
 .insight-tabs{display:flex;gap:6px;background:var(--panel);padding:5px;border-radius:999px}
-.insight-tabs button{padding:10px 16px;border-radius:999px;font-size:13px;font-weight:800;color:#686b65}
+.insight-tabs button{padding:12px 16px;border-radius:999px;font-size:13px;font-weight:800;color:#686b65}
 .insight-tabs button.active{background:var(--ink);color:var(--white)}
 .insight-list{margin-top:54px;border-top:1px solid var(--ink)}
 /* 썸네일 열을 앞에 둔다. 유형 라벨은 제목 위로 옮겼다 — 목록에서 먼저 읽히는 것은 제목이다. */
@@ -377,7 +379,8 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .final__micro{margin-top:14px;font-size:11px;color:#66723d}
 .footer{margin-top:90px;padding-top:28px;border-top:1px solid rgba(17,19,17,.2);display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:14px;font-weight:600;color:#3d4336}
 .footer strong{display:block;color:var(--ink);font-size:17px;margin-bottom:7px}
-.footer-nav{display:flex;gap:22px;flex-wrap:wrap;font-weight:700}
+.footer-nav{display:flex;gap:2px 22px;flex-wrap:wrap;font-weight:700}
+.footer-nav a{padding-block:11px}
 /* 사업자 정보 — 전자상거래법상 표기 의무 항목이라 본문과 달리 줄여 쓰지 않는다.
    색은 .final__micro 가 쓰던 #66723d 를 재사용한다(새 색 추가 금지 — PRD §5.1). */
 .footer__legal{flex:1 0 100%;margin-top:24px;padding-top:20px;border-top:1px solid rgba(17,19,17,.14);display:flex;flex-wrap:wrap;gap:8px 22px;color:#3d4336;line-height:1.75}
@@ -391,7 +394,7 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .dock__copy{font-size:13px;min-width:0}
 .dock__copy b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dock__copy span{color:rgba(255,255,255,.52);font-size:11px}
-.dock a{background:var(--lime);color:var(--ink);padding:11px 18px;border-radius:999px;font-size:13px;font-weight:850;white-space:nowrap}
+.dock a{background:var(--lime);color:var(--ink);padding:15px 18px;border-radius:999px;font-size:13px;font-weight:850;white-space:nowrap}
 
 /* ═══ 상담 위젯 — 콘셉트 (배분표 밖 전역 레이어. 강도 "약") ═══ */
 /* 패널 안의 행동은 pluuug 문의 하나뿐이다. 부차 전환 경로를 만들지 않는다 — PRD §6.2 🔴 */
@@ -403,7 +406,7 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .chat__launcher,.chat.open .chat__panel{pointer-events:auto}
 /* dock 이 떠 있는 동안에는 런처를 그 위로 올린다. 720px 이하에서 dock 이 화면 폭을
    거의 채우므로 이 회피가 없으면 두 요소가 포개진다. DOM 에서 .dock 다음이라 ~ 로 잡힌다. */
-.dock.show ~ .chat{bottom:88px}
+.dock.show ~ .chat{bottom:calc(var(--dock-h,60px) + 28px)}
 body.chat-open .dock{transform:translate(-50%,140%)}
 /* dock 은 transform 으로만 내려가고 .show 는 남는다. 위 회피 규칙이 계속 살아 있으면
    dock 이 사라진 자리 위 88px 에 버튼만 떠 빈 띠가 생긴다. chat-open 일 때 되돌린다. */
@@ -425,14 +428,14 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
              bottom .3s cubic-bezier(.2,.8,.2,1),background .2s}
 .totop.show:hover{background:var(--bg);transform:translateY(-3px)}
 .totop svg{width:20px;height:20px}
-.dock.show ~ .totop{bottom:88px}
+.dock.show ~ .totop{bottom:calc(var(--dock-h,60px) + 28px)}
 /* 레일이 보이는 폭에서는 하단 카운터(화면 아래 26~64px)를 세로로 비켜 항상 88px 에 둔다.
    dock 이 숨는 최종 CTA 구간에서 .totop 이 20px 로 내려앉아 01/09 를 덮던 문제다(z 75 > 60).
    가로로 밀지 않는 이유: 1360px 에서는 콘텐츠가 x77 부터 시작해 left:64 면 본문을 침범한다.
    뒤 선택자는 위의 chat-open 되돌림 규칙과 같은 특정성이라 나중에 선언된 이쪽이 이긴다. */
 @media(min-width:1360px){
   .totop,
-  body.chat-open .dock.show ~ .totop{bottom:88px}
+  body.chat-open .dock.show ~ .totop{bottom:calc(var(--dock-h,60px) + 28px)}
 }
 
 /* border 가 없으면 --ink 배경인 #problem · #builders 위에서 원형 몸통이 배경과 같은 색이라
@@ -547,7 +550,8 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 .adm__nav button:hover{background:var(--panel);color:var(--ink)}
 .adm__nav button[aria-pressed="true"]{background:var(--ink);color:var(--white)}
 .adm__filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.adm__filters button{padding:8px 13px;border:1px solid var(--line);border-radius:999px;
+/* 목록 페이지에서 실제로 자주 눌리는 버튼이다. 모바일 터치 타깃 44px 를 지킨다. */
+.adm__filters button{min-height:44px;padding:8px 13px;border:1px solid var(--line);border-radius:999px;
   font-size:13px;font-weight:750;color:var(--muted);transition:background .2s,color .2s,border-color .2s}
 .adm__filters button[aria-pressed="true"]{background:var(--ink);color:var(--white);border-color:var(--ink)}
 .adm__list{border-top:1px solid var(--line)}
@@ -592,8 +596,12 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
    이유는 §9.1 이다 — 심사자가 파일 하나만 열어도 전부 동작해야 한다.
    History API 는 file:// 에서 새로고침이 깨져 쓸 수 없다. 토큰만 쓰고 새 색은 없다. */
 .detail{padding:clamp(104px,12vw,148px) 0 clamp(72px,9vw,110px)}
-.detail__back{display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:750;
-  color:var(--muted);padding:8px 0;transition:color .22s,gap .22s}
+/* padding 으로 터치 영역을 44px 로 넓히고 같은 크기의 음수 마진으로 위치를 되돌린다 —
+   레이아웃은 그대로 두고 누를 수 있는 면적만 키운다. */
+.detail__back{display:inline-flex;align-items:center;gap:8px;
+  padding:11px 4px;margin:-11px -4px;
+  font-size:14px;font-weight:750;
+  color:var(--muted);transition:color .22s,gap .22s}
 .detail__back:hover{color:var(--ink);gap:12px}
 .detail__title{margin-top:20px;font-size:clamp(38px,5.6vw,72px);line-height:1.14;
   letter-spacing:-.03em;font-weight:880;max-width:16ch}
@@ -614,7 +622,8 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   border-radius:50%;background:var(--lime-2)}
 .detail__nav{margin-top:64px;padding-top:26px;border-top:1px solid var(--line);
   display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
-.detail__nav a{font-size:15px;font-weight:750;color:var(--muted);transition:color .22s}
+.detail__nav a{padding-block:11px;margin-block:-11px;font-size:15px;font-weight:750;
+  color:var(--muted);transition:color .22s}
 .detail__nav a:hover{color:var(--ink)}
 .detail__nav a[aria-disabled="true"]{opacity:.35;pointer-events:none}
 .detail__cta{margin-top:56px;padding:clamp(30px,4vw,44px);border-radius:var(--radius);
@@ -662,7 +671,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 .how-step:hover .how-step__no{transform:translateX(3px)}
 
 .footer-nav a{position:relative}
-.footer-nav a::after{content:'';position:absolute;left:0;right:100%;bottom:-3px;height:1.5px;
+.footer-nav a::after{content:'';position:absolute;left:0;right:100%;bottom:8px;height:1.5px;
   background:currentColor;transition:right .28s cubic-bezier(.2,.8,.2,1)}
 .footer-nav a:hover::after{right:0}
 
@@ -708,9 +717,9 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
    실측: 780px 에서 필요 634 / 가용 714 → 여유 80px. */
 @media(max-width:780px){
   .chat{right:14px;bottom:14px}
-  .dock.show ~ .chat{bottom:78px}
   .totop{left:14px;bottom:14px}
-  .dock.show ~ .totop{bottom:78px}
+  /* dock 높이(60) + dock bottom(18) = 78. 78 을 그대로 쓰면 여백이 0 이라
+     반올림 한 번에 겹친다(360px 에서 2px 겹침 확인). 버튼 높이 여유를 더 준다. */
   .header{height:64px}
   .nav,.header__cta{display:none}
   .menu-btn{display:block}
@@ -771,7 +780,8 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   .stage-card--tag{font-size:11px;padding:11px 14px}
   .section-title{font-size:clamp(34px,10vw,40px)}
   .dock__copy b{font-size:12px;max-width:160px}
-  .dock a{padding:10px 14px}
+  /* 좁은 화면에서 dock 이 넘치지 않게 가로만 줄인다. 세로는 44px 터치 타깃이라 건드리지 않는다. */
+  .dock a{padding:15px 12px}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
@@ -1263,7 +1273,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       ? '<span class="insight-thumb insight-thumb--yt"><img src="https://i.ytimg.com/vi/'+esc(it.vid)+
         '/mqdefault.jpg" alt="" aria-hidden="true" loading="lazy" width="320" height="180"></span>'
       : '<span class="insight-thumb insight-thumb--cover cover--'+esc(it.cover||'01')+'" aria-hidden="true">'+
-        '<img src="assets/insight/'+esc(it.id)+'.jpg" alt="" loading="lazy" decoding="async" width="1672" height="941"></span>';
+        '<img src="assets/insight/'+esc(it.id)+'.jpg?v=3" alt="" loading="lazy" decoding="async" width="1672" height="941"></span>';
     return '<a class="insight-item" href="'+esc(href)+'"'+
       (video?' target="_blank" rel="noopener"':'')+
       ' data-kind="'+esc(it.kind)+'" data-id="'+esc(it.id)+'">'+thumb+
@@ -1432,6 +1442,15 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   /* 상담 위젯. 열림 상태는 UI 상태라 URL 에 넣지 않는다 — 아코디언과 같은 등급(§6.3).
      열기/닫기 자체는 §6.4 이벤트 목록에 없어 계측하지 않았다. 넣으려면 목록부터 갱신할 것.
      패널 CTA 는 위의 [data-track] 핸들러가 이미 잡고, href="#" 이라 최상단 점프도 막힌다. */
+  /* dock 실제 높이를 CSS 로 넘긴다. .totop 과 .chat 이 이 값으로 dock 을 피한다.
+     숫자를 박아두면 dock 내용이 바뀔 때마다 어긋난다 — 88 → 78 → 90 으로 두 번 틀렸다.
+     폭이 바뀌면 dock 이 두 줄이 될 수 있어 resize 에서도 다시 잰다. */
+  const syncDockH=()=>{
+    if(dock) document.documentElement.style.setProperty('--dock-h',dock.offsetHeight+'px');
+  };
+  syncDockH();
+  addEventListener('resize',syncDockH);
+
   const chat=document.getElementById('chat');
   const chatBtn=document.getElementById('chatBtn');
   const setLauncher=open=>{
@@ -1875,7 +1894,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     '<h1 class="detail__title" id="detailTitle" tabindex="-1">'+esc(item.title)+'</h1>'+
     '<p class="detail__lead">'+esc(item.lead)+'</p>'+
     '<div class="detail__cover cover--'+esc(item.cover||'01')+'" aria-hidden="true">'+
-      '<img src="assets/insight/'+esc(item.id)+'.jpg" alt="" decoding="async" width="1672" height="941"></div>'+
+      '<img src="assets/insight/'+esc(item.id)+'.jpg?v=3" alt="" decoding="async" width="1672" height="941"></div>'+
     '<dl class="detail__meta"><div><dt>유형</dt><dd>'+esc(item.type)+'</dd></div>'+
     '<div><dt>작성</dt><dd>'+esc(item.by)+'</dd></div>'+
     '<div><dt>발행</dt><dd>'+esc(item.date)+'</dd></div></dl>'+
