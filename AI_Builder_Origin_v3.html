@@ -118,7 +118,9 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--ink);color:var(--white);padding:16px 24px;border-radius:999px;font-size:15px;font-weight:800;min-height:54px;transition:transform .22s,background .22s}
 .btn-primary:hover{background:#2c302a;transform:translateY(-3px)}
 .btn-link{display:inline-flex;align-items:center;gap:10px;font-size:15px;font-weight:800;padding:14px 2px;border-bottom:1px solid var(--ink)}
-.hero__note{margin-top:28px;display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#777a74;max-width:46ch}
+/* 색은 #777a74(약 4.0:1)로 AA 미달이었다. 모바일에서는 이 문구가 유일한 콘셉트 고지라
+   기존 토큰인 --muted 로 올린다(약 5.4:1). 새 색 추가 아님. */
+.hero__note{margin-top:28px;display:flex;gap:8px;align-items:flex-start;font-size:12px;color:var(--muted);max-width:46ch}
 .hero__note::before{content:'i';width:18px;height:18px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-weight:800;flex:0 0 auto}
 
 .hero-stage{position:relative;min-height:610px;perspective:1200px}
@@ -452,7 +454,11 @@ body.chat-open .dock{transform:translate(-50%,140%)}
   .dock__copy span{display:none}
 }
 @media(max-width:480px){
-  .hero__note{display:none}
+  /* display:none 이었다. 콘셉트 고지는 "유지하라"고 명시된 문구인데(§10) 480px 이하에서만
+     통째로 사라져 모바일 심사에서는 고지 없이 보였다.
+     글자는 줄이지 않는다 — 폭이 모자라면 줄바꿈으로 흡수하고, 자리를 먹는 장식 아이콘만 뺀다. */
+  .hero__note{max-width:none}
+  .hero__note::before{display:none}
   .hero-stage{min-height:385px}
   .stage-card--main{right:-8px;width:102%}
   .screen-box{min-height:72px;padding:10px}
@@ -688,7 +694,11 @@ body.chat-open .dock{transform:translate(-50%,140%)}
 
 <section class="insight section" id="insight" aria-labelledby="insight-title">
   <div class="container">
-    <div class="insight__head reveal"><div><span class="eyebrow">Insight</span><h2 class="section-title" id="insight-title" style="margin-top:24px">일하는 방식을 콘텐츠로 증명합니다.</h2></div><div class="insight-tabs" role="tablist" aria-label="Insight 유형"><button class="active" role="tab" aria-selected="true" data-insight="article">Article</button><button role="tab" aria-selected="false" data-insight="video">Video</button></div></div>
+    <div class="insight__head reveal"><div><span class="eyebrow">Insight</span><h2 class="section-title" id="insight-title" style="margin-top:24px">일하는 방식을 콘텐츠로 증명합니다.</h2></div><!-- role="tablist" + role="tab" + aria-selected 였다. 그런데 aria-controls 도 tabpanel 도
+     없고 화살표 키 이동도 없어 ARIA 탭 계약을 절반만 지킨 상태였다 — 스크린리더에 탭이라고
+     알린 뒤 탭처럼 동작하지 않는 쪽이 아무 역할도 없는 것보다 나쁘다.
+     실제 동작은 같은 목록을 걸러내는 필터이므로 work · faq 와 같은 토글 버튼 의미로 통일한다. -->
+<div class="insight-tabs" role="group" aria-label="Insight 유형 필터"><button class="active" aria-pressed="true" data-insight="article">Article</button><button aria-pressed="false" data-insight="video">Video</button></div></div>
     <div class="insight-list" id="insightList">
       <!-- TODO(미확정): Insight 상세 URL. Phase 2 에서 /insight/[slug] 로 연결한다.
            href="#" 는 의도적 공란이며, JS 가 기본 동작을 막아 최상단 점프를 방지한다.
@@ -873,7 +883,8 @@ body.chat-open .dock{transform:translate(-50%,140%)}
   const workBtns=[...document.querySelectorAll('[data-filter]')];
   const workCards=[...document.querySelectorAll('.work-card')];
   const setWork=(value,shouldTrack=true)=>{
-    workBtns.forEach(b=>b.classList.toggle('active',b.dataset.filter===value));
+    /* 눌림 상태를 시각(class)뿐 아니라 접근성 트리에도 알린다. insight · faq 와 같은 규약. */
+    workBtns.forEach(b=>{const active=b.dataset.filter===value;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
     workCards.forEach(c=>c.hidden=value!=='all'&&c.dataset.category!==value);
     setUrl('work',value==='all'?'':value);
     if(shouldTrack) track('tab_change',{section:'work',content_id:value});
@@ -904,7 +915,7 @@ body.chat-open .dock{transform:translate(-50%,140%)}
   const insightBtns=[...document.querySelectorAll('[data-insight]')];
   const insightItems=[...document.querySelectorAll('[data-kind]')];
   const setInsight=(value,shouldTrack=true)=>{
-    insightBtns.forEach(b=>{const active=b.dataset.insight===value;b.classList.toggle('active',active);b.setAttribute('aria-selected',String(active))});
+    insightBtns.forEach(b=>{const active=b.dataset.insight===value;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
     insightItems.forEach(i=>i.hidden=i.dataset.kind!==value);
     setUrl('insight',value==='article'?'':value);
     if(shouldTrack) track('tab_change',{section:'insight',content_id:value});
@@ -925,7 +936,7 @@ body.chat-open .dock{transform:translate(-50%,140%)}
   const faqBtns=[...document.querySelectorAll('[data-faq]')];
   const faqItems=[...document.querySelectorAll('[data-faq-kind]')];
   const setFaq=(value,shouldTrack=true)=>{
-    faqBtns.forEach(b=>b.classList.toggle('active',b.dataset.faq===value));
+    faqBtns.forEach(b=>{const active=b.dataset.faq===value;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))});
     faqItems.forEach(i=>{i.hidden=i.dataset.faqKind!==value;i.classList.remove('open');i.querySelector('.faq-q').setAttribute('aria-expanded','false')});
     setUrl('faq',value==='project'?'':value);
     if(shouldTrack) track('tab_change',{section:'faq',content_id:value});
