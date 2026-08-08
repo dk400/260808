@@ -624,19 +624,51 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
    Phase 2 에서 인증이 붙으면 이 토글은 사라지고 서버가 역할을 정한다. */
 /* 로그인 화면. 어드민 본체와 같은 폭을 쓰되 가운데로 모은다 — 들어가기 전 화면이라
    목록·패널 레이아웃을 흉내 낼 이유가 없다. */
-.adm--login{padding-top:clamp(96px,11vw,140px)}
-.login{max-width:520px;margin:0 auto;padding:clamp(28px,4vw,40px);
-  border:1px solid var(--line);border-radius:var(--radius);background:var(--white)}
-.login__title{margin-top:14px;font-size:clamp(26px,3vw,34px);letter-spacing:-.025em;font-weight:850}
-.login__lead{margin-top:12px;font-size:14.5px;line-height:1.7;color:var(--muted)}
-.login__form{margin-top:26px;display:grid;gap:12px}
+/* 로그인은 사이트 화면이 아니라 문이다. 헤더·dock·상담 위젯을 걷어내고 단독으로 세운다. */
+body.admin-login .header,
+body.admin-login .dock,
+body.admin-login .chat,
+body.admin-login .totop,
+body.admin-login .rail{display:none}
+body.admin-login #ch-plugin-script{display:none}
+.adm--login{min-height:100vh;min-height:100dvh;display:grid;place-items:center;
+  padding:clamp(24px,5vw,56px) var(--pad)}
+.login{width:100%;max-width:460px;padding:clamp(30px,4vw,44px);
+  border:1px solid var(--line);border-radius:var(--radius);background:var(--white);
+  box-shadow:0 24px 70px rgba(17,19,17,.07)}
+.login__brand{display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:850;
+  letter-spacing:-.03em}
+.login__brand .logo__mark{width:22px;height:22px}
+.login__tag{display:block;margin-top:22px;font-size:11px;font-weight:850;letter-spacing:.14em;
+  text-transform:uppercase;color:#5c7500}
+.login__title{margin-top:8px;font-size:clamp(24px,2.8vw,30px);letter-spacing:-.03em;
+  font-weight:850;line-height:1.25}
+.login__lead{margin-top:10px;font-size:14px;line-height:1.7;color:var(--muted)}
+.login__ways{margin-top:26px}
+/* 주 경로를 시각적으로 하나만 세운다 — 같은 무게의 버튼을 나열하면 매번 고민하게 된다. */
+.login__google{width:100%;min-height:50px;display:flex;align-items:center;justify-content:center;
+  gap:10px;border:1px solid var(--line);border-radius:999px;background:var(--white);
+  font-size:14px;font-weight:800;transition:border-color .2s,background .2s}
+.login__google:hover{border-color:var(--ink);background:var(--bg)}
+.login__g{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;
+  background:var(--ink);color:var(--white);font-size:11px;font-weight:900}
+.login__or{position:relative;margin:18px 0;text-align:center}
+.login__or::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line)}
+.login__or span{position:relative;padding:0 12px;background:var(--white);
+  font-size:12px;color:var(--muted)}
+.login__form{display:grid;gap:12px}
+.login__notes{margin-top:22px;display:grid;gap:7px;list-style:none;padding:0}
+.login__notes li{position:relative;padding-left:14px;font-size:12.5px;line-height:1.65;color:var(--muted)}
+.login__notes li::before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;
+  border-radius:50%;background:var(--line)}
+.login__notes b{color:var(--ink);font-weight:800}
 .login__go{min-height:48px;border-radius:999px;background:var(--ink);color:var(--white);
   font-size:14px;font-weight:850;transition:background .2s}
 .login__go:hover{background:#2c302a}
 .login__sent{margin-top:26px;padding:16px 18px;border-radius:14px;background:var(--panel);
   font-size:14px;line-height:1.7}
 .login__sent span{display:block;margin-top:4px;color:var(--muted);font-size:12.5px;font-weight:400}
-.login__demo{margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
+.login__demo{margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
 .login__demoBtns{margin-top:12px;display:flex;gap:8px;flex-wrap:wrap}
 .login__demoBtns button{min-height:44px;flex:1 1 auto;padding:12px 16px;border:1px solid var(--line);
   border-radius:999px;background:var(--white);font-size:13px;font-weight:800;transition:border-color .2s}
@@ -2302,180 +2334,41 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
      "까먹었을 때 복구"라는 문제 자체가 생기지 않는다. 근거는 PRD §9.4. */
   let admSent='';
   const renderAdminLogin=()=>
-    '<article class="adm adm--login"><div class="container">'+
-      '<div class="login">'+
-        '<span class="eyebrow">Admin</span>'+
-        '<h1 class="login__title" id="detailTitle" tabindex="-1">콘텐츠 운영</h1>'+
-        '<p class="login__lead">빌더와 운영팀이 콘텐츠를 관리하는 화면입니다. 초대받은 계정만 들어올 수 있습니다.</p>'+
-        (admSent
-          ? '<p class="login__sent"><b>'+esc(admSent)+'</b> 로 로그인 링크를 보냈습니다.'+
-            '<span>메일함을 확인해 주세요. 링크는 15분 뒤 만료됩니다.</span></p>'
-          : '<form class="login__form" data-act="signin">'+
-              '<label class="adm__field"><span>이메일</span>'+
-                '<input type="email" required placeholder="name@example.com" autocomplete="email"></label>'+
+    '<article class="adm adm--login"><div class="login">'+
+      '<a class="login__brand" href="#/"><span class="logo__mark" aria-hidden="true">✱</span>'+
+        '<b>AI BUILDER ORIGIN</b></a>'+
+      '<span class="login__tag">Admin</span>'+
+      '<h1 class="login__title" id="detailTitle" tabindex="-1">빌더와 운영팀의 작업 공간</h1>'+
+      '<p class="login__lead">초대받은 계정만 들어올 수 있습니다.</p>'+
+      (admSent
+        ? '<p class="login__sent"><b>'+esc(admSent)+'</b> 로 로그인 링크를 보냈습니다.'+
+          '<span>메일함을 확인해 주세요. 링크는 15분 뒤 만료됩니다.</span></p>'
+        : '<div class="login__ways">'+
+            /* 주 경로를 하나로 세운다. 같은 크기의 선택지를 나열하면 무엇으로 들어가야 하는지
+               매번 고민하게 되고, 계정이 흩어져 나중에 누가 어느 방식으로 들어왔는지 알기 어렵다. */
+            '<button class="login__google" data-act="oauth">'+
+              '<span class="login__g" aria-hidden="true">G</span>Google 계정으로 계속하기</button>'+
+            '<p class="adm__hint login__oauthMsg" role="status" hidden></p>'+
+            '<div class="login__or"><span>또는</span></div>'+
+            '<form class="login__form">'+
+              '<label class="adm__field"><span>업무용 이메일</span>'+
+                '<input type="email" required placeholder="name@company.com" autocomplete="email"></label>'+
               '<button type="submit" class="login__go">로그인 링크 받기</button>'+
-              '<p class="adm__hint">비밀번호가 없습니다. 메일로 받은 링크를 누르면 바로 들어옵니다.<br>'+
-              '등록되지 않은 주소로는 링크가 발송되지 않습니다.<br>'+
-              '<b>관리자 계정은 링크에 더해 2단계 인증을 거칩니다.</b></p>'+
-            '</form>')+
-        '<div class="login__demo">'+
-          '<p class="adm__hint">시안 미리보기 — 실제 인증은 연결돼 있지 않습니다. 권한에 따라 무엇이 달라지는지 보시려면 아래로 들어가세요.</p>'+
-          '<div class="login__demoBtns">'+
-            '<button data-signin="builder">빌더로 둘러보기 — '+esc(ME)+'</button>'+
-            '<button data-signin="admin">관리자로 둘러보기</button>'+
-          '</div>'+
+            '</form>'+
+          '</div>')+
+      '<ul class="login__notes">'+
+        '<li>비밀번호를 만들지 않습니다. 한 번 들어오면 <b>같은 브라우저에서는 계속 로그인 상태</b>가 유지됩니다.</li>'+
+        '<li>등록되지 않은 주소로는 링크가 발송되지 않습니다.</li>'+
+        '<li>관리자 계정은 <b>2단계 인증</b>을 한 번 더 거칩니다.</li>'+
+      '</ul>'+
+      '<div class="login__demo">'+
+        '<p class="adm__hint">시안 미리보기 — 실제 인증은 연결돼 있지 않습니다.</p>'+
+        '<div class="login__demoBtns">'+
+          '<button data-signin="builder">빌더로 둘러보기 — '+esc(ME)+'</button>'+
+          '<button data-signin="admin">관리자로 둘러보기</button>'+
         '</div>'+
       '</div>'+
     '</div></article>';
-
-  /* 프로필 편집 폼. 관리자 패널과 빌더 스페이스가 같은 것을 쓴다 —
-     두 벌로 두면 한쪽만 고쳐져 갈라진다. Insight 목록에서 실제로 겪은 문제다.
-     프로필도 공개 페이지(#builders)에 그대로 나가므로 글과 같은 검토 게이트를 탄다 —
-     한 줄 소개에 §7.5 가 막는 표현("엄격히 선별된" · 검증 불가 수치)이 들어갈 수 있다. */
-  const profileForm=cur=>'<div class="adm__profile">'+
-    '<div class="adm__ava">'+
-      '<span class="adm-avatar"'+(cur.photo?' data-photo="1" style="background-image:url('+cur.photo+')"':'')+'>'+
-        (cur.photo?'':esc(cur.ini||'?'))+'</span>'+
-      '<div><div class="adm__avaBtns">'+
-        '<button class="adm__mini" data-act="photo">'+(cur.photo?'사진 변경':'사진 올리기')+'</button>'+
-        (cur.photo?'<button class="adm__mini" data-act="photoclear">제거</button>':'')+
-        '<input type="file" id="admPhoto" accept="image/*" hidden>'+
-      '</div>'+
-      '<p class="adm__hint">정사각으로 잘라 400px 로 줄여 저장합니다. 5MB 이하. 없으면 이름 첫 글자로 표시됩니다.</p>'+
-      '<p class="adm__hint adm__photoMsg" role="status" hidden></p></div>'+
-    '</div>'+
-    '<label class="adm__field"><span>이름</span>'+
-      '<input type="text" value="'+esc(cur.name||'')+'" data-p="name"></label>'+
-    (()=>{
-      const other=cur.roleOther||!ROLES.includes(cur.role||'');
-      return '<label class="adm__field"><span>역할</span>'+
-        '<select data-p="role">'+
-          ROLES.map(r=>'<option value="'+esc(r)+'"'+(!other&&cur.role===r?' selected':'')+'>'+esc(r)+'</option>').join('')+
-          '<option value="__other"'+(other?' selected':'')+'>기타 — 직접 입력</option>'+
-        '</select></label>'+
-        (other
-          ? '<label class="adm__field"><span>역할 직접 입력</span>'+
-            '<input type="text" maxlength="30" data-p="roleCustom" value="'+esc(cur.role||'')+'" '+
-            'placeholder="예: 데이터 · 리서치"></label>'
-          : '');
-    })()+
-    '<label class="adm__field"><span>한 줄 소개</span>'+
-      '<input type="text" maxlength="70" value="'+esc(cur.bio||'')+'" data-p="bio">'+
-      '<em class="adm__count">'+String((cur.bio||'').length)+' / 70자</em></label>'+
-    '<p class="adm__hint">공개 페이지의 빌더 카드에 그대로 나갑니다. 검증할 수 없는 수치나 단정 표현은 쓰지 않습니다.</p>'+
-  '</div>';
-
-  /* ═══ 빌더 스페이스 ═══════════════════════════════════════════
-     빌더에게 관리자용 CMS(목록+패널)를 그대로 보여주면 자기 것이 한두 건뿐이라 화면이 비고,
-     자기가 누구인지는 목록의 한 줄로만 남는다. 빌더는 검수자가 아니라 작업자다 —
-     자기 프로필과 작업물이 앞에 오고, 할 일이 뒤에 온다. */
-  let spaceEdit=false, spaceNew='';        // '' | 'work' | 'insight'
-  const TYPES=['Working method','AI practice','Philosophy','Class note','Market note','Builder story'];
-  const today=()=>{const d=new Date();return d.getFullYear()+'-'+
-    String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
-
-  /* 등록 폼. 필드를 늘리지 않았다 — 제목과 한 줄이 없으면 검토하는 쪽이 무엇인지 알 수 없고,
-     그 둘만 있으면 초안으로는 충분하다. 본문 편집기는 Phase 2 다(§2 "관리자 = Tiptap 수준"). */
-  const newForm=kind=>'<form class="space__new" data-newkind="'+kind+'">'+
-    '<h3>'+(kind==='work'?'작업물 등록':'새 글 쓰기')+'</h3>'+
-    '<label class="adm__field"><span>제목</span>'+
-      '<input type="text" data-n="t" required maxlength="40" placeholder="'+
-      (kind==='work'?'예: 카페 예약 서비스 리뉴얼':'예: 요구를 잘라내는 판단은 어디서 오는가')+'"></label>'+
-    (kind==='insight'
-      ? '<label class="adm__field"><span>분류</span><select data-n="type">'+
-        TYPES.map(t=>'<option>'+esc(t)+'</option>').join('')+'</select></label>'
-      : '<label class="adm__field"><span>클라이언트 · 수행</span>'+
-        '<input type="text" data-n="client" maxlength="30" placeholder="예: 도다마인드"></label>')+
-    '<label class="adm__field"><span>한 줄 설명</span>'+
-      '<input type="text" data-n="lead" maxlength="70" placeholder="검토하는 사람이 무엇인지 알 수 있게"></label>'+
-    '<div class="adm__editor">본문 편집 영역 — 제목·본문·이미지까지 글쓰기 수준으로 다룹니다.</div>'+
-    '<div class="adm__avaBtns" style="margin:0">'+
-      '<button type="submit" class="adm__mini">초안으로 저장</button>'+
-      '<button type="button" class="adm__mini" data-space="cancel">취소</button>'+
-    '</div>'+
-    '<p class="adm__hint">초안으로 저장됩니다. 검토를 요청하면 관리자가 공개 여부를 결정합니다.<br>'+
-    '이 화면은 시안이라 새로고침하면 처음 상태로 돌아갑니다.</p>'+
-  '</form>';
-  const myProfile=()=>ADMIN.builder.find(b=>b.name===ME)||ADMIN.builder[0];
-  /* 원본 인덱스를 들고 다닌다. 상태를 바꿀 때 걸러낸 배열의 인덱스로는 원본을 못 찾는다. */
-  const myItems=k=>ADMIN[k].map((r,i)=>({r,k,i})).filter(x=>x.r.w===ME);
-  const idByTitle=(list,t)=>(list.find(x=>x.title===t)||{}).id||'';
-
-  const spaceRow=({r,k,i})=>{
-    const id=idByTitle(k==='work'?WORK:ARTICLES,r.t);
-    const thumb=k==='work'&&id
-      ? '<img src="assets/work/'+esc(id)+'.jpg" alt="" aria-hidden="true" loading="lazy">'
-      : '<span class="space__mark" aria-hidden="true">'+(k==='work'?'W':'A')+'</span>';
-    return '<article class="space__item">'+
-      '<div class="space__thumb">'+thumb+'</div>'+
-      '<div class="space__meta">'+
-        '<span class="adm-state" data-s="'+r.s+'">'+SLABEL[r.s]+'</span>'+
-        '<h3>'+esc(r.t)+'</h3>'+
-        '<p>'+esc(r.d)+(r.lead?' · '+esc(r.lead):'')+'</p>'+
-        (r.reason?'<p class="space__reason"><b>반려 사유</b> '+esc(r.reason)+'</p>':'')+
-      '</div>'+
-      '<div class="space__go">'+
-        (id?'<a class="adm__mini" href="#/'+(k==='work'?'work':'insight')+'/'+esc(id)+'">공개 화면 ↗</a>':'')+
-        (r.s==='draft'?'<button class="adm__mini" data-sub="'+k+'|'+i+'">검토 요청</button>':'')+
-        (r.s==='review'?'<span class="space__wait">검토 대기</span>':'')+
-      '</div>'+
-    '</article>';
-  };
-
-  const renderSpace=()=>{
-    const me=myProfile();
-    const works=myItems('work'), posts=myItems('insight');
-    const all=works.concat(posts);
-    const n=x=>String(x).padStart(2,'0');
-    const waiting=all.filter(x=>x.r.s==='review').length;
-    const back=all.filter(x=>x.r.reason&&x.r.s==='draft');
-
-    return '<article class="adm space"><div class="container">'+
-      '<div class="space__top">'+
-        '<div class="space__id">'+
-          '<span class="space__ava"'+(me.photo?' data-photo="1" style="background-image:url('+me.photo+')"':'')+'>'+
-            (me.photo?'':esc(me.ini||'?'))+'</span>'+
-          '<div>'+
-            '<span class="eyebrow">Builder space</span>'+
-            '<h1 class="space__name" id="detailTitle" tabindex="-1">'+esc(me.name||'')+'</h1>'+
-            '<p class="space__role">'+esc(me.role||'미배정')+'</p>'+
-            '<p class="space__bio">'+esc(me.bio||'한 줄 소개가 아직 없습니다.')+'</p>'+
-          '</div>'+
-        '</div>'+
-        '<div class="space__acts">'+
-          '<button class="adm__mini" data-space="edit" aria-pressed="'+spaceEdit+'">'+(spaceEdit?'편집 닫기':'프로필 편집')+'</button>'+
-          '<a class="adm__mini" href="#/">공개 화면 보기 ↗</a>'+
-          '<button class="adm__mini" data-signout="1">로그아웃</button>'+
-        '</div>'+
-      '</div>'+
-      '<dl class="space__stats">'+
-        '<div><dt>참여 작업</dt><dd>'+n(works.length)+'</dd></div>'+
-        '<div><dt>작성한 글</dt><dd>'+n(posts.length)+'</dd></div>'+
-        '<div><dt>검토 대기</dt><dd>'+n(waiting)+'</dd></div>'+
-      '</dl>'+
-      (back.length
-        /* 반려는 알려주지 않으면 모른다. 목록에만 묻어두면 빌더는 왜 안 올라갔는지 알 수 없다. */
-        ? '<p class="space__alert"><b>반려 '+back.length+'건</b> — 사유를 확인하고 고친 뒤 다시 검토를 요청하세요.</p>'
-        : '')+
-      (spaceEdit?'<section class="space__sec"><h2>프로필</h2>'+profileForm(me)+
-        '<p class="adm__hint">고친 내용은 검토를 거쳐 공개 화면에 반영됩니다.</p></section>':'')+
-      '<section class="space__sec">'+
-        '<div class="space__head"><h2>내 작업물</h2>'+
-        '<button class="adm__mini" data-space="new-work">+ 작업물 등록</button></div>'+
-        (spaceNew==='work'?newForm('work'):'')+
-        (works.length?'<div class="space__list">'+works.map(spaceRow).join('')+'</div>'
-          :'<p class="adm__hint">아직 배정된 작업이 없습니다.</p>')+
-      '</section>'+
-      '<section class="space__sec">'+
-        '<div class="space__head"><h2>내 글</h2>'+
-        '<button class="adm__mini" data-space="new-insight">+ 새 글 쓰기</button></div>'+
-        (spaceNew==='insight'?newForm('insight'):'')+
-        (posts.length?'<div class="space__list">'+posts.map(spaceRow).join('')+'</div>'
-          :'<p class="adm__hint">아직 작성한 글이 없습니다.</p>')+
-      '</section>'+
-      '<p class="edu-note" style="margin-top:32px">※ Phase 1 화면 시안입니다. 인증·저장은 연결돼 있지 않고, 상태 변경은 이 화면 안에서만 유지됩니다.</p>'+
-    '</div></article>';
-  };
 
   const renderAdmin=()=>{
     const {list,panel}=renderAdminBody();
@@ -2527,8 +2420,14 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   /* 편집 대상. 빌더 스페이스에서는 목록 선택이라는 개념이 없다 — 항상 자기 프로필이다. */
   const editTarget=()=>admAuth==='builder'?myProfile():admRows()[admPick];
 
+  /* 로그인 화면에서는 헤더·dock·상담 위젯을 숨긴다. 사이트 내비게이션이 그대로 보이면
+     "어드민에 들어와 있다"는 느낌이 안 나고, dock 의 문의 CTA 가 로그인 버튼과 경쟁한다. */
+  const setChrome=()=>document.body.classList.toggle('admin-login',
+    location.hash==='#/admin'&&!admAuth);
+
   const admRepaint=()=>{
     if(location.hash!=='#/admin') return;
+    setChrome();
     view.innerHTML=!admAuth?renderAdminLogin():admAuth==='builder'?renderSpace():renderAdmin();
     /* 제목도 함께 바꾼다. showDetail 을 거치지 않는 경로라 여기서 안 하면 로그인·역할이 바뀌어도
        탭 제목이 이전 화면에 머문다 — 탭을 여러 개 띄우고 비교할 때 바로 드러난다. */
@@ -2673,6 +2572,12 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
       admRepaint();
       /* 초대 폼을 열면 바로 입력할 수 있어야 한다. 열어놓고 다시 클릭하게 만들지 않는다. */
       if(admInvite){ const i=document.querySelector('.adm__inviteForm input'); if(i) i.focus(); }
+      return;
+    }
+    else if(t.dataset.act==='oauth'){
+      /* 동작하는 척하지 않는다. 눌렀는데 아무 일도 없으면 고장으로 읽히므로 이유를 그 자리에 쓴다. */
+      const m=view.querySelector('.login__oauthMsg');
+      if(m){ m.textContent='Google 연동은 Phase 2 에서 붙습니다. 아래 미리보기로 들어가 주세요.'; m.hidden=false; }
       return;
     }
     else if(t.dataset.act==='photo'){
@@ -2828,6 +2733,7 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
   const showHome=()=>{
     view.hidden=true; view.innerHTML='';
     home.hidden=false;
+    document.body.classList.remove('admin-login');
     document.title=BASE;
   };
   const showDetail=(html,title)=>{
@@ -2861,8 +2767,9 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
     else if(h==='#/insight'){ showDetail(renderInsightList(),'Insight'); handled=true; }
     else if(h==='#/education'){ showDetail(renderEducation(),'AI 빌더 스쿨 부트캠프'); handled=true; }
     else if(h==='#/admin'){
+      setChrome();
       showDetail(!admAuth?renderAdminLogin():admAuth==='builder'?renderSpace():renderAdmin(),
-        admAuth==='builder'?'빌더 스페이스':'콘텐츠 운영'); handled=true;
+        !admAuth?'Admin':admAuth==='builder'?'빌더 스페이스':'콘텐츠 운영'); handled=true;
     }
     if(!handled){
       showHome();
