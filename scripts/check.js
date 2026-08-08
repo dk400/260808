@@ -115,12 +115,33 @@ const badRoute = Object.entries(routes).filter(([h, fn]) => {
 ok(!badRoute.length, '라우트-렌더러 연결 ' + (Object.keys(routes).length - badRoute.length) + '/' +
    Object.keys(routes).length + (badRoute.length ? ' → 끊김: ' + badRoute.join(', ') : ''));
 
+/* ── 함수 정의 존재 ───────────────────────────────────────
+   🔴 이름만 세면 안 된다. renderSpace 정의가 통째로 지워졌는데 route 안의 호출부가
+   남아 있어서 검사를 통과했고, 배포 후에야 ReferenceError 로 드러났다(2026-08-08).
+   "const 이름=" 형태로 정의 자체를 확인한다. */
+const DEFS = ['profileForm', 'renderSpace', 'renderAdmin', 'renderAdminLogin', 'renderAdminBody',
+  'renderWork', 'renderInsight', 'renderWorkList', 'renderInsightList', 'renderFaq',
+  'renderEducation', 'admRepaint', 'setChrome', 'editTarget', 'readAvatar', 'initialOf',
+  'myProfile', 'spaceRow', 'newForm', 'initAuth', 'resolveRole'];
+const noDef = DEFS.filter(n => !s.includes('const ' + n + '='));
+ok(!noDef.length, '함수 정의 ' + (DEFS.length - noDef.length) + '/' + DEFS.length +
+  (noDef.length ? ' → 정의 없음(호출만 남음): ' + noDef.join(', ') : ''));
+
+/* 선언 순서 — const 는 호출 시점에 초기화돼 있어야 한다. route() 가 마지막에 돌므로
+   렌더러는 그보다 위에 있어야 한다. 블록을 옮기다 순서가 뒤집히면 TDZ 로 죽는다. */
+const orderPairs = [['renderSpace', 'route='], ['profileForm', 'renderSpace'],
+  ['renderAdmin=', 'admRepaint'], ['setChrome', 'admRepaint']];
+const badOrder = orderPairs.filter(([a, b]) => {
+  const ia = s.indexOf('const ' + a), ib = s.indexOf('const ' + b);
+  return ia < 0 || ib < 0 || ia > ib;
+}).map(([a, b]) => a + ' → ' + b);
+ok(!badOrder.length, '선언 순서' + (badOrder.length ? ' → 뒤집힘: ' + badOrder.join(', ') : ' 정상'));
+
 /* ── 기능 잔존 ───────────────────────────────────────── */
 const MUST = {
-  '어드민 로그인': 'renderAdminLogin', '로그인 상태': 'admAuth',
-  '빌더 스페이스': 'renderSpace', '스페이스 등록': 'space__new',
-  '역할 권한': 'ROLE_CAN', '사진 업로드': 'readAvatar', '역할 목록': 'const ROLES',
-  '이니셜 규칙': 'initialOf', '빌더 초대': 'adm__inviteForm', '반려 사유': 'adm__rejectForm',
+  '로그인 상태': 'admAuth', '스페이스 등록': 'space__new',
+  '역할 권한': 'ROLE_CAN', '역할 목록': 'const ROLES',
+  '빌더 초대': 'adm__inviteForm', '반려 사유': 'adm__rejectForm',
   'dock 회피 실측': '--dock-h', '채널톡 키': 'CHANNEL_PLUGIN_KEY',
   'INSIGHT 단일 소스': 'window.__INSIGHT', '표지 폴백': 'cover--01',
   'Google 로그인': 'signInWithOAuth', 'Supabase 설정': 'SUPABASE_ANON_KEY',
