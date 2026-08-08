@@ -2264,6 +2264,32 @@ body.admin-login #ch-plugin-script{display:none}
      🔴 인증이 아니다. 정적 파일에서 클라이언트가 판정하는 로그인은 소스를 열면 그대로 뚫린다 —
      시안에 "되는 것처럼 보이는" 인증을 넣으면 심사자가 실제 보안으로 오해한다.
      여기서 보여주는 것은 로그인 흐름과 권한 차이이고, 판정은 Phase 2 에서 서버가 한다(§8). */
+  /* ═══ Supabase 인증 ═══════════════════════════════════════════
+     세 값을 채우면 실제 Google 로그인이 켜진다. 비어 있으면 지금처럼 미리보기 버튼만 남는다 —
+     채널톡과 같은 방식이다. 시안은 키 없이도 동작해야 한다(§9.1 file:// 포함).
+
+     ⚠️ anon key 는 공개용이다. 브라우저로 내려가는 값이고 RLS 가 실제 권한을 막는다.
+        service_role 키를 여기 넣으면 안 된다 — 그건 RLS 를 통째로 우회한다.
+
+     PKCE 를 쓰는 이유: 기본(implicit) 흐름은 #access_token=... 으로 돌아오는데
+     이 사이트는 해시 라우팅이라 #/admin 과 충돌한다. PKCE 는 ?code= 로 와서 부딪히지 않는다. */
+  const SUPABASE_URL='';
+  const SUPABASE_ANON_KEY='';
+  const ADMIN_EMAILS=[];                  // 비우면 profiles.account_role 로 판정한다
+
+  let sb=null;                            // Supabase 클라이언트
+  let admUser=null;                       // {email, name, avatar}
+
+  const loadSupabase=()=>new Promise((res,rej)=>{
+    if(window.supabase) return res(window.supabase);
+    const el=document.createElement('script');
+    el.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+    el.async=true;
+    el.onload=()=>window.supabase?res(window.supabase):rej(new Error('로드는 됐지만 전역이 없다'));
+    el.onerror=()=>rej(new Error('스크립트를 내려받지 못했다'));
+    document.head.appendChild(el);
+  });
+
   let admAuth=null;                       // null | 'builder' | 'admin'
   let admRole='admin', admTab='work', admFilter='all', admPick=0;
   const ROLE_CAN={
@@ -2333,6 +2359,55 @@ body.admin-login #ch-plugin-script{display:none}
   /* 로그인 화면. 비밀번호 칸을 두지 않았다 — 매직링크는 보안이 약해서가 아니라 강해서 고른 것이고,
      "까먹었을 때 복구"라는 문제 자체가 생기지 않는다. 근거는 PRD §9.4. */
   let admSent='';
+  /* 역할 판정. profiles 테이블이 아직 없을 수 있으므로 실패해도 로그인은 살린다 —
+     테이블이 없다고 못 들어가면 붙이는 순서를 강제하게 된다. 기본은 빌더다. */
+  const resolveRole=async user=>{
+    const email=(user.email||'').toLowerCase();
+    if(ADMIN_EMAILS.length) return ADMIN_EMAILS.map(e=>e.toLowerCase()).includes(email)?'admin':'builder';
+    try{
+      const {data}=await sb.from('profiles').select('account_role').eq('id',user.id).single();
+      return data&&data.account_role==='admin'?'admin':'builder';
+    }catch(e){ return 'builder'; }
+  };
+
+  const applySession=async session=>{
+    if(!session||!session.user) return false;
+    const u=session.user, m=u.user_metadata||{};
+    admUser={email:u.email||'', name:m.full_name||m.name||u.email||'', avatar:m.avatar_url||''};
+    admAuth=admRole=await resolveRole(u);
+    admTab=ROLE_CAN[admRole].tabs[0]; admFilter='all'; admPick=0;
+    admInvite=false; admSent=''; spaceEdit=false; spaceNew='';
+    return true;
+  };
+
+  /* 로그인 뒤 돌아오면 주소에 ?code= 가 붙어 있다. 세션을 만든 뒤 지운다 —
+     남겨두면 새로고침할 때마다 이미 쓴 코드로 교환을 시도하고 실패한다. */
+  const cleanAuthQuery=()=>{
+    const u=new URL(location.href);
+    if(!u.searchParams.has('code')&&!u.searchParams.has('error')) return;
+    u.searchParams.delete('code'); u.searchParams.delete('error');
+    u.searchParams.delete('error_description'); u.searchParams.delete('state');
+    history.replaceState(null,'',u.pathname+u.search+(u.hash||'#/admin'));
+  };
+
+  const initAuth=async()=>{
+    if(!SUPABASE_URL||!SUPABASE_ANON_KEY) return;
+    try{
+      const lib=await loadSupabase();
+      sb=lib.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,
+        {auth:{flowType:'pkce',detectSessionInUrl:true,persistSession:true,autoRefreshToken:true}});
+      const {data}=await sb.auth.getSession();
+      cleanAuthQuery();
+      if(await applySession(data&&data.session)) admRepaint();
+      /* 토큰 갱신·다른 탭 로그아웃까지 따라간다. 한 탭에서 나갔는데 다른 탭이 살아 있으면
+         "로그아웃했는데 아직 들어가진다"가 된다. */
+      sb.auth.onAuthStateChange(async(evt,session)=>{
+        if(evt==='SIGNED_OUT'){ admAuth=null; admUser=null; admRepaint(); return; }
+        if(session&&!admAuth&&await applySession(session)) admRepaint();
+      });
+    }catch(e){ /* 로드 실패면 미리보기 버튼만 남는다 */ }
+  };
+
   const renderAdminLogin=()=>
     '<article class="adm adm--login"><div class="login">'+
       '<a class="login__brand" href="#/"><span class="logo__mark" aria-hidden="true">✱</span>'+
@@ -2381,7 +2456,7 @@ body.admin-login #ch-plugin-script{display:none}
       /* 로그인한 뒤에 역할을 마음대로 바꿀 수 있으면 권한이 있다는 인상이 무너진다.
          현재 계정만 보여주고, 다른 역할을 보려면 로그아웃하고 다시 들어온다 — 실제 제품과 같다. */
       '<div class="adm__who adm__who--user">'+
-        '<span class="adm__me">'+esc(admRole==='admin'?'운영팀':ME)+
+        '<span class="adm__me">'+esc(admUser?(admUser.name||admUser.email):(admRole==='admin'?'운영팀':ME))+
         '<em>'+(admRole==='admin'?'관리자':'빌더')+'</em></span>'+
         '<button data-signout="1">로그아웃</button>'+
       '</div>'+
@@ -2561,7 +2636,8 @@ body.admin-login #ch-plugin-script{display:none}
       admRepaint(); return;
     }
     else if(t.dataset.signout){
-      admAuth=null; admSent='';
+      if(sb&&admUser) sb.auth.signOut();     // onAuthStateChange 가 화면을 되돌린다
+      admAuth=null; admUser=null; admSent='';
       admRepaint();
       /* 로그아웃 뒤에는 로그인 화면의 제목으로 포커스를 옮긴다 — 화면이 바뀐 것을 알려야 한다. */
       const h2=view.querySelector('#detailTitle'); if(h2) h2.focus({preventScroll:true});
@@ -2575,9 +2651,20 @@ body.admin-login #ch-plugin-script{display:none}
       return;
     }
     else if(t.dataset.act==='oauth'){
-      /* 동작하는 척하지 않는다. 눌렀는데 아무 일도 없으면 고장으로 읽히므로 이유를 그 자리에 쓴다. */
       const m=view.querySelector('.login__oauthMsg');
-      if(m){ m.textContent='Google 연동은 Phase 2 에서 붙습니다. 아래 미리보기로 들어가 주세요.'; m.hidden=false; }
+      const say=txt=>{ if(m){ m.textContent=txt; m.hidden=false; } };
+      if(!sb){
+        /* 동작하는 척하지 않는다. 눌렀는데 아무 일도 없으면 고장으로 읽히므로 이유를 그 자리에 쓴다. */
+        say(SUPABASE_URL?'로그인 서버에 연결하지 못했습니다. 잠시 뒤 다시 시도해 주세요.'
+                        :'Google 연동은 아직 연결되지 않았습니다. 아래 미리보기로 들어가 주세요.');
+        return;
+      }
+      say('Google 로그인 창으로 이동합니다…');
+      /* 돌아올 자리를 정확히 지정한다. 지정하지 않으면 Supabase 프로젝트의 Site URL 로 가는데,
+         그 값이 다른 주소면 로그인은 되고 화면은 엉뚱한 곳에서 열린다. */
+      sb.auth.signInWithOAuth({provider:'google',
+        options:{redirectTo:location.origin+location.pathname+'#/admin'}})
+        .then(({error})=>{ if(error) say('로그인을 시작하지 못했습니다 — '+error.message); });
       return;
     }
     else if(t.dataset.act==='photo'){
@@ -2786,6 +2873,10 @@ body.admin-login #ch-plugin-script{display:none}
 
   addEventListener('hashchange',route);
   route();
+
+  /* 세션 복원은 마지막에 시작한다. admRepaint · route 가 모두 준비된 뒤여야 하고,
+     비동기라 첫 화면을 늦추지 않는다. 키가 없으면 즉시 빠져나온다. */
+  initAuth();
 })();
 </script>
 </body>

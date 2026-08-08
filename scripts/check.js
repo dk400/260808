@@ -95,6 +95,7 @@ const MUST = {
   '이니셜 규칙': 'initialOf', '빌더 초대': 'adm__inviteForm', '반려 사유': 'adm__rejectForm',
   'dock 회피 실측': '--dock-h', '채널톡 키': 'CHANNEL_PLUGIN_KEY',
   'INSIGHT 단일 소스': 'window.__INSIGHT', '표지 폴백': 'cover--01',
+  'Google 로그인': 'signInWithOAuth', 'Supabase 설정': 'SUPABASE_ANON_KEY',
   '작업물 연결': 'builder-work', 'Work 상세 캡처': 'detail__shot',
 };
 const gone = Object.entries(MUST).filter(([, n]) => !s.includes(n)).map(([k]) => k);
