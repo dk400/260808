@@ -1792,6 +1792,32 @@ body.admin-login #ch-plugin-script{display:none}
     av.insertBefore(img,av.firstChild);
   });
 
+  /* ═══ 마퀴 — 화면 폭에 맞춰 세트를 늘린다 ═══
+     translateX(-50%) 는 트랙 절반만큼 밀어 이음매를 감춘다. 그런데 절반(=한 세트)이
+     화면보다 좁으면 미는 도중에 트랙 오른쪽 끝이 드러나 띠가 끊겨 보인다.
+     넓은 화면에서 실제로 그랬다(한 세트 899px, 화면 1568px+).
+
+     세트 수를 코드에 박지 않는다 — 화면이 더 커지면 같은 자리에서 다시 끊긴다.
+     화면을 덮을 만큼 반복한 뒤, 늘어난 폭에 맞춰 시간도 늘려 속도를 일정하게 유지한다. */
+  const strip=document.querySelector('.strip__track');
+  if(strip){
+    const base=strip.innerHTML;          // 원본은 이미 두 세트다
+    const SPEED=69;                      // px/s — 원래 값(1798px / 26s)을 그대로 쓴다
+    let stripTimer=0;
+    const fitStrip=()=>{
+      strip.innerHTML=base;
+      const one=strip.scrollWidth/2;     // 한 세트 폭
+      if(!one) return;
+      const need=Math.max(1,Math.ceil(innerWidth/one));
+      if(need>1) strip.innerHTML=base.repeat(need);
+      const half=strip.scrollWidth/2;
+      strip.style.animationDuration=(half/SPEED).toFixed(1)+'s';
+    };
+    fitStrip();
+    /* 리사이즈마다 다시 그리면 애니메이션이 처음으로 돌아간다. 끝난 뒤 한 번만 한다. */
+    addEventListener('resize',()=>{ clearTimeout(stripTimer); stripTimer=setTimeout(fitStrip,200) });
+  }
+
   /* ═══ 등장 스캐너 — 재실행 가능하게 둔다 ═══
      [data-stagger] 그룹의 자식에 방향(data-reveal)과 시차(--d)를 부여한 뒤 관찰한다.
      한꺼번에 뜨면 방향을 갈라도 "한 번에 들어온다"는 인상이 남는다.
