@@ -87,6 +87,34 @@ else {
 
 ok((s.match(/const INSIGHT=\[/g) || []).length === 1, 'INSIGHT 배열 정의 1곳');
 
+/* ── 화면 계약 ───────────────────────────────────────────
+   "파일에 있다"와 "화면에서 동작한다" 사이가 이번에 크게 벌어졌다.
+   브라우저를 못 쓰는 상황(확장이 localhost 를 막음)이 반복돼, 눈으로만 잡히던 것을
+   여기서 잡는다. 전부 실제로 의심했던 지점이다. */
+/* 정규식 대신 인덱스로 본다 — 이 파일을 스크립트로 생성하다 백슬래시가 사라진 적이 있다. */
+const near = (anchor, needle, span) => {
+  const i = s.indexOf(anchor);
+  return i >= 0 && s.slice(i, i + (span || 200)).indexOf(needle) >= 0;
+};
+ok(near("h==='#/admin'", 'setChrome()', 140), '#/admin 진입 시 사이트 크롬 토글');
+ok(s.includes("closest('[data-signin]"), '클릭 위임에 data-signin 포함');
+ok(s.includes('data-signin="builder"') && s.includes('data-signin="admin"'), '미리보기 버튼 2종');
+ok(s.includes('data-signout'), '로그아웃 버튼');
+/* CSS 가 겨냥하는 요소가 실제로 있는지. 클래스를 바꾸면 규칙이 조용히 죽는다. */
+const targets = ['header', 'dock', 'chat', 'totop', 'rail'];
+const missTarget = targets.filter(t => !s.includes('class="' + t + '"'));
+ok(!missTarget.length, '크롬 숨김 대상 존재 ' + (targets.length - missTarget.length) + '/' + targets.length +
+   (missTarget.length ? ' → 없음: ' + missTarget.join(', ') : ''));
+/* 라우트마다 렌더러가 연결돼 있는지 */
+const routes = {'#/work':'renderWorkList','#/insight':'renderInsightList','#/faq':'renderFaq',
+                '#/education':'renderEducation','#/admin':'renderAdminLogin'};
+const badRoute = Object.entries(routes).filter(([h, fn]) => {
+  const i = s.indexOf("h==='" + h + "'");
+  return i < 0 || s.slice(i, i + 260).indexOf(fn) < 0;
+}).map(([h]) => h);
+ok(!badRoute.length, '라우트-렌더러 연결 ' + (Object.keys(routes).length - badRoute.length) + '/' +
+   Object.keys(routes).length + (badRoute.length ? ' → 끊김: ' + badRoute.join(', ') : ''));
+
 /* ── 기능 잔존 ───────────────────────────────────────── */
 const MUST = {
   '어드민 로그인': 'renderAdminLogin', '로그인 상태': 'admAuth',
