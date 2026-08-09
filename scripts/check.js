@@ -97,6 +97,10 @@ const near = (anchor, needle, span) => {
   return i >= 0 && s.slice(i, i + (span || 200)).indexOf(needle) >= 0;
 };
 ok(near("h==='#/admin'", 'setChrome()', 140), '#/admin 진입 시 사이트 크롬 토글');
+/* 상세 URL 이 생기기 전에는 href="#" 라 내부 링크의 기본 동작을 전부 막았다.
+   href 가 실제 주소로 바뀐 뒤에도 그 코드가 남아 홈에서 글을 눌러도 아무 일이 없었다.
+   빈 앵커일 때만 막아야 한다. */
+ok(!s.includes('if(!external) e.preventDefault()'), '링크 이동을 무조건 막지 않음');
 ok(s.includes("closest('[data-signin]"), '클릭 위임에 data-signin 포함');
 ok(s.includes('data-signin="builder"') && s.includes('data-signin="admin"'), '미리보기 버튼 2종');
 ok(s.includes('data-signout'), '로그아웃 버튼');

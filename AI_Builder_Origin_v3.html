@@ -1967,13 +1967,14 @@ body.admin-login #ch-plugin-script{display:none}
   const insightInit=new URL(location.href).searchParams.get('insight');
   setInsight(insightInit==='video'?'video':'article',false);
 
-  /* href="#" 는 상세 URL 미확정에 따른 의도적 공란이다. 기본 동작을 막지 않으면
-     클릭이 페이지 최상단 점프로 이어져 완성도 인상을 해친다. */
+  /* 🔴 예전에는 상세 URL 이 없어 href="#" 였고, 최상단 점프를 막으려고 내부 링크의 기본
+     동작을 전부 막았다. 상세 페이지가 생겨 href 가 #/insight/… 로 바뀐 뒤에도 그 코드가
+     남아 홈에서 글을 눌러도 아무 일이 없었다 — 막던 것이 이동 그 자체가 됐다.
+     이제 빈 앵커일 때만 막는다. Work 카드는 같은 이유로 이미 고쳐져 있다. */
   insightItems.forEach(item=>item.addEventListener('click',e=>{
     const href=item.getAttribute('href')||'';
     const external=/^https?:/.test(href);
-    /* 내부 항목만 기본 동작을 막는다. 외부 영상은 새 탭으로 나가야 하므로 막지 않는다. */
-    if(!external) e.preventDefault();
+    if(href==='#') e.preventDefault();
     refContent=item.dataset.id||refContent;   // 문의로 이어지면 ref_content 로 실린다(§6.5)
     track('insight_click',{section:'insight',content_id:item.dataset.id||'',destination:href});
     /* §6.4 가 "대상 URL 미확정"으로 보류했던 이벤트. 이제 실제 주소가 있으니 발화한다.
