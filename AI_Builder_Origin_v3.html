@@ -385,13 +385,23 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .problem__steps{display:grid;gap:18px}
 .problem-card{min-height:62vh;border:1px solid rgba(255,255,255,.12);border-radius:26px;padding:clamp(28px,4vw,54px);display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;background:#171a17}
 .problem-card:nth-child(2){background:#1d211c}
-.problem-card:nth-child(3){background:var(--lime);color:#111311}
-.problem-card__no{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.58}
-.problem-card h3{font-size:clamp(34px,4.8vw,68px);line-height:1.16;letter-spacing:-.02em;font-weight:850;max-inline-size:13ch}
-.problem-card p{font-size:clamp(15px,1.4vw,18px);line-height:1.72;max-width:38ch;opacity:.66}
-.problem-card__graphic{position:absolute;right:-50px;top:42px;width:220px;height:220px;border:1px solid currentColor;border-radius:50%;opacity:.12}
-.problem-card__graphic::before,.problem-card__graphic::after{content:'';position:absolute;border:1px solid currentColor;border-radius:50%;inset:28px}
-.problem-card__graphic::after{inset:66px}
+.problem-card:nth-child(3){background:#111311;color:#fffef9}
+.problem-card__media{position:absolute;inset:0;z-index:0;overflow:hidden}
+.problem-card__media::after{content:'';position:absolute;inset:0;background:
+  linear-gradient(to bottom,rgba(8,10,8,.28),rgba(8,10,8,.08) 36%,rgba(8,10,8,.9) 88%),
+  linear-gradient(110deg,rgba(17,19,17,.28),transparent 58%)}
+.problem-card:nth-child(3) .problem-card__media::after{background:
+  linear-gradient(to bottom,rgba(8,10,8,.18),rgba(8,10,8,.04) 34%,rgba(8,10,8,.88) 88%),
+  linear-gradient(110deg,rgba(119,151,0,.28),transparent 62%)}
+.problem-card__media img{width:100%;height:100%;display:block;object-fit:cover;transform:scale(1.03);
+  transition:transform .9s cubic-bezier(.2,.8,.2,1),filter .6s}
+.problem-card:nth-child(1) .problem-card__media img{object-position:62% 50%}
+.problem-card:nth-child(2) .problem-card__media img{object-position:50% 42%}
+.problem-card:nth-child(3) .problem-card__media img{object-position:56% 48%}
+.problem-card__no,.problem-card>div{position:relative;z-index:2}
+.problem-card__no{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.72}
+.problem-card h3{font-size:clamp(34px,4.8vw,68px);line-height:1.16;letter-spacing:-.02em;font-weight:850;max-inline-size:13ch;text-shadow:0 2px 18px rgba(0,0,0,.34)}
+.problem-card p{font-size:clamp(15px,1.4vw,18px);line-height:1.72;max-width:38ch;opacity:.78}
 
 /* Proof/static section */
 .proof{background:var(--white)}
@@ -1415,8 +1425,8 @@ body.admin-on #ch-plugin-script{display:none}
    gsap 을 CDN 으로 얹으면 70KB 를 더 받아 같은 결과를 만든다.
 
    원본에서 가져온 것: 확장 비율 공식 · 기울기 방향 규칙 · 라벨 스태거 · 접힌 판 디밍.
-   버린 것: 이미지/그레이스케일(우리 카드는 사진이 아니라 텍스트다),
-            #060010 오버레이와 흰색 액센트(디자인 시스템 색을 그대로 쓴다).
+   이미지는 각 문장에 맞춘 전용 에셋을 쓰고, 접힌 판의 채도·밝기만 낮춘다.
+   #060010 오버레이와 흰색 액센트는 버리고 디자인 시스템 색을 그대로 쓴다.
 
    확장 비율 0.52 → grow = 0.52*(3-1)/(1-0.52) = 2.167. 원본 공식 그대로다. */
 @media(min-width:900px){
@@ -1436,6 +1446,8 @@ body.admin-on #ch-plugin-script{display:none}
   .problem-card::before{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
     background:#111311;opacity:.44;transition:opacity .6s cubic-bezier(.2,.8,.2,1)}
   .problem-card.is-open::before{opacity:0}
+  .problem-card:not(.is-open) .problem-card__media img{transform:scale(1.1);filter:saturate(.38) brightness(.68)}
+  .problem-card.is-open .problem-card__media img{transform:scale(1.03);filter:saturate(1.06) brightness(1.02)}
   /* __graphic 은 absolute 라 건드리면 안 된다 — 글자 블록만 위로 올린다. */
   .problem-card>.problem-card__no,
   .problem-card>div{position:relative;z-index:2}
@@ -1453,8 +1465,6 @@ body.admin-on #ch-plugin-script{display:none}
     border-radius:3px;background:var(--lime);opacity:0;transform:scaleY(.35);transform-origin:bottom;
     transition:opacity .4s,transform .6s cubic-bezier(.2,.8,.2,1)}
   .problem-card.is-open>div::before{opacity:1;transform:none}
-  /* 라임 카드 위에서는 라임 막대가 안 보인다. */
-  .problem-card:nth-child(3)>div::before{background:#111311}
   .problem-card.is-open p{transition-delay:.06s}
   .problem-card:focus-visible{outline:2px solid var(--lime);outline-offset:3px}
 }
@@ -1617,9 +1627,9 @@ body.admin-on #ch-plugin-script{display:none}
       <p>포트폴리오의 개수보다, 실제 작업자와 과정이 확인되는지가 발주 판단의 근거가 되어야 합니다.</p>
     </div>
     <div class="problem__steps">
-      <article class="problem-card reveal reveal--right"><span class="problem-card__no">01 / Problem</span><span class="problem-card__graphic"></span><div><h3>빠른 결과물은 많아졌습니다.</h3><p>같은 도구를 써도 결과는 다릅니다. 요구를 잘라내는 판단, 구조를 설계하는 방식, 검수 기준에서 차이가 생깁니다.</p></div></article>
-      <article class="problem-card reveal reveal--left"><span class="problem-card__no">02 / Question</span><span class="problem-card__graphic"></span><div><h3>그런데 누가 만들었는지는 보이지 않습니다.</h3><p>화려한 목업과 기술 스택만으로는 실제 수행 경험과 책임 범위를 판단하기 어렵습니다.</p></div></article>
-      <article class="problem-card reveal reveal--zoom"><span class="problem-card__no">03 / Origin</span><span class="problem-card__graphic"></span><div><h3>우리는 사람과 방식을 함께 공개합니다.</h3><p>참여한 Work, 작성한 Insight, 작업 과정의 기록을 연결해 고객이 직접 판단할 수 있게 합니다.</p></div></article>
+      <article class="problem-card reveal reveal--right"><figure class="problem-card__media" aria-hidden="true"><img src="assets/why/why-01-speed.jpg" width="960" height="1200" alt="" loading="lazy"></figure><span class="problem-card__no">01 / Problem</span><div><h3>빠른 결과물은 많아졌습니다.</h3><p>같은 도구를 써도 결과는 다릅니다. 요구를 잘라내는 판단, 구조를 설계하는 방식, 검수 기준에서 차이가 생깁니다.</p></div></article>
+      <article class="problem-card reveal reveal--left"><figure class="problem-card__media" aria-hidden="true"><img src="assets/why/why-02-hidden-maker.jpg" width="960" height="1200" alt="" loading="lazy"></figure><span class="problem-card__no">02 / Question</span><div><h3>그런데 누가 만들었는지는 보이지 않습니다.</h3><p>화려한 목업과 기술 스택만으로는 실제 수행 경험과 책임 범위를 판단하기 어렵습니다.</p></div></article>
+      <article class="problem-card reveal reveal--zoom"><figure class="problem-card__media" aria-hidden="true"><img src="assets/why/why-03-open-evidence.jpg" width="960" height="1200" alt="" loading="lazy"></figure><span class="problem-card__no">03 / Origin</span><div><h3>우리는 사람과 방식을 함께 공개합니다.</h3><p>참여한 Work, 작성한 Insight, 작업 과정의 기록을 연결해 고객이 직접 판단할 수 있게 합니다.</p></div></article>
     </div>
   </div>
 </section>
