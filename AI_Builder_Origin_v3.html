@@ -1125,8 +1125,12 @@ body.admin-on #ch-plugin-script{display:none}
 .detail__back:hover{color:var(--ink);gap:12px}
 .detail__title{margin-top:20px;font-size:clamp(38px,5.6vw,72px);line-height:1.14;
   letter-spacing:-.03em;font-weight:880;max-width:16ch}
+/* 🔴 한국어는 기본 규칙으로 어절 안에서도 끊긴다. keep-all 로 어절을 묶고
+   text-wrap:pretty 로 마지막 줄에 한두 어절만 남는 것을 막는다.
+   그래도 어디서 끊길지는 폰트·폭에 달렸으므로, 의미 단위로 끊어야 하는 곳은
+   리드 문자열에 개행을 넣는다 — listShell 이 이스케이프 뒤에 <br> 로 바꾼다. */
 .detail__lead{margin-top:24px;font-size:clamp(17px,1.8vw,21px);line-height:1.7;
-  color:var(--muted);max-width:52ch}
+  color:var(--muted);max-width:52ch;word-break:keep-all;text-wrap:pretty}
 .detail__meta{margin-top:44px;padding:26px 0;border-block:1px solid var(--line);
   display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:24px}
 .detail__meta div{display:grid;gap:7px}
@@ -3900,7 +3904,8 @@ body.admin-on #ch-plugin-script{display:none}
     '<a class="detail__back" href="#/">← 홈</a>'+
     '<span class="eyebrow">'+esc(eyebrow)+'</span>'+
     '<h1 class="detail__title" id="detailTitle" tabindex="-1">'+esc(title)+'</h1>'+
-    '<p class="detail__lead">'+esc(lead)+'</p>'+
+    /* esc() 를 먼저 걸고 나서 개행만 <br> 로 바꾼다 — 순서를 바꾸면 태그가 주입된다. */
+    '<p class="detail__lead">'+esc(lead).split('\n').join('<br>')+'</p>'+
     (filters?'<div class="adm__filters" role="group" aria-label="분류" style="margin-top:34px">'+filters+'</div>':'')+
     body);
 
@@ -3949,7 +3954,7 @@ body.admin-on #ch-plugin-script{display:none}
        YouTube 배지와 외부 링크 아이콘이 이미 같은 말을 하고 있다.
        이 사이트가 파는 것(결론이 아니라 근거)으로 바꾼다. */
     return listShell('Insight','일하는 방식을 콘텐츠로',
-      '결론만 옮기지 않았습니다. 무엇을 왜 그렇게 정했는지, 만들면서 남긴 기록입니다.',
+      '결론만 옮기지 않았습니다.\n무엇을 왜 그렇게 정했는지, 만들면서 남긴 기록입니다.',
       filters,list);
   };
 
