@@ -553,6 +553,17 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .final h2{font-size:clamp(48px,7vw,104px);line-height:1.12;letter-spacing:-.025em;font-weight:900;max-inline-size:9ch}
 .final__right{justify-self:end;max-width:470px}
 .final__right p{font-size:18px;line-height:1.72;color:var(--muted-2)}
+/* 방문경로 — 라임 면 위라 색을 고정한다. .final 이 이미 토큰을 되돌려 두었지만
+   칩은 눌린 상태에서 반전되므로 두 색을 직접 적어 두 모드에서 같게 만든다. */
+.route{margin-top:28px}
+.route__label{display:block;font-size:12px;font-weight:800;color:#3d4336;letter-spacing:-.01em}
+.route__label em{font-style:normal;font-weight:700;color:#66723d}
+.route__chips{margin-top:11px;display:flex;flex-wrap:wrap;gap:7px}
+.route__chips button{min-height:38px;padding:8px 14px;border:1px solid rgba(17,19,17,.28);
+  border-radius:999px;font-size:12.5px;font-weight:750;color:#3d4336;white-space:nowrap;
+  transition:background .18s,color .18s,border-color .18s}
+.route__chips button:hover{border-color:#111311;color:#111311}
+.route__chips button[aria-pressed="true"]{background:#111311;color:var(--lime);border-color:#111311}
 .final__actions{margin-top:30px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 /* 병합 — 라임 글자 강조(원격)는 그대로 두고, 토큰화만 얹었다.
    .final 은 위에서 --ink · --ink-rgb · --muted-2 를 고정값으로 되돌려 두었으므로
@@ -1655,6 +1666,24 @@ body.admin-on #ch-plugin-script{display:none}
   <div class="container">
     <div class="final__box"><h2 id="contact-title">무엇을 만들지부터 정리해 드립니다.</h2><div class="final__right"><p>프로젝트의 현재 단계와 필요한 기능을 알려주세요. 상담 과정에서 이번에 만들 범위와 다음 단계로 넘길 범위를 함께 정리합니다.</p><!-- pluuug 폼 연결 완료(2026-08-07 · 리다이렉트). href 는 로드 시 JS 가 폼 주소로 바꾸고,
      클릭 시 entry_section·ref_content 까지 붙인 주소로 교체한다 — §6.5. -->
+      <!-- 방문경로 — 회의록 2026-08-05 "전환율 개선을 위한 데이터 트래킹"에 대한 답의 절반이다.
+           UTM 은 링크를 타고 온 유입만 잡는다. "지인 추천 · 컨퍼런스 · AI 검색"처럼 링크가 없는
+           경로는 GA 로 영원히 알 수 없고, B2B 외주에서는 그쪽이 오히려 크다.
+           묻지 않으면 못 얻는 데이터라 문의 직전에 한 번만 묻는다. 선택은 강제하지 않는다 —
+           필수로 걸면 문의 자체가 줄고, 그게 잃는 게 더 크다. -->
+      <div class="route" role="group" aria-label="방문경로">
+        <span class="route__label">어떻게 알고 오셨나요? <em>선택</em></span>
+        <div class="route__chips">
+          <button type="button" data-route="search-naver">네이버 검색</button
+          ><button type="button" data-route="search-google">구글 검색</button
+          ><button type="button" data-route="search-ai">AI 검색</button
+          ><button type="button" data-route="referral">지인 추천</button
+          ><button type="button" data-route="youtube">유튜브</button
+          ><button type="button" data-route="linkedin">링크드인</button
+          ><button type="button" data-route="event">행사 · 컨퍼런스</button
+          ><button type="button" data-route="etc">그 외</button>
+        </div>
+      </div>
       <div class="final__actions"><a class="btn-primary" href="#" data-track="final_contact">프로젝트 문의하기 ↗</a></div></div></div>
     <footer class="footer"><div><strong>AI BUILDER ORIGIN ✱</strong><span>누가, 어떻게 만드는지 보여주는 개발 파트너</span></div><nav class="footer-nav"><a href="#/work">Work</a><a href="#/education">Education</a><a href="#/insight">Insight</a><a href="#/faq">FAQ</a><a href="#contact">문의하기</a><a href="#/admin">관리자 화면 시안</a></nav>
       <!-- 사업자 정보 — 사용자 제공(2026-08-07). 메일 주소는 aibuilder@origin.com 으로 지정받았다.
@@ -1898,6 +1927,8 @@ body.admin-on #ch-plugin-script{display:none}
      gtag.js 만 설치      → gtag('event') 가 기록된다. push 는 gtag.js 가 무시 → 중복 없음.
      ⚠️ 둘 다 설치하면 이중 집계된다. 하나만 붙일 것. */
   const utmSource=new URL(location.href).searchParams.get('utm_source')||'';
+  /* 방문자가 고른 방문경로. 고르지 않으면 빈 문자열이고 아무 데도 실리지 않는다. */
+  let routeChoice='';
   const track=(event,params={})=>{
     const payload={utm_source:utmSource,...params};
     window.dataLayer=window.dataLayer||[];
@@ -1933,6 +1964,10 @@ body.admin-on #ch-plugin-script{display:none}
     u.searchParams.set('entry_section',section);   // 어느 CTA 가 전환을 만드는가
     if(refContent) u.searchParams.set('ref_content',refContent);
     if(utmSource) u.searchParams.set('entry_utm_source',utmSource);
+    /* 방문경로는 방문자가 직접 고른 값이다. UTM 과 이름을 나눠 둔다 —
+       utm_source 는 "링크가 어디서 왔나", entry_route 는 "사람이 어디서 알았나"로
+       서로 다른 질문이고, 섞으면 나중에 둘 다 못 읽는다. */
+    if(routeChoice) u.searchParams.set('entry_route',routeChoice);
     return u.toString();
   };
 
@@ -2040,6 +2075,25 @@ body.admin-on #ch-plugin-script{display:none}
     /* 고른 적이 없을 때만 OS 를 따라간다 — 한 번 고르면 그 선택이 이긴다. */
     const onOS=e=>{ try{ if(localStorage.getItem('abo-theme')) return; }catch(err){} apply(e.matches); };
     mq.addEventListener?mq.addEventListener('change',onOS):mq.addListener(onOS);
+  })();
+
+  /* 방문경로 칩 — 한 번 더 누르면 해제된다. 잘못 누르고 못 무르는 입력은 다음 입력을 막는다. */
+  (()=>{
+    const box=document.querySelector('.route__chips'); if(!box) return;
+    box.addEventListener('click',e=>{
+      const b=e.target.closest('[data-route]'); if(!b) return;
+      const already=b.getAttribute('aria-pressed')==='true';
+      box.querySelectorAll('[data-route]').forEach(x=>x.setAttribute('aria-pressed','false'));
+      routeChoice=already?'':b.dataset.route;
+      if(!already) b.setAttribute('aria-pressed','true');
+      /* 고른 즉시 링크에도 반영한다. 클릭 순간에만 붙이면 마우스오버로 보이는 주소와
+         실제로 가는 주소가 달라지고, 새 탭으로 열기·주소 복사에서는 값이 빠진다. */
+      const url=pluuugUrl('final_contact');
+      if(url) document.querySelectorAll('a[data-track$="_contact"]').forEach(a=>a.setAttribute('href',url));
+      /* 폼으로 못 넘어간 사람도 집계된다 — 문의 직전 이탈이 어디서 나는지는 이 값으로만 보인다. */
+      if(routeChoice) track('contact_route',{section:'contact',content_id:routeChoice});
+    });
+    box.querySelectorAll('[data-route]').forEach(b=>b.setAttribute('aria-pressed','false'));
   })();
 
   menuBtn.addEventListener('click',()=>{
