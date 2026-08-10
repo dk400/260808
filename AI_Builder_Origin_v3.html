@@ -1117,6 +1117,51 @@ body.admin-on #ch-plugin-script{display:none}
   .totop{display:none}
   .dock.show ~ .chat,
   body.chat-open .dock.show ~ .chat{bottom:max(14px,env(safe-area-inset-bottom))}
+
+  /* ── how 게이지: 가로 → 세로 ────────────────────────────────────────
+     🔴 두 가지가 겹친 문제였다.
+     1) 헤더가 position:fixed(64px)라 게이지가 그 아래로 들어가며 윗부분이 잘린다.
+     2) 더 큰 문제 — 데스크톱에서는 .how__intro 가 sticky 라 네 단계를 읽는 내내
+        게이지가 따라오는데, 1050px 이하에서 static 으로 풀려 스텝을 읽기 시작하면
+        이미 화면 밖이다. 진행을 보여주는 장치가 진행 중에 사라진다.
+     헤더 아래에 붙이고(72px = 64 + 8), 라벨 네 개를 세로로 세운다.
+     가로 절대배치에서는 390px 폭에 네 개가 몰려 라벨 하나가 19px 밖에 못 가졌다. */
+  /* 🔴 sticky 는 부모 박스 안에서만 움직인다. .how__status 의 부모 .how__intro 는
+     스텝 리스트가 시작되기 전에 끝나서, sticky 를 걸어도 붙을 구간이 거의 없었다.
+     display:contents 로 .how__intro 의 박스를 없애면 그 자식들이 .how__layout 의
+     직접 자식이 되고, 게이지의 sticky 범위가 리스트 끝까지 늘어난다.
+     (박스가 사라지므로 .reveal 의 opacity·transform 은 걸리지 않는다 —
+      모바일에서 이 블록의 등장 효과만 빠지고 내용은 정상적으로 보인다.) */
+  .how__intro{display:contents}
+  .how__layout{gap:0}
+  .how-list{margin-top:30px}
+  .how__status{position:sticky;top:72px;z-index:6;padding:16px 18px;
+    background:rgba(246,246,242,.93);backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px)}
+  .status-current{margin-top:14px}
+  .status-current strong{font-size:18px}
+  .status-line{margin-top:12px;height:8px}
+  /* 절대배치(left:var(--point))를 풀고 세로 스택으로. 연결선은 컨테이너가 그린다. */
+  .status-milestones{position:relative;height:auto;margin-top:16px;
+    display:grid;gap:11px;padding-left:22px}
+  /* 세로 연결선. 점(7px)의 중심 x=3.5 에 맞춰 2px 선을 2.5px 에 둔다. */
+  .status-milestones::before{content:'';position:absolute;left:2.5px;top:7px;bottom:7px;
+    width:2px;border-radius:2px;background:rgba(17,19,17,.15)}
+  /* 🔴 static 이 아니라 relative 다. 원래 span 이 position:absolute 라 ::before 의 기준이
+     span 이었는데, static 으로 풀면 기준이 .status-milestones 로 올라가 점 네 개가
+     한 자리에 겹쳐 카드 밖으로 튀어나간다. */
+  .status-milestones span,
+  .status-milestones span:first-child,
+  .status-milestones span:last-child{position:relative;padding:0;transform:none;
+    left:auto;top:auto;text-align:left;font-size:12.5px;line-height:1.15}
+  /* 점은 세로선 위에 놓는다. first/last 예외 규칙까지 같이 덮어야 한 줄만 어긋나지 않는다. */
+  .status-milestones span::before,
+  .status-milestones span:first-child::before,
+  .status-milestones span:last-child::before{top:50%;left:-22px;
+    transform:translateY(-50%)}
+  .status-milestones span.current::before,
+  .status-milestones span.current:first-child::before,
+  .status-milestones span.current:last-child::before{transform:translateY(-50%) scale(1.6)}
 }
 @media(max-width:480px){
   /* display:none 이었다. 콘셉트 고지는 "유지하라"고 명시된 문구인데(§10) 480px 이하에서만
