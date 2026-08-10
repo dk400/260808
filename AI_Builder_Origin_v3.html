@@ -1246,6 +1246,9 @@ body.admin-on #ch-plugin-script{display:none}
   .work__head,.insight__head{display:grid;align-items:start}
   .insight__head{grid-template-columns:1fr}
   .work-grid{grid-template-columns:1fr}
+  /* 터치 화면에는 hover 로 프레임을 되세우는 동작이 없으므로 처음부터 수직으로 둔다.
+     눌린 뒤 남는 모바일의 sticky hover 상태에서도 다시 기울지 않게 두 선택자를 함께 덮는다. */
+  .mock-window,.work-card:hover .mock-window{transform:none}
   .how-step{grid-template-columns:44px minmax(0,1fr);gap:16px;padding:34px 16px}
   .how-step::before{inset:8px 0}
   .how-step.active{transform:none}
