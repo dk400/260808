@@ -240,7 +240,39 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
   mask-image:radial-gradient(circle 230px at var(--hero-pointer-x) var(--hero-pointer-y),#000 0%,rgba(0,0,0,.72) 42%,transparent 76%);
   -webkit-mask-image:radial-gradient(circle 230px at var(--hero-pointer-x) var(--hero-pointer-y),#000 0%,rgba(0,0,0,.72) 42%,transparent 76%);
   transition:opacity .32s ease}
-.hero__grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.03fr) minmax(420px,.97fr);gap:clamp(42px,6vw,92px);align-items:center;padding-block:clamp(78px,10vw,132px)}
+/* ── HERO2 ─────────────────────────────────────────────────────────────
+   2열(카피 + 시스템 패널) → 1열. 파티클 텍스트가 뒤에서 브랜드를 각인하고
+   앞에는 카피만 둔다. 좌측 정렬 + 넉넉한 여백으로 읽는 순서를 하나로 만든다. */
+.hero__grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr);
+  align-items:center;padding-block:clamp(96px,13vw,168px) clamp(78px,10vw,132px)}
+.hero__copy{max-width:min(100%,780px)}
+
+/* 파티클 텍스트 — Hero 후면의 브랜드 그래픽 레이어.
+   🔴 카피 위로 올라오면 안 된다. z-index 1 로 .hero__grid(2) 아래에 둔다.
+   왼쪽은 마스크로 지워 카피가 얹히는 자리를 비운다 — 파티클을 통째로 옅게 만들면
+   브랜드가 안 읽히고, 그대로 두면 글자가 안 읽힌다. 자리를 나눠 둘 다 살린다. */
+/* 🔴 파티클 색을 테마별로 나눈다. 라임(#d7ff59)과 라이트 배경(#f4f2eb)의 대비는 1.25 라
+   그대로 쓰면 입자가 실제로 그려져도 눈에 보이지 않는다(캔버스 픽셀로 확인했다 —
+   1496점이 찍혀 있는데 화면에서는 아무것도 안 보였다).
+   라이트에서는 같은 브랜드 계열의 진한 초록(--green-ink-2)을 쓰고,
+   어두운 면에서 비로소 라임이 제 색으로 선다. 브랜드 색 체계 안에서 해결한다. */
+.hero{--hero-particle:var(--green-ink-2)}
+[data-theme="dark"] .hero{--hero-particle:var(--lime)}
+.hero-particles{position:absolute;inset:0;z-index:1;width:100%;height:100%;
+  pointer-events:none;opacity:.58;
+  /* 왼쪽을 통째로 지우면 브랜드가 반쪽만 남는다. 카피가 얹히는 쪽만 눌러 두고
+     위아래는 부드럽게 죽여 배경 레이어처럼 가라앉힌다. 헤드라인이 900 굵기 검정이라
+     겹쳐도 읽는 데는 지장이 없다. */
+  -webkit-mask-image:linear-gradient(90deg,rgba(0,0,0,.32) 0,rgba(0,0,0,.6) 26%,#000 46%),
+    linear-gradient(180deg,transparent 0,#000 20%,#000 80%,transparent 100%);
+  mask-image:linear-gradient(90deg,rgba(0,0,0,.32) 0,rgba(0,0,0,.6) 26%,#000 46%),
+    linear-gradient(180deg,transparent 0,#000 20%,#000 80%,transparent 100%);
+  -webkit-mask-composite:source-in;mask-composite:intersect}
+[data-theme="dark"] .hero-particles{opacity:.8}
+/* 2차 CTA — 기존 .btn-link 를 그대로 쓰고 화살표만 붙인다. */
+.hero__how{gap:8px}
+.hero__how::after{content:'↓';font-size:13px;transition:transform .22s}
+.hero__how:hover::after{transform:translateY(3px)}
 .hero__copy{position:relative;z-index:2}
 .hero__title{margin-top:24px;font-size:clamp(54px,8.2vw,116px);line-height:1.12;letter-spacing:-.025em;font-weight:900;max-inline-size:10ch}
 .hero__title .stroke{-webkit-text-stroke:0;color:var(--lime-2)}
@@ -1573,40 +1605,25 @@ body.admin-on #ch-plugin-script{display:none}
 <main id="top">
 <!-- ═══ 홈 뷰 ═══ 라우터가 #/work/... 같은 경로에서 이 블록을 숨기고 상세 뷰를 그린다. -->
 <div id="viewHome">
+<!-- ═══ Hero (HERO2) ═══════════════════════════════════════════════════════
+     React Bits Particle Text 를 브랜드 각인 레이어로 쓴다. 오른쪽에 있던 시스템 패널
+     (.hero-system)은 뺐다 — 카피와 패널이 시선을 나눠 가져 첫 화면에서 무엇을 먼저
+     읽어야 하는지 흐렸다. 지금은 브랜드 → 헤드라인 → CTA 순서가 한 줄로 선다.
+     이전 히어로는 태그 HERO1 에 남아 있다. -->
 <section class="hero">
+  <!-- 장식 레이어다. 브랜드명이 h1 과 로고에서 이미 읽히므로 스크린리더에서는 감춘다. -->
+  <canvas class="hero-particles" id="heroParticles" aria-hidden="true"></canvas>
   <div class="container hero__grid">
-    <!-- 자식들을 90ms 간격으로 순차 등장시킨다. PRD §4 가 요구했지만 미구현으로 남아 있던
-         "스태거 등장"이다. 부모 한 덩어리로 뜨면 문구·CTA 가 동시에 들어와 밋밋하다. -->
+    <!-- 자식들을 90ms 간격으로 순차 등장시킨다(PRD §4 스태거 등장). -->
     <div class="hero__copy" data-stagger="90">
       <span class="eyebrow">AI-native development partner</span>
-      <h1 class="hero__title">누가,<br><span class="stroke">어떻게</span><br>만드는지.</h1>
-      <p class="hero__lead">AI로 빠르게 만드는 것보다 중요한 건, 어떤 사람이 어떤 기준으로 끝까지 책임지는지입니다. 작업 방식과 실제 작업자의 근거를 함께 보여드립니다.</p>
+      <h1 class="hero__title">AI로 빠르게,<br><span class="stroke">기준 있게</span> 만듭니다.</h1>
+      <p class="hero__lead">기획부터 디자인, 개발, 검수까지. 누가 만들고 어떻게 판단했는지 숨기지 않는 AI-native development partner.</p>
       <div class="hero__actions">
+        <!-- data-track 은 pluuug 배선이 href 를 덮어쓰는 기준이다. 지우지 말 것. -->
         <a href="#contact" class="btn-primary" data-track="hero_contact">프로젝트 문의하기 <span>↗</span></a>
-      </div>
-    </div>
-
-    <div class="hero-stage reveal reveal--right" style="--d:.18s" aria-label="AI Builder Origin 작업 시스템">
-      <div class="hero-stage__motion">
-      <figure class="hero-system">
-        <div class="hero-system__top">
-          <span class="hero-system__brand">AI Builder Origin</span>
-          <span class="hero-system__live">Operating system</span>
-        </div>
-        <div class="hero-system__field" aria-hidden="true">
-          <span class="hero-system__index">SYSTEM 01 — 04</span>
-          <p class="hero-system__title"><span>Build</span><span><em>with</em></span><span>evidence</span></p>
-          <i class="hero-system__rings"></i>
-          <div class="hero-system__proof"><span>Decision log</span><strong>Recorded</strong></div>
-        </div>
-        <ol class="hero-system__steps" aria-label="작업 과정">
-          <li><b>01</b><span>진단</span></li>
-          <li><b>02</b><span>설계</span></li>
-          <li><b>03</b><span>제작</span></li>
-          <li><b>04</b><span>검수</span></li>
-        </ol>
-        <figcaption>결과물뿐 아니라 범위, 판단, 변경과 검수 기록까지 함께 남깁니다.</figcaption>
-      </figure>
+        <!-- href 는 JS 없이도 도달하는 폴백이고, 실제 이동은 아래 스크립트가 섹션 머리로 맞춘다. -->
+        <a href="#how-title" class="btn-link hero__how" data-hero-how>작업 방식 보기</a>
       </div>
     </div>
   </div>
@@ -2216,6 +2233,159 @@ body.admin-on #ch-plugin-script{display:none}
     /* 고른 적이 없을 때만 OS 를 따라간다 — 한 번 고르면 그 선택이 이긴다. */
     const onOS=e=>{ try{ if(localStorage.getItem('abo-theme')) return; }catch(err){} apply(e.matches); };
     mq.addEventListener?mq.addEventListener('change',onOS):mq.addListener(onOS);
+  })();
+
+  /* ═══ Hero 파티클 텍스트 (HERO2) ════════════════════════════════════════
+     React Bits Particle Text 의 방식을 옮겼다. React 도 외부 라이브러리도 쓰지 않는다 —
+     이 저장소에는 package.json 이 없고, 필요한 것은 캔버스 하나와 스프링 하나뿐이다.
+
+     방식: 글자를 오프스크린 캔버스에 한 번 그리고 알파 채널을 훑어 목표점을 뽑는다.
+           입자는 흩어진 상태에서 그 점으로 수렴한다 — "모여서 글자가 된다"가 보여야
+           브랜드 각인이 된다. 단순 반짝임이면 장식으로만 읽힌다.
+
+     성능 — 세 가지로 막는다.
+       1) 입자 수 상한(데스크톱 2200 · 모바일 900). 큰 화면에서 표본을 그대로 쓰면
+          수만 개가 되어 노트북에서도 프레임이 떨어진다.
+       2) 히어로가 화면 밖이면 루프를 멈춘다. 스크롤 내내 도는 rAF 가 가장 큰 비용이다.
+       3) devicePixelRatio 를 2 로 자른다. 3배 화면에서 픽셀이 2.25배로 늘어난다.
+
+     접근성: prefers-reduced-motion 이면 목표점에 바로 찍고 루프를 돌리지 않는다.
+             캔버스는 aria-hidden 이라 브랜드명이 두 번 읽히지 않는다. */
+  (()=>{
+    const cv=document.getElementById('heroParticles');
+    const hero=cv&&cv.closest('.hero');
+    if(!cv||!hero) return;
+    const ctx=cv.getContext&&cv.getContext('2d');
+    if(!ctx) return;                                   /* 캔버스를 못 쓰면 조용히 빠진다 */
+
+    const rm=matchMedia('(prefers-reduced-motion: reduce)');
+    const TEXT_WIDE=['AI BUILDER ORIGIN'], TEXT_NARROW=['AI BUILDER','ORIGIN'];
+    let W=0,H=0,dpr=1,parts=[],raf=0,onScreen=true,lime='#d7ff59';
+    const ptr={x:-9999,y:-9999,on:false};
+
+    const readLime=()=>{
+      const v=getComputedStyle(hero).getPropertyValue('--hero-particle').trim()
+        ||getComputedStyle(document.documentElement).getPropertyValue('--lime').trim();
+      if(v) lime=v;
+    };
+
+    const build=()=>{
+      const r=hero.getBoundingClientRect();
+      W=Math.max(320,Math.round(r.width)); H=Math.max(360,Math.round(r.height));
+      dpr=Math.min(window.devicePixelRatio||1,2);
+      cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+      cv.style.width=W+'px'; cv.style.height=H+'px';
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+
+      const narrow=W<820;
+      const lines=narrow?TEXT_NARROW:TEXT_WIDE;
+      const off=document.createElement('canvas');
+      off.width=W; off.height=H;
+      const oc=off.getContext('2d',{willReadFrequently:true});
+      if(!oc) return;
+      oc.textAlign='center'; oc.textBaseline='middle';
+      const fam=getComputedStyle(document.body).fontFamily;
+      /* 폭에 맞춰 크기를 되잡는다. 고정 크기로 두면 좁은 화면에서 좌우가 잘린다. */
+      let size=Math.round(H*(narrow?.15:.20));
+      const widest=()=>{ oc.font='900 '+size+'px '+fam;
+        return Math.max.apply(null,lines.map(l=>oc.measureText(l).width)); };
+      const w0=widest();
+      if(w0>0) size=Math.max(20,Math.floor(size*(W*(narrow?.84:.92))/w0));
+      widest();
+      const lh=size*1.04, top=H/2-((lines.length-1)*lh)/2;
+      oc.fillStyle='#fff';
+      /* 넓은 화면에서는 글자 중심을 오른쪽(58%)으로 민다. 정중앙에 두면 왼쪽 절반이
+         카피 밑에 깔려 마스크로 지워지고, 결국 브랜드가 반쪽만 남는다. */
+      /* 🔴 중앙에 둔다. 58% 로 밀었더니 ORIGIN 의 꼬리가 화면 밖으로 잘렸다.
+         한 줄 표현을 우선하라는 요구를 지키려면 폭 안에 온전히 들어오는 게 먼저다. */
+      const cx=W/2;
+      lines.forEach((l,i)=>oc.fillText(l,cx,top+i*lh));
+
+      const step=narrow?4:3;
+      let img; try{ img=oc.getImageData(0,0,W,H).data; }catch(e){ return; }
+      const pts=[];
+      for(let y=0;y<H;y+=step) for(let x=0;x<W;x+=step)
+        if(img[(y*W+x)*4+3]>128) pts.push(x,y);
+      const total=pts.length/2, MAX=narrow?1100:3400;
+      const stride=total>MAX?total/MAX:1, n=Math.min(total,MAX);
+      parts=new Array(n);
+      for(let i=0;i<n;i++){
+        const k=Math.floor(i*stride)*2;
+        parts[i]={tx:pts[k],ty:pts[k+1],
+          x:W/2+(Math.random()-.5)*W*1.1, y:H/2+(Math.random()-.5)*H*1.1,
+          vx:0,vy:0,s:Math.random()*1.2+1.1,o:Math.random()*.42+.5,
+          ph:Math.random()*6.283};
+      }
+    };
+
+    const paint=t=>{
+      ctx.clearRect(0,0,W,H);
+      ctx.fillStyle=lime;
+      const still=rm.matches;
+      for(let i=0;i<parts.length;i++){
+        const p=parts[i];
+        if(still){ p.x=p.tx; p.y=p.ty; }
+        else{
+          /* 목표점으로 당기는 스프링 + 감쇠. 계수를 낮게 둬 스르륵 모이게 한다. */
+          p.vx=(p.vx+(p.tx-p.x)*.014)*.86;
+          p.vy=(p.vy+(p.ty-p.y)*.014)*.86;
+          /* 자리를 잡은 뒤에도 미세하게 떠다닌다 — 완전히 멈추면 그림이 된다. */
+          const dr=Math.sin(t*.0006+p.ph)*.5;
+          p.x+=p.vx+dr*.35; p.y+=p.vy+Math.cos(t*.0005+p.ph)*.22;
+          /* 포인터 반발 — 데스크톱에서만, 절제해서. */
+          if(ptr.on){
+            const dx=p.x-ptr.x, dy=p.y-ptr.y, d2=dx*dx+dy*dy;
+            if(d2<12100&&d2>1){ const f=(1-Math.sqrt(d2)/110)*7; const d=Math.sqrt(d2);
+              p.x+=dx/d*f; p.y+=dy/d*f; }
+          }
+        }
+        ctx.globalAlpha=p.o;
+        ctx.fillRect(p.x,p.y,p.s,p.s);
+      }
+      ctx.globalAlpha=1;
+      raf=onScreen&&!rm.matches?requestAnimationFrame(paint):0;
+    };
+
+    const start=()=>{ if(!raf&&!rm.matches) raf=requestAnimationFrame(paint); };
+    const stop=()=>{ if(raf){ cancelAnimationFrame(raf); raf=0; } };
+    const rebuild=()=>{ readLime(); build(); rm.matches?paint(0):start(); };
+
+    /* 폭이 실제로 바뀔 때만 다시 만든다. 모바일 주소창이 접히며 높이만 변하는 것으로
+       매번 재계산하면 스크롤 중에 입자가 튄다. */
+    let lastW=0;
+    const ro=new ResizeObserver(()=>{ const w=Math.round(hero.getBoundingClientRect().width);
+      if(Math.abs(w-lastW)<2) return; lastW=w; rebuild(); });
+    ro.observe(hero);
+
+    new IntersectionObserver(es=>{ onScreen=es[0].isIntersecting; onScreen?start():stop(); },
+      {threshold:0}).observe(hero);
+
+    if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+      hero.addEventListener('pointermove',e=>{ const r=hero.getBoundingClientRect();
+        ptr.x=e.clientX-r.left; ptr.y=e.clientY-r.top; ptr.on=true; },{passive:true});
+      hero.addEventListener('pointerleave',()=>{ ptr.on=false; },{passive:true});
+    }
+    /* 테마를 바꾸면 --lime 자체는 그대로지만, 값을 다시 읽어 토큰이 바뀌어도 따라가게 한다. */
+    const onTheme=()=>{ readLime(); if(rm.matches) paint(0); };
+    new MutationObserver(onTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+    rm.addEventListener?rm.addEventListener('change',rebuild):rm.addListener(rebuild);
+
+    lastW=Math.round(hero.getBoundingClientRect().width);
+    rebuild();
+  })();
+
+  /* 2차 CTA — How we work 섹션 머리로 보낸다. href 는 JS 가 없을 때의 폴백이다.
+     스크롤 동작은 지정하지 않는다 — html{scroll-behavior:smooth} 가 이미 정하고 있고,
+     여기서 강제하면 prefers-reduced-motion 사용자에게도 부드러운 스크롤이 걸린다. */
+  (()=>{
+    const a=document.querySelector('[data-hero-how]'); if(!a) return;
+    a.addEventListener('click',e=>{
+      const how=document.querySelector('.how'); if(!how) return;
+      e.preventDefault();
+      how.scrollIntoView({block:'start'});
+      const h=document.getElementById('how-title'); if(h){ h.setAttribute('tabindex','-1'); h.focus({preventScroll:true}); }
+      track('hero_how',{section:'hero',content_id:'how'});
+    });
   })();
 
   /* ═══ Why different — 아코디언 ═══════════════════════════════════════════
