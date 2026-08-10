@@ -1139,11 +1139,15 @@ body.admin-on #ch-plugin-script{display:none}
   .how__status{position:sticky;top:72px;z-index:6;padding:16px 18px;
     background:rgba(246,246,242,.93);backdrop-filter:blur(10px);
     -webkit-backdrop-filter:blur(10px)}
+  /* 🔴 마일스톤 라벨(진단·범위·제작·이관)은 바로 아래 스텝 목록과 같은 네 항목이다.
+     스크롤을 따라다니는 요소가 본문을 그대로 되풀이하면 화면만 먹는다.
+     겹치지 않는 것 — 몇 번째인지와 진행률 — 만 남긴다.
+     JS 의 statusMilestones 갱신은 그대로 돈다(데스크톱에서 쓰므로 마크업은 유지). */
+  .status-milestones{display:none}
   /* 화면에 붙어 있는 요소라 높이를 줄인다. 길수록 본문을 가린다. */
-  .status-current{margin-top:14px}
+  .status-current{margin-top:12px}
   .status-current strong{font-size:18px}
-  .status-line{margin-top:12px;height:8px}
-  .status-milestones{margin-top:12px;height:30px}
+  .status-line{margin-top:12px;height:8px;margin-bottom:2px}
 }
 @media(max-width:480px){
   /* display:none 이었다. 콘셉트 고지는 "유지하라"고 명시된 문구인데(§10) 480px 이하에서만
