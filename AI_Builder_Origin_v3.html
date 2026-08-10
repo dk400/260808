@@ -368,7 +368,7 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .proof__head{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end}
 .proof__head .section-copy{justify-self:end}
 .proof-grid{margin-top:64px;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr)}
-.proof-item{padding:30px 24px 36px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-height:260px;display:flex;flex-direction:column;position:relative;transition:background .25s}
+.proof-item{padding:30px 24px 36px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-height:260px;display:flex;flex-direction:column;position:relative;transition:background .38s ease,box-shadow .38s ease}
 .proof-item:last-child{border-right:0}
 .proof-item:hover{background:var(--panel)}
 .proof-item__icon{width:48px;height:48px;border-radius:14px;background:var(--ink);color:var(--lime);display:grid;place-items:center;font-weight:900}
@@ -1308,6 +1308,10 @@ body.admin-on #ch-plugin-script{display:none}
      라벨이 매달리고 제목까지 또 한 번 끊겨 모바일에서 정보 위계가 세 조각으로 보인다. */
   .proof-item{border-right:0;min-height:auto;display:grid;grid-template-columns:48px minmax(0,1fr);
     grid-template-areas:'icon label' 'title title' 'copy copy';align-items:center;column-gap:14px;padding-block:28px 34px}
+  /* 터치 화면에서는 hover 대신 뷰포트 중앙을 지나는 항목에 음영을 넘긴다.
+     inset 라임 선은 다음 카드로 상태가 이동했다는 사실을 밝고 어두운 테마 모두에서 보여준다. */
+  .proof-item.is-current{background:var(--panel);
+    box-shadow:inset 4px 0 0 var(--lime),0 16px 36px rgba(0,0,0,.1)}
   .proof-item__icon{grid-area:icon}
   .proof-item__label{grid-area:label;margin-top:0}
   .proof-item h3{grid-area:title;margin-top:22px}
@@ -2616,6 +2620,33 @@ body.admin-on #ch-plugin-script{display:none}
     refContent=card.dataset.id||refContent;   // 문의로 이어지면 ref_content 로 실린다(§6.5)
     track('work_card_click',{section:'work',content_id:card.dataset.id||''});
   }));
+
+  /* Proof cards: 모바일에서는 화면 중앙을 통과하는 근거에만 음영을 준다.
+     위치로 계산하므로 내릴 때와 올릴 때 모두 카드 순서 그대로 상태가 이동한다. */
+  const proofItems=[...document.querySelectorAll('.proof-item')];
+  const proofGrid=document.querySelector('.proof-grid');
+  const proofMobileMq=matchMedia('(max-width:780px)');
+  let proofShadeFrame=0;
+  const syncProofShade=()=>{
+    proofShadeFrame=0;
+    let current=-1;
+    if(proofMobileMq.matches&&proofGrid){
+      const guide=innerHeight*.48;
+      const gridRect=proofGrid.getBoundingClientRect();
+      if(gridRect.top<=guide&&gridRect.bottom>=guide){
+        current=0;
+        proofItems.forEach((item,i)=>{ if(item.getBoundingClientRect().top<=guide) current=i; });
+      }
+    }
+    proofItems.forEach((item,i)=>item.classList.toggle('is-current',i===current));
+  };
+  const requestProofShade=()=>{
+    if(!proofShadeFrame) proofShadeFrame=requestAnimationFrame(syncProofShade);
+  };
+  addEventListener('scroll',requestProofShade,{passive:true});
+  addEventListener('resize',requestProofShade);
+  proofMobileMq.addEventListener?.('change',requestProofShade);
+  syncProofShade();
 
   // How steps: the viewport guide selects a target, then advances one index at a time.
   // This keeps downward movement 01→02→03→04 and upward movement 04→03→02→01,
