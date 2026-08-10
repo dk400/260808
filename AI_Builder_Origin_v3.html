@@ -279,38 +279,71 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
   border-radius:50%;background:radial-gradient(circle,rgba(215,255,89,.18),transparent 66%);
   filter:blur(8px);pointer-events:none}
 .hero-system__top{display:flex;align-items:center;justify-content:space-between;gap:18px;
-  padding:24px 28px;border-bottom:1px solid rgba(255,255,255,.12);font-size:10px;
+  position:relative;padding:24px 28px;border-bottom:1px solid rgba(255,255,255,.12);font-size:10px;
   font-weight:850;letter-spacing:.13em;text-transform:uppercase}
+.hero-system__top::after{content:'';position:absolute;left:-34%;bottom:-1px;width:34%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--lime),transparent);box-shadow:0 0 12px rgba(215,255,89,.7);
+  animation:systemEdge 3.8s cubic-bezier(.4,0,.2,1) infinite}
 .hero-system__brand{color:var(--lime)}
 .hero-system__live{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.56)}
 .hero-system__live::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--lime);
-  box-shadow:0 0 0 5px rgba(215,255,89,.1)}
+  box-shadow:0 0 0 5px rgba(215,255,89,.1);animation:systemLive 1.8s ease-out infinite}
 .hero-system__field{position:relative;min-height:0;padding:34px 28px;overflow:hidden}
-.hero-system__index{display:block;font-size:11px;font-weight:800;letter-spacing:.18em;color:rgba(255,255,255,.46)}
+.hero-system__field::before{content:'';position:absolute;z-index:1;left:0;right:0;top:-30%;height:38%;pointer-events:none;
+  background:linear-gradient(to bottom,transparent,rgba(215,255,89,.04) 56%,rgba(215,255,89,.52) 58%,transparent 61%);
+  filter:drop-shadow(0 0 9px rgba(215,255,89,.4));animation:systemScan 4.8s cubic-bezier(.45,0,.25,1) infinite}
+.hero-system__field::after{content:'';position:absolute;z-index:1;inset:0;pointer-events:none;
+  background:linear-gradient(108deg,transparent 34%,rgba(215,255,89,.09) 48%,rgba(255,255,255,.08) 50%,transparent 64%);
+  transform:translateX(-125%);animation:systemSweep 6.4s ease-in-out infinite}
+.hero-system__index{position:relative;z-index:2;display:block;font-size:11px;font-weight:800;letter-spacing:.18em;color:rgba(255,255,255,.46)}
 .hero-system__title{position:relative;z-index:2;margin-top:22px;font-size:clamp(54px,5.4vw,76px);
   line-height:.82;letter-spacing:-.065em;font-weight:920;text-transform:uppercase}
-.hero-system__title span{display:block}
+.hero-system__title span{display:block;animation:systemLineIn .82s cubic-bezier(.16,1,.3,1) both}
+.hero-system__title span:nth-child(2){animation-delay:.12s}.hero-system__title span:nth-child(3){animation-delay:.24s}
 .hero-system__title em{font-style:normal;color:var(--lime);font-weight:920}
+.hero-system__title span:last-child::after{content:'';display:inline-block;width:.09em;height:.7em;margin-left:.08em;
+  background:var(--lime);box-shadow:0 0 14px rgba(215,255,89,.55);animation:systemCursor 1.05s steps(1,end) infinite}
 .hero-system__rings{position:absolute;right:-54px;top:26px;width:244px;aspect-ratio:1;border-radius:50%;
-  border:1px solid rgba(215,255,89,.24)}
+  border:1px solid rgba(215,255,89,.24);border-top-color:rgba(215,255,89,.72);border-right-color:transparent;
+  filter:drop-shadow(0 0 18px rgba(215,255,89,.1));animation:systemOrbit 13s linear infinite}
 .hero-system__rings::before,.hero-system__rings::after{content:'';position:absolute;border-radius:50%;
   border:1px solid rgba(215,255,89,.18)}
-.hero-system__rings::before{inset:34px}.hero-system__rings::after{inset:76px;background:rgba(215,255,89,.05)}
+.hero-system__rings::before{inset:34px;border-left-color:rgba(215,255,89,.56);border-bottom-color:transparent;
+  animation:systemOrbit 8s linear infinite reverse}
+.hero-system__rings::after{inset:76px;background:rgba(215,255,89,.05);animation:systemCore 2.8s ease-in-out infinite}
 .hero-system__proof{position:absolute;right:26px;bottom:24px;z-index:3;width:148px;padding:13px 14px;
   border:1px solid rgba(255,255,255,.14);border-radius:14px;background:rgba(17,21,17,.78);
-  backdrop-filter:blur(12px)}
+  backdrop-filter:blur(12px);box-shadow:0 14px 34px rgba(0,0,0,.24);animation:systemProof 4s ease-in-out infinite}
 .hero-system__proof span{display:flex;align-items:center;gap:7px;font-size:9px;font-weight:800;
   letter-spacing:.12em;color:rgba(255,255,255,.46)}
 .hero-system__proof span::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--lime)}
 .hero-system__proof strong{display:block;margin-top:8px;font-size:15px;letter-spacing:-.02em}
 .hero-system__steps{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:7px;
-  margin:0;padding:13px 14px;list-style:none;border-top:1px solid rgba(255,255,255,.12)}
-.hero-system__steps li{min-width:0;padding:12px;border-radius:13px;background:rgba(255,255,255,.055)}
+  margin:0;padding:13px 14px;list-style:none;border-top:1px solid rgba(255,255,255,.12);overflow:hidden}
+.hero-system__steps::before{content:'';position:absolute;left:0;top:-1px;width:25%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--lime),transparent);box-shadow:0 0 14px rgba(215,255,89,.72);
+  animation:systemStepRail 8s steps(4,end) infinite}
+.hero-system__steps li{min-width:0;padding:12px;border-radius:13px;background:rgba(255,255,255,.055);
+  animation:systemStep 8s linear infinite;transition:none}
+.hero-system__steps li:nth-child(2){animation-delay:-6s}.hero-system__steps li:nth-child(3){animation-delay:-4s}
+.hero-system__steps li:nth-child(4){animation-delay:-2s}
 .hero-system__steps li:last-child{background:var(--lime);color:#111311}
 .hero-system__steps b{display:block;font-size:9px;letter-spacing:.12em;opacity:.54}
 .hero-system__steps span{display:block;margin-top:7px;font-size:13px;font-weight:850;white-space:nowrap}
 .hero-system figcaption{padding:17px 28px 21px;border-top:1px solid rgba(255,255,255,.1);
   color:rgba(255,255,255,.58);font-size:12px;line-height:1.55;letter-spacing:-.01em}
+
+@keyframes systemEdge{0%{transform:translateX(0);opacity:0}12%{opacity:1}72%{opacity:1}100%{transform:translateX(395%);opacity:0}}
+@keyframes systemLive{0%{box-shadow:0 0 0 0 rgba(215,255,89,.42)}70%,100%{box-shadow:0 0 0 8px rgba(215,255,89,0)}}
+@keyframes systemScan{0%,12%{transform:translateY(0);opacity:0}22%{opacity:1}72%{opacity:1}88%,100%{transform:translateY(360%);opacity:0}}
+@keyframes systemSweep{0%,44%{transform:translateX(-125%);opacity:0}56%{opacity:1}78%,100%{transform:translateX(125%);opacity:0}}
+@keyframes systemLineIn{from{opacity:0;clip-path:inset(0 100% 0 0);transform:translateX(-18px)}to{opacity:1;clip-path:inset(0);transform:none}}
+@keyframes systemCursor{0%,52%{opacity:1}53%,100%{opacity:0}}
+@keyframes systemOrbit{to{transform:rotate(360deg)}}
+@keyframes systemCore{0%,100%{transform:scale(.88);background:rgba(215,255,89,.03)}50%{transform:scale(1.08);background:rgba(215,255,89,.13)}}
+@keyframes systemProof{0%,100%{transform:translateY(0);border-color:rgba(255,255,255,.14)}50%{transform:translateY(-7px);border-color:rgba(215,255,89,.34)}}
+@keyframes systemStep{0%,20%{background:var(--lime);color:#111311;transform:translateY(-2px);box-shadow:0 8px 24px rgba(215,255,89,.14)}25%,100%{background:rgba(255,255,255,.055);color:#fffef9;transform:none;box-shadow:none}}
+@keyframes systemStepRail{to{transform:translateX(400%)}}
 
 /* Transition strip */
 .strip{border-block:1px solid var(--line);overflow:hidden;background:var(--white)}
@@ -1373,6 +1406,8 @@ body.admin-on #ch-plugin-script{display:none}
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .reveal{opacity:1;transform:none}
+  .hero-system__top::after,.hero-system__field::before,.hero-system__field::after,
+  .hero-system__title span:last-child::after,.hero-system__steps::before{display:none}
 }
 
 /* ═══ 계측 레일 — v1 signature 이식 (오버레이 방식) ═══ */
@@ -1903,7 +1938,7 @@ body.admin-on #ch-plugin-script{display:none}
   const dock = document.getElementById('dock');
   const contact = document.getElementById('contact');
 
-  /* 메인 배너 실험판 — Higgsfield 계열의 커서 스포트라이트에 미세한 깊이 이동만 더한다.
+  /* 메인 배너 실험판 — Higgsfield 계열의 커서 스포트라이트에 입체 깊이 이동을 더한다.
      영상이나 3D 렌더를 실시간으로 돌리는 방식이 아니라 pointer 좌표를 CSS 변수로 전달한다.
      마우스를 급히 움직여도 카드가 딱 붙어오지 않도록 lerp 로 감속하고, 포인터가 나가면 중앙으로
      복귀한다. 터치 환경과 모션 감소 설정에서는 효과를 만들지 않는다. */
@@ -1914,10 +1949,10 @@ body.admin-on #ch-plugin-script{display:none}
     const renderHeroPointer=()=>{
       currentX+=(targetX-currentX)*.085;
       currentY+=(targetY-currentY)*.085;
-      hero.style.setProperty('--hero-stage-x',(currentX*12).toFixed(2)+'px');
-      hero.style.setProperty('--hero-stage-y',(currentY*9).toFixed(2)+'px');
-      hero.style.setProperty('--hero-stage-rx',(currentY*-1.1).toFixed(3)+'deg');
-      hero.style.setProperty('--hero-stage-ry',(currentX*1.5).toFixed(3)+'deg');
+      hero.style.setProperty('--hero-stage-x',(currentX*18).toFixed(2)+'px');
+      hero.style.setProperty('--hero-stage-y',(currentY*14).toFixed(2)+'px');
+      hero.style.setProperty('--hero-stage-rx',(currentY*-2.6).toFixed(3)+'deg');
+      hero.style.setProperty('--hero-stage-ry',(currentX*3.4).toFixed(3)+'deg');
       if(Math.abs(targetX-currentX)>.001||Math.abs(targetY-currentY)>.001) frame=requestAnimationFrame(renderHeroPointer);
       else frame=0;
     };
