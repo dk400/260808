@@ -1258,7 +1258,14 @@ body.admin-on #ch-plugin-script{display:none}
   .mobile-menu{inset-block-start:64px}
   .hero{padding-top:64px}
   .hero__grid{padding-block:68px 76px}
-  .hero__title{font-size:clamp(46px,13vw,68px);max-inline-size:100%}
+  /* 모바일에서는 파티클 문구와 헤드라인이 같은 면적을 써 글자 형태가 서로 섞인다.
+     장식은 가장자리에서 남기고 제목 뒤만 배경색으로 부드럽게 걷어 읽는 순서를 세운다. */
+  .hero-particles{opacity:.34}
+  [data-theme="dark"] .hero-particles{opacity:.44}
+  .hero__title{font-size:clamp(46px,13vw,68px);max-inline-size:100%;position:relative;isolation:isolate}
+  .hero__title::before{content:'';position:absolute;z-index:-1;inset:-18px -24px;
+    background:radial-gradient(ellipse at center,rgba(var(--bg-rgb),.96) 0 48%,rgba(var(--bg-rgb),.76) 66%,transparent 84%);
+    filter:blur(7px);pointer-events:none}
   .hero__lead{font-size:16px}
   .hero__actions{align-items:center;flex-direction:column;gap:8px}
   .section{padding:82px 0}
