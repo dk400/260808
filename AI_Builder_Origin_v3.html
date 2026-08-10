@@ -176,26 +176,38 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .header__cta{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--white);padding:13px 20px;border-radius:999px;font-size:15px;font-weight:800;transition:transform .2s,background .2s}
 .header__cta:hover{background:var(--ink-hover);transform:translateY(-2px)}
 /* 테마 토글 — 폰트 기호는 OS마다 모양이 달라 CSS 선형 아이콘과 움직이는 손잡이로 그린다. */
-.theme-btn{position:relative;width:58px;height:34px;flex:0 0 58px;padding:3px;overflow:hidden;
-  border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);
-  transition:border-color .2s,transform .2s,box-shadow .2s}
-.theme-btn::before{content:'';position:absolute;z-index:0;left:3px;top:3px;width:26px;height:26px;
-  border-radius:50%;background:var(--white);box-shadow:0 3px 10px rgba(var(--ink-rgb),.14);
-  transition:transform .32s cubic-bezier(.2,.8,.2,1),background .25s}
-.theme-btn:hover{border-color:var(--ink);transform:translateY(-2px);box-shadow:0 8px 18px rgba(var(--ink-rgb),.1)}
-.theme-btn__icon{position:relative;z-index:1;display:block;width:100%;height:100%}
-.theme-btn__sun,.theme-btn__moon{position:absolute;top:50%;color:var(--muted);transition:color .25s,opacity .25s}
-.theme-btn__sun{left:8px;width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;transform:translateY(-50%)}
-.theme-btn__sun::before{content:'';position:absolute;left:50%;top:50%;width:1.5px;height:1.5px;border-radius:50%;
-  background:currentColor;transform:translate(-50%,-50%);
-  box-shadow:0 -7px currentColor,5px -5px currentColor,7px 0 currentColor,5px 5px currentColor,
-    0 7px currentColor,-5px 5px currentColor,-7px 0 currentColor,-5px -5px currentColor}
-.theme-btn__moon{right:9px;width:11px;height:11px;border-radius:50%;
-  box-shadow:-3px 2px 0 0 currentColor;transform:translate(1px,-50%)}
-.theme-btn__sun{color:var(--ink)}
-[data-theme="dark"] .theme-btn::before{transform:translateX(24px);background:var(--lime)}
-[data-theme="dark"] .theme-btn__sun{color:var(--muted)}
-[data-theme="dark"] .theme-btn__moon{color:#111311}
+/* 테마 토글 — 원반 하나가 달과 해로 바뀐다.
+   이전 판은 스위치 트랙 위에 해·달을 둘 다 그려두고 그 위로 노브가 지나갔다. 노브가
+   해를 덮은 채 멈춰 아이콘 두 개가 한 덩어리로 뭉개져 보였다(사용자 지적, 2026-08-10).
+   상태가 둘뿐인 토글에 아이콘을 둘 다 보여줄 이유가 없다 — 누르면 될 것 하나만 보여준다.
+
+   🔴 초승달은 배경색 원으로 덮지 않고 mask 로 파낸다. 덮는 방식은 헤더가 스크롤되며
+      반투명해지는 순간 덮개 원이 그대로 드러난다. */
+.theme-btn{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;
+  border:1px solid var(--line);border-radius:999px;color:var(--ink);
+  transition:color .2s,border-color .2s,background .2s,transform .2s}
+.theme-btn:hover{border-color:var(--ink);background:rgba(var(--ink-rgb),.06);transform:translateY(-2px)}
+.theme-btn:active{transform:translateY(0)}
+.theme-btn__icon{position:relative;display:block;width:18px;height:18px}
+/* 원반 — 라이트에서는 초승달(누르면 다크로), 다크에서는 해(누르면 라이트로) */
+.theme-btn__icon::before{content:'';position:absolute;inset:0;border-radius:50%;
+  background:currentColor;
+  -webkit-mask-image:radial-gradient(circle at 74% 20%,transparent 56%,#000 57%);
+  mask-image:radial-gradient(circle at 74% 20%,transparent 56%,#000 57%);
+  transition:inset .3s cubic-bezier(.2,.8,.2,1)}
+/* 광선 — 가운데 점 하나에 box-shadow 여덟 개. 다크에서만 켜고 회전하며 퍼진다. */
+.theme-btn__icon::after{content:'';position:absolute;left:50%;top:50%;width:2px;height:2px;
+  margin:-1px 0 0 -1px;border-radius:50%;background:currentColor;opacity:0;
+  box-shadow:0 -8px,0 8px,-8px 0,8px 0,-5.7px -5.7px,5.7px 5.7px,-5.7px 5.7px,5.7px -5.7px;
+  transform:scale(.4) rotate(-45deg);
+  transition:opacity .25s,transform .3s cubic-bezier(.2,.8,.2,1)}
+[data-theme="dark"] .theme-btn{color:var(--lime)}
+[data-theme="dark"] .theme-btn:hover{background:rgba(var(--ink-rgb),.08)}
+/* 해 — 원반을 줄이고 mask 를 걷어 온전한 원으로 되돌린다(반지름 0 이라 파이는 곳이 없다). */
+[data-theme="dark"] .theme-btn__icon::before{inset:4px;
+  -webkit-mask-image:radial-gradient(circle at 150% -60%,transparent 0,#000 0);
+  mask-image:radial-gradient(circle at 150% -60%,transparent 0,#000 0)}
+[data-theme="dark"] .theme-btn__icon::after{opacity:1;transform:scale(1) rotate(0)}
 .menu-btn{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;position:relative}
 .menu-btn span,.menu-btn::before,.menu-btn::after{content:'';position:absolute;left:50%;top:50%;display:block;width:18px;height:1.5px;background:var(--ink);transform-origin:center;transition:transform .25s,opacity .2s}
 .menu-btn::before{transform:translate(-50%,-6px)}
@@ -1484,7 +1496,7 @@ body.admin-on #ch-plugin-script{display:none}
     </nav>
     <!-- 토글 버튼은 aria-pressed 로 다크 모드의 활성 상태를 전달하고 title 은 다음 동작을 안내한다. -->
     <button class="theme-btn" id="themeBtn" type="button" aria-label="다크 모드" aria-pressed="false">
-      <span class="theme-btn__icon" aria-hidden="true"><span class="theme-btn__sun"></span><span class="theme-btn__moon"></span></span>
+      <span class="theme-btn__icon" aria-hidden="true"></span>
     </button>
     <a class="header__cta" href="#contact" data-track="header_contact">프로젝트 문의 <span>↗</span></a>
     <button class="menu-btn" id="menuBtn" aria-label="메뉴 열기" aria-expanded="false"><span></span></button>
