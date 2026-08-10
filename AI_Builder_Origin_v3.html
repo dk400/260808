@@ -532,6 +532,41 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
    같은 클래스를 목록 썸네일(16:9)과 상세 히어로(21:9) 양쪽에 쓴다 — 크기만 다르다.
    실사 이미지가 확정되면 이 클래스를 <img> 로 바꾸면 되고 마크업은 그대로다. */
 .insight-thumb--cover{background-color:var(--panel)}
+
+/* ── Insight 서브페이지 카드 ─────────────────────────────────────────────
+   전체 목록은 훑는 화면이라 그림이 먼저다. 썸네일이 카드의 절반을 넘게 차지하도록
+   이미지는 16:10 비율로 두고 본문은 딱 필요한 만큼만 쓴다.
+   (실제 비율 — 카드 폭 380px 기준: 썸네일 238px / 본문 약 138px = 63%) */
+.ins-grid{margin-top:30px;display:grid;gap:26px 22px;
+  grid-template-columns:repeat(auto-fill,minmax(288px,1fr))}
+.ins-card{display:flex;flex-direction:column;border-radius:18px;overflow:hidden;
+  background:var(--white);border:1px solid var(--line);
+  transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .3s}
+.ins-card:hover{transform:translateY(-5px);border-color:var(--ink);box-shadow:var(--shadow)}
+.ins-card:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.ins-card__thumb{position:relative;display:block;aspect-ratio:16/10;overflow:hidden;
+  background-color:var(--panel)}
+.ins-card__thumb img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+.ins-card:hover .ins-card__thumb img{transform:scale(1.045)}
+/* YouTube 카드에만 재생 표시. 사진 위에 얹히므로 색을 고정한다. */
+.ins-card--yt .ins-card__thumb::after{content:'';position:absolute;left:50%;top:50%;
+  width:0;height:0;border-style:solid;border-width:9px 0 9px 15px;
+  border-color:transparent transparent transparent #fffef9;
+  transform:translate(-40%,-50%);z-index:2}
+.ins-card--yt .ins-card__thumb::before{content:'';position:absolute;left:50%;top:50%;z-index:1;
+  width:52px;height:52px;border-radius:50%;background:rgba(17,19,17,.62);
+  transform:translate(-50%,-50%)}
+.ins-card__body{display:flex;flex-direction:column;gap:9px;padding:18px 20px 22px}
+.ins-card__type{font-size:10.5px;font-weight:850;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted)}
+.ins-card__body h3{font-size:17px;line-height:1.4;letter-spacing:-.015em;font-weight:800}
+.ins-card__meta{margin-top:auto;font-size:12px;color:var(--muted)}
+@media(max-width:520px){
+  .ins-grid{grid-template-columns:1fr;gap:18px}
+  .ins-card__body{padding:16px 17px 19px}
+  .ins-card__body h3{font-size:16px}
+}
 .cover--01{background:radial-gradient(circle at 76% 30%,#d7ff59 0 20%,transparent 21%),linear-gradient(140deg,#171a16,#2f362c)}
 .cover--02{background:repeating-linear-gradient(115deg,rgba(215,255,89,.92) 0 4px,transparent 4px 30px),linear-gradient(160deg,#1d211c,#3a4235)}
 .cover--03{background:repeating-radial-gradient(circle at 16% 84%,rgba(17,19,17,.9) 0 1.5px,transparent 1.5px 15px),linear-gradient(200deg,#b9d8ff,#e6f1ff)}
@@ -2806,6 +2841,26 @@ body.admin-on #ch-plugin-script{display:none}
   const INSIGHT=window.__INSIGHT||[];
   const ARTICLES=INSIGHT.filter(x=>x.kind==='article');
   const insightRow=window.__insightRow||(()=>'');
+
+  /* 서브페이지(#/insight)용 카드. 홈의 행 목록(insightRow)은 그대로 둔다 —
+     홈은 미리보기라 한 줄에 한 건이 맞고, 전체 목록은 훑는 화면이라 그림이 먼저다.
+     썸네일이 카드의 절반을 넘게 차지한다: 이미지 16:10 + 본문 고정 높이. */
+  const insightCard=it=>{
+    const video=it.kind==='video';
+    const href=video?'https://www.youtube.com/watch?v='+it.vid:'#/insight/'+it.id;
+    const img=video
+      ? '<img src="https://i.ytimg.com/vi/'+esc(it.vid)+'/hqdefault.jpg" alt="" loading="lazy" decoding="async" width="480" height="360">'
+      : '<img src="assets/insight/'+esc(it.id)+'.jpg?v=3" alt="" loading="lazy" decoding="async" width="1672" height="941">';
+    return '<a class="ins-card'+(video?' ins-card--yt':'')+'" href="'+esc(href)+'"'+
+      (video?' target="_blank" rel="noopener"':'')+
+      ' data-kind="'+esc(it.kind)+'" data-id="'+esc(it.id)+'">'+
+      '<span class="ins-card__thumb'+(video?'':' cover--'+esc(it.cover||'01'))+'" aria-hidden="true">'+img+'</span>'+
+      '<span class="ins-card__body">'+
+        '<span class="ins-card__type">'+esc(video?'YouTube':it.type)+'</span>'+
+        '<h3>'+esc(it.title)+'</h3>'+
+        '<span class="ins-card__meta">'+esc(video?it.by:'Article · '+it.by)+' · '+esc(it.date)+'</span>'+
+      '</span></a>';
+  };
   const wrap=inner=>'<article class="detail"><div class="container">'+inner+'</div></article>';
   const ctaBlock='<div class="detail__cta"><p>이 방식으로 만들 것이 있으신가요?</p>'+
     '<a class="btn-primary" href="#" data-track="detail_contact">프로젝트 문의하기 <span aria-hidden="true">↗</span></a></div>';
@@ -3877,10 +3932,13 @@ body.admin-on #ch-plugin-script{display:none}
       return '<button data-il="'+k+'" aria-pressed="'+(insightListFilter===k)+'">'+l+' <span style="opacity:.6">'+String(n).padStart(2,'0')+'</span></button>';
     }).join('');
     const shown=INSIGHT.filter(x=>insightListFilter==='all'||x.kind===insightListFilter);
-    const list='<div class="insight-list" style="margin-top:26px;border-top:1px solid var(--ink)">'+
-      shown.map(insightRow).join('')+'</div>';
+    const list='<div class="ins-grid">'+shown.map(insightCard).join('')+'</div>';
+    /* 이전 카피는 "글과 영상을 한곳에 모았습니다. 영상은 유튜브에서 열립니다." 였다.
+       앞 문장은 목록을 보면 아는 사실이고, 뒷 문장은 카피가 아니라 UI 안내다 —
+       YouTube 배지와 외부 링크 아이콘이 이미 같은 말을 하고 있다.
+       이 사이트가 파는 것(결론이 아니라 근거)으로 바꾼다. */
     return listShell('Insight','일하는 방식을 콘텐츠로',
-      '글과 영상을 한곳에 모았습니다. 영상은 유튜브에서 열립니다.',
+      '결론만 옮기지 않았습니다. 무엇을 왜 그렇게 정했는지, 만들면서 남긴 기록입니다.',
       filters,list);
   };
 
