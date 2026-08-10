@@ -1086,17 +1086,22 @@ body.admin-on #ch-plugin-script{display:none}
   .dock{bottom:10px;padding-left:14px}
   .dock__copy span{display:none}
 }
-/* 휴대폰에서는 긴 dock 문구가 CTA 와 채팅 런처 사이에서 잘려 보인다.
-   세 전역 동작을 같은 하단 기준선에 두고 문의만 독립 버튼으로 축약한다. */
+/* 휴대폰에서는 긴 dock 문구가 잘리고, Galaxy Internet 의 자체 위로가기 버튼이
+   화면 하단 중앙에 떠 문의 CTA 와 겹친다. 문의는 한 줄 위의 전체 폭 버튼으로 올리고,
+   사이트의 중복 위로가기는 숨긴 채 채팅 런처만 하단에 남긴다. */
 @media(max-width:640px){
   .dock,
-  body.ct-on .dock{left:50%;right:auto;bottom:max(14px,env(safe-area-inset-bottom));
-    width:auto;padding:6px;gap:0}
+  body.ct-on .dock{left:14px;right:14px;
+    bottom:calc(82px + env(safe-area-inset-bottom,0px));width:auto;padding:6px;gap:0;
+    transform:translateY(calc(140% + 82px))}
+  .dock.show,
+  body.ct-on .dock.show{transform:none}
+  body.chat-open .dock.show,
+  body.ct-on.chat-open .dock.show{transform:translateY(calc(140% + 82px))}
   .dock__copy{display:none}
   .dock a{display:flex;align-items:center;justify-content:center;min-height:52px;
-    padding:0 22px;font-size:14px}
-  .dock.show ~ .totop,
-  body.chat-open .dock.show ~ .totop{bottom:max(14px,env(safe-area-inset-bottom))}
+    width:100%;padding:0 22px;font-size:14px}
+  .totop{display:none}
   .dock.show ~ .chat,
   body.chat-open .dock.show ~ .chat{bottom:max(14px,env(safe-area-inset-bottom))}
 }
