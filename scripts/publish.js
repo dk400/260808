@@ -29,6 +29,14 @@ const PROJECT_NAME = 'deploy';
 const PROJECT_ID = 'prj_USlDaGYa24hgsy5WpDLwvqhAmHCz';
 const ORG_ID = 'team_KkK39p0sN6DHyPZlDgo9r40P';
 
+/* 실명 프로필 사진은 공개 저장소에 올리지 않지만 배포본에는 반드시 있어야 한다.
+   빠진 채 배포하면 화면이 조용히 이니셜 폴백으로 바뀌므로 배포 전에 중단한다. */
+const REQUIRED_LOCAL_ASSETS = [
+  'assets/builders/kim-do-yoon.jpg',
+  'assets/builders/lee-seo-jin.jpg',
+  'assets/builders/park-ha-neul.jpg',
+];
+
 /* Windows 의 npx 는 .cmd 라 shell 없이는 실행되지 않는다(Node 24 부터 EINVAL).
    그래서 shell:true 가 필요하고, 그 대가로 deprecation 경고가 뜬다.
    여기서 넘기는 인자는 전부 이 파일 안에 적힌 상수와 CLI 가 돌려준 배포 URL 뿐이라
@@ -46,6 +54,11 @@ const hit = () => new Promise(res => {
 
 (async () => {
   try {
+    const missingAssets = REQUIRED_LOCAL_ASSETS.filter(file => !fs.existsSync(path.join(ROOT, file)));
+    if (missingAssets.length) {
+      throw new Error('배포에 필요한 로컬 프로필 사진이 없습니다:\n- ' + missingAssets.join('\n- '));
+    }
+
     step('파일 검사');
     console.log(run('node', ['scripts/check.js'], { stdio: 'pipe' }).trim());
 
