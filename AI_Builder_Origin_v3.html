@@ -994,6 +994,17 @@ body.admin-on #ch-plugin-script{display:none}
 .js-reveal .reveal--zoom {transform:scale(.94)}
 .js-reveal .reveal--tilt {transform:translateY(28px) rotate(-1.4deg)}
 .js-reveal .reveal.in{opacity:1;transform:none}
+/* 🔴 가로 이동 등장 효과가 좁은 화면에서 문서 폭을 밀어낸다.
+   .reveal--right 는 등장 전 translateX(40px) 상태이고, 컨테이너 좌우 여백
+   --pad 는 clamp(20px,4.2vw,64px) 다. 4.2vw 가 40px 미만이 되는 952px 아래에서는
+   여백이 그 40px 을 흡수하지 못해 문서 폭이 늘어난다 — 390px 화면에서 실측 410px 였고
+   폰에서 페이지가 좌우로 밀렸다. 아직 등장하지 않은 요소라 눈에 안 보이는데 폭만 넓힌다.
+   좁은 화면에서는 세로 이동으로 바꾼다. 효과는 남고 넘침은 사라진다.
+   (.reveal.in 이 특정성 0,3,0 이라 등장 후 transform:none 은 그대로 이긴다.) */
+@media(max-width:960px){
+  .js-reveal .reveal--left,
+  .js-reveal .reveal--right{transform:translateY(26px)}
+}
 
 /* ═══ 마우스오버 — 반응이 없던 구간에 붙인다 ═══════════════════════
    등장 애니메이션은 한 번 보고 끝이지만 hover 는 미팅에서 직접 눌러보는 부분이다.
