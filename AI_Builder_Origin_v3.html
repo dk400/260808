@@ -476,7 +476,7 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 
 /* Insight */
 .insight{background:var(--white)}
-.insight__head{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.insight__head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:32px}
 /* 필터 탭과 전체보기를 한 덩어리로 묶는다. 셋을 나란히 두면 space-between 이 가운데를
    벌려 탭이 제목 옆에 떠 버린다 — 둘 다 "이 목록을 다루는 조작"이라 붙어 있어야 한다. */
 .insight__actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
@@ -1221,13 +1221,14 @@ body.admin-on #ch-plugin-script{display:none}
   .proof-grid{grid-template-columns:1fr}
   .proof-item{border-right:0;min-height:230px}
   .work__head,.insight__head{display:grid;align-items:start}
+  .insight__head{grid-template-columns:1fr}
   .work-grid{grid-template-columns:1fr}
   .how-step{grid-template-columns:44px minmax(0,1fr);gap:16px;padding:34px 16px}
   .how-step::before{inset:8px 0}
   .how-step.active{transform:none}
   .builder-grid{grid-template-columns:1fr}
   .builder-card:last-child{grid-column:auto}
-  .insight-tabs{justify-self:start}
+  .insight__actions,.insight-tabs{justify-self:start}
   .insight-item{grid-template-columns:96px minmax(0,1fr) auto;gap:14px}
   .insight-type{grid-column:1/-1}
   .faq__layout{grid-template-columns:1fr;gap:28px}
