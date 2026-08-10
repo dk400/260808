@@ -180,24 +180,24 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .stage-card--main:hover{transform:rotateY(-2deg) rotateX(1deg) translateY(-8px)}
 .stage-top{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:12px;color:rgba(255,255,255,.62)}
 .stage-top b{color:var(--lime);letter-spacing:.1em}
-.stage-screen{margin-top:24px;background:#222721;border-radius:16px;padding:18px;min-height:330px;position:relative;overflow:hidden}
-.stage-screen::before{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 0 46%,rgba(215,255,89,.12) 50%,transparent 54%);animation:scan 4.8s linear infinite}
+/* 실제 화면 캡처가 들어가는 액자. 예전의 .stage-screen(코드로 그린 가짜 화면)과
+   .screen-* · .ticket-* 는 쓰는 곳이 없어져 함께 지웠다. */
+.stage-shot{margin:24px 0 0;position:relative;border-radius:16px;overflow:hidden;
+  background:#222721;border:1px solid rgba(255,255,255,.08)}
+.stage-shot img{display:block;width:100%;height:auto}
+/* 스캔 광택은 남긴다 — 정지 캡처 한 장이라 미세한 움직임이 없으면 죽은 화면으로 보인다.
+   prefers-reduced-motion 은 전역 규칙이 이미 끈다. */
+.stage-shot::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(120deg,transparent 0 46%,rgba(215,255,89,.10) 50%,transparent 54%);
+  animation:scan 5.2s linear infinite}
 @keyframes scan{from{transform:translateX(-130%)}to{transform:translateX(130%)}}
-.screen-nav{display:flex;justify-content:space-between;align-items:center;font-size:10px;color:rgba(255,255,255,.45)}
-.screen-pill{display:inline-flex;align-items:center;gap:6px;background:var(--lime);color:var(--ink);border-radius:999px;padding:6px 10px;font-weight:800}
-.screen-copy{margin-top:54px;font-size:clamp(30px,4vw,50px);line-height:1.16;letter-spacing:-.02em;font-weight:850;max-inline-size:10ch}
-.screen-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:10px;margin-top:38px}
-.screen-box{background:#30362f;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:14px;min-height:92px}
-.screen-box:nth-child(2){background:var(--lime);color:var(--ink)}
-.screen-box small{font-size:9px;text-transform:uppercase;letter-spacing:.12em;color:inherit;opacity:.7}
-.screen-box strong{display:block;margin-top:13px;font-size:17px}
-.stage-card--ticket{left:0;bottom:52px;width:250px;background:var(--white);padding:20px;transform:rotate(-6deg)}
+.stage-shot--bare{margin:0;border:0;border-radius:0;background:transparent}
+.stage-shot--bare::after{display:none}
+.stage-card--ticket{left:0;bottom:52px;width:250px;background:var(--white);transform:rotate(-6deg)}
 .stage-card--ticket:hover{transform:rotate(-2deg) translateY(-6px)}
-.ticket-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px dashed var(--line);font-size:12px}
-.ticket-row span{color:var(--muted)}
-.ticket-seal{margin-top:16px;display:flex;align-items:center;justify-content:space-between}
-.ticket-seal b{display:inline-flex;align-items:center;gap:7px;font-size:12px}
-.ticket-seal b::before{content:'';width:8px;height:8px;background:#4ca36d;border-radius:50%}
+/* 🔴 특정성 0,2,0. 아래 미디어쿼리들이 .stage-card--ticket 에 padding 을 다시 주는데,
+   그 안이 이제 이미지 한 장이라 여백이 생기면 캡처가 액자 속에 뜬 것처럼 보인다. */
+.stage-card.stage-card--ticket{padding:0;overflow:hidden}
 .stage-card--tag{right:7%;bottom:4px;background:var(--lime);padding:14px 18px;border-radius:999px;font-size:13px;font-weight:850;transform:rotate(4deg)}
 
 /* Transition strip */
@@ -1081,10 +1081,8 @@ body.admin-on #ch-plugin-script{display:none}
   .hero__actions{align-items:flex-start;flex-direction:column;gap:8px}
   .hero-stage{min-height:430px}
   .stage-card--main{top:18px;width:95%;padding:18px;transform:rotateY(-4deg) rotateX(2deg)}
-  .stage-screen{min-height:260px;padding:14px}
-  .screen-copy{margin-top:36px;font-size:34px}
-  .screen-grid{margin-top:26px}
-  .stage-card--ticket{width:205px;bottom:28px;padding:15px}
+  .stage-shot{margin-top:16px}
+  .stage-card--ticket{width:205px;bottom:28px}
   .stage-card--tag{right:0;bottom:0}
   .section{padding:82px 0}
   .eyebrow{font-size:13px;gap:8px}
@@ -1145,8 +1143,6 @@ body.admin-on #ch-plugin-script{display:none}
   .hero__note::before{display:none}
   .hero-stage{min-height:385px}
   .stage-card--main{right:-8px;width:102%}
-  .screen-box{min-height:72px;padding:10px}
-  .screen-box strong{font-size:14px}
   .stage-card--ticket{left:-6px;width:185px}
   .stage-card--tag{font-size:11px;padding:11px 14px}
   .section-title{font-size:clamp(34px,10vw,40px)}
@@ -1250,23 +1246,23 @@ body.admin-on #ch-plugin-script{display:none}
 
     <div class="hero-stage reveal reveal--right" style="--d:.18s" aria-label="AI Builder Origin 작업 화면">
       <div class="hero-stage__motion">
+      <!-- 이전 판은 영문 플레이스홀더("Build fast. Prove every step.")와 가상의 체크리스트를
+           코드로 그린 최초 MVP 화면이었다. 이 사이트가 파는 것이 "근거를 보여준다"인데
+           히어로가 지어낸 화면이면 첫 화면에서 스스로를 반증한다.
+           지금 실제로 도는 관리자 콘솔을 그대로 캡처해 넣는다 — 생성한 이미지가 아니다. -->
       <article class="stage-card stage-card--main">
-        <div class="stage-top"><b>BUILD EVIDENCE 01</b><span>AI BUILDER ORIGIN</span></div>
-        <div class="stage-screen">
-          <div class="screen-nav"><span>WORK / INSIGHT / FAQ</span><span class="screen-pill">문의하기 ↗</span></div>
-          <p class="screen-copy">Build fast.<br>Prove every step.</p>
-          <div class="screen-grid">
-            <div class="screen-box"><small>Work method</small><strong>진단 → 설계 → 제작 → 검수</strong></div>
-            <div class="screen-box"><small>Builder evidence</small><strong>작업자와 기록 공개</strong></div>
-          </div>
-        </div>
+        <div class="stage-top"><b>CONTENT OPS</b><span>AI BUILDER ORIGIN</span></div>
+        <figure class="stage-shot">
+          <img src="assets/hero/hero-admin.jpg" width="1200" height="760"
+               alt="빌더가 올린 글을 관리자가 검토하고 공개 여부를 결정하는 콘텐츠 운영 화면"
+               fetchpriority="high" decoding="async">
+        </figure>
       </article>
       <article class="stage-card stage-card--ticket" aria-hidden="true">
-        <div class="eyebrow">Build check</div>
-        <div class="ticket-row"><span>Scope</span><b>Defined</b></div>
-        <div class="ticket-row"><span>Owner</span><b>Visible</b></div>
-        <div class="ticket-row"><span>Review</span><b>Recorded</b></div>
-        <div class="ticket-seal"><b>Ready to build</b><span>01/04</span></div>
+        <figure class="stage-shot stage-shot--bare">
+          <img src="assets/hero/hero-review.jpg" width="404" height="240" alt=""
+               loading="lazy" decoding="async">
+        </figure>
       </article>
       <div class="stage-card stage-card--tag" aria-hidden="true">WORK WITH EVIDENCE ✱</div>
       </div>
