@@ -582,55 +582,130 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
    저장도 로그인도 없고 상태 변경은 화면 안에서만 일어난다.
    보여주려는 것은 기능이 아니라 §4 proof 04 의 "공개 전 검수 흐름"이다. 새 색 없음. */
 .adm{padding:clamp(96px,11vw,132px) 0 clamp(64px,8vw,96px)}
-.adm__bar{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;
-  padding-bottom:22px;border-bottom:1px solid var(--line)}
-.adm__title{font-size:clamp(28px,3.4vw,40px);letter-spacing:-.025em;font-weight:850}
-.adm__badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
-  border:1px solid var(--line);font-size:12px;font-weight:800;color:var(--muted)}
-.adm__badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--orange)}
-.adm__layout{margin-top:32px;display:grid;grid-template-columns:190px minmax(0,1fr) minmax(0,330px);
-  gap:26px;align-items:start}
-.adm__nav{display:grid;gap:2px;position:sticky;top:110px}
+/* 공개 헤더를 걷어낸 화면이라 그만큼 위 여백이 필요 없다. */
+body.admin-on .space{padding-top:clamp(36px,5vw,56px)}
+
+/* ═══ 어드민 콘솔 ═══════════════════════════════════════════════════════
+   공개 페이지가 아니라 도구다. container 폭에 가두지 않고 화면을 꽉 쓰고,
+   세 열이 각자 스크롤한다. 예전에는 문서처럼 세로로 흐르게 두어서 목록이 짧으면
+   화면 아래 절반이 통째로 비었고, 길면 좌측 탭과 우측 패널이 같이 밀려 올라갔다. */
+.adm--console{--adm-top:58px;padding:0;height:100dvh;background:var(--panel);
+  display:flex;flex-direction:column;overflow:hidden}
+.adm__top{flex:0 0 auto;height:var(--adm-top);display:flex;align-items:center;
+  justify-content:space-between;gap:16px;padding:0 18px;background:var(--white);
+  border-bottom:1px solid var(--line)}
+.adm__topL,.adm__topR{display:flex;align-items:center;gap:10px;min-width:0}
+.adm__brand{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:850;
+  letter-spacing:.04em;white-space:nowrap}
+.adm__brand::before{content:'✱';color:#8ea62b}
+.adm__sep{flex:0 0 1px;width:1px;height:16px;background:var(--line)}
+.adm__title{font-size:14.5px;font-weight:800;letter-spacing:-.01em;white-space:nowrap}
+.adm__badge{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:999px;
+  border:1px solid var(--line);font-size:11px;font-weight:800;color:var(--muted);white-space:nowrap}
+.adm__badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--orange)}
+
+.adm__shell{flex:1;min-height:0;display:grid;
+  grid-template-columns:210px minmax(0,1fr) minmax(360px,420px)}
+.adm__nav{display:flex;flex-direction:column;gap:2px;padding:14px 12px;overflow:auto;
+  border-right:1px solid var(--line);background:var(--white)}
+.adm__navLabel{padding:4px 12px 10px;font-size:10.5px;font-weight:850;letter-spacing:.08em;
+  color:var(--muted)}
 .adm__nav button{display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:12px 14px;border-radius:12px;font-size:14px;font-weight:750;color:var(--muted);text-align:left;
-  transition:background .2s,color .2s}
-.adm__nav button::after{content:attr(data-n);font-size:12px;font-variant-numeric:tabular-nums;opacity:.7}
+  padding:10px 12px;border-radius:10px;font-size:14px;font-weight:750;color:var(--muted);
+  text-align:left;transition:background .18s,color .18s}
+.adm__nav button::after{content:attr(data-n);padding:2px 7px;border-radius:999px;
+  font-size:11.5px;font-variant-numeric:tabular-nums;background:var(--panel);color:var(--muted)}
 .adm__nav button:hover{background:var(--panel);color:var(--ink)}
 .adm__nav button[aria-pressed="true"]{background:var(--ink);color:var(--white)}
-.adm__filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-/* 목록 페이지에서 실제로 자주 눌리는 버튼이다. 모바일 터치 타깃 44px 를 지킨다. */
-.adm__filters button{min-height:44px;padding:8px 14px;font-size:13.5px;border:1px solid var(--line);border-radius:999px;
-  font-size:13px;font-weight:750;color:var(--muted);transition:background .2s,color .2s,border-color .2s}
-.adm__filters button[aria-pressed="true"]{background:var(--ink);color:var(--white);border-color:var(--ink)}
-.adm__list{border-top:1px solid var(--line)}
-.adm-row{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 118px 92px;gap:14px;align-items:center;
-  padding:16px 10px;border-bottom:1px solid var(--line);text-align:left;
-  transition:background .2s,padding-left .2s}
-.adm-row:hover{background:var(--panel);padding-left:16px}
-.adm-row[aria-current="true"]{background:var(--panel)}
-.adm-row__t{display:block;font-size:15px;font-weight:750;line-height:1.4}
-.adm-row__m{display:block;margin-top:5px;font-size:12px;color:var(--muted)}
-.adm-row__w{font-size:12px;color:var(--muted)}
-.adm-state{justify-self:start;display:inline-flex;align-items:center;gap:6px;padding:5px 10px;
-  border-radius:999px;font-size:11px;font-weight:800;border:1px solid var(--line);white-space:nowrap}
-.adm-state::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+.adm__nav button[aria-pressed="true"]::after{background:rgba(255,255,255,.18);color:var(--white)}
+/* 역할 설명은 사이드바 바닥으로 내린다. 목록 위에 두면 매번 읽히지도 않으면서
+   가장 좋은 자리를 먹는다 — 한 번 읽고 나면 필요할 때만 눈이 가면 된다. */
+.adm--console .adm__note{margin:auto 0 0;padding:14px 12px 2px;font-size:11.5px;line-height:1.65;
+  color:var(--muted);border-top:1px solid var(--line)}
+
+.adm__main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.adm__toolbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:11px 18px;background:var(--white);border-bottom:1px solid var(--line)}
+/* 낱개 알약이 줄바꿈으로 흩어지던 것을 한 덩어리 세그먼트로 묶었다 —
+   "지금 어떤 것만 보고 있는가"가 한 눈에 잡혀야 필터가 필터로 읽힌다. */
+.adm__filters{display:flex;gap:3px;padding:3px;border:1px solid var(--line);
+  border-radius:999px;background:var(--panel)}
+.adm__filters button{min-height:32px;padding:6px 13px;border-radius:999px;font-size:12.5px;
+  font-weight:750;color:var(--muted);white-space:nowrap;transition:background .18s,color .18s}
+.adm__filters button:hover{color:var(--ink)}
+.adm__filters button[aria-pressed="true"]{background:var(--ink);color:var(--white)}
+.adm__invite{margin-left:auto}
+
+/* 목록 헤더 — 무엇이 상태이고 무엇이 날짜인지 적어두지 않으면 매번 눈으로 대조한다. */
+.adm__listHead,.adm-row{display:grid;grid-template-columns:minmax(0,1fr) 104px 92px;
+  gap:14px;align-items:center}
+.adm__listHead{flex:0 0 auto;padding:9px 18px;font-size:10.5px;font-weight:850;
+  letter-spacing:.06em;color:var(--muted);background:var(--white);
+  border-bottom:1px solid var(--line)}
+/* 행 아래 남는 영역까지 흰색으로 두면 끝나지 않는 표처럼 보인다 — 바탕색으로 두어
+   "목록이 여기서 끝났다"가 보이게 한다. */
+.adm__list{flex:1;min-height:0;overflow:auto;background:var(--panel)}
+.adm-row{position:relative;width:100%;padding:13px 18px;text-align:left;background:var(--white);
+  border-bottom:1px solid var(--line);transition:background .18s}
+/* 선택 표시를 배경색에만 맡기면 회색 위 회색이라 어느 줄을 보고 있는지 흐리다. */
+.adm-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:transparent;transition:background .18s}
+.adm-row:hover{background:#fbfbf9}
+.adm-row[aria-current="true"]{background:#f5f6f0}
+.adm-row[aria-current="true"]::before{background:var(--ink)}
+.adm-row__t{display:block;font-size:14.5px;font-weight:750;line-height:1.4;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.adm-row__m{display:block;margin-top:4px;font-size:11.5px;color:var(--muted)}
+.adm-row__w{font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.adm__empty{padding:44px 18px;background:var(--white);color:var(--muted);font-size:13.5px}
+.adm-state{justify-self:start;display:inline-flex;align-items:center;gap:6px;padding:4px 9px;
+  border-radius:999px;font-size:10.5px;font-weight:800;border:1px solid var(--line);white-space:nowrap}
+.adm-state::before{content:'';width:5px;height:5px;border-radius:50%;background:currentColor}
 .adm-state[data-s="draft"]{color:var(--muted)}
 .adm-state[data-s="review"]{color:#8a6a1f;background:rgba(255,196,154,.3);border-color:transparent}
 .adm-state[data-s="live"]{color:#3f5a20;background:rgba(215,255,89,.45);border-color:transparent}
-.adm__panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--white);
-  padding:22px;position:sticky;top:110px}
-.adm__panel h3{font-size:18px;letter-spacing:-.02em;line-height:1.35}
+
+.adm__panel{display:flex;flex-direction:column;min-height:0;overflow:auto;padding:18px;
+  background:var(--white);border-left:1px solid var(--line)}
+.adm__panel h3{font-size:17px;letter-spacing:-.02em;line-height:1.35}
+/* 🔴 세로 flex 의 자식은 기본이 flex-shrink:1 이다. 그대로 두면 내용이 길 때
+   자식들이 눌려 들어가고, overflow:hidden 을 가진 편집기(.adm__ed)는 본문이 잘린다.
+   패널은 스크롤로 처리하므로 자식은 절대 줄이지 않는다. */
+.adm--console .adm__panel>*{flex:none}
+/* 상태 알약이 패널 폭 전체로 늘어나던 것 — 세로 flex 의 stretch 때문이다. */
+.adm--console .adm__panel>.adm-state{align-self:flex-start}
+/* 🔴 발행·반려는 이 화면에서 가장 중요한 행동이다. 본문이 길어질 때마다 화면 밖으로
+   밀려나면 매번 스크롤해서 찾게 된다 — 패널 바닥에 붙여 항상 손 닿는 곳에 둔다.
+   margin-top:auto 는 쓰지 않는다. 내용이 짧을 때 버튼만 저 아래로 떨어져 나간다. */
+.adm--console .adm__acts{position:sticky;bottom:-18px;z-index:2;
+  padding:14px 0 4px;background:linear-gradient(to bottom,transparent,var(--white) 22%)}
+
+/* 좁은 화면에서는 세 열이 성립하지 않는다. 세로로 풀고 높이 고정을 푼다 —
+   고정한 채 쌓으면 목록과 패널이 각자 100dvh 를 먹어 스크롤이 두 겹이 된다. */
+@media (max-width:1180px){
+  .adm--console{height:auto;overflow:visible}
+  .adm__shell{grid-template-columns:1fr}
+  .adm__nav{flex-direction:row;flex-wrap:wrap;align-items:center;border-right:0;
+    border-bottom:1px solid var(--line);position:sticky;top:var(--adm-top);z-index:20}
+  .adm--console .adm__note{margin:0;padding:0;border:0;flex:1 1 100%}
+  .adm__navLabel{display:none}
+  .adm__list{overflow:visible}
+  .adm__panel{border-left:0;border-top:1px solid var(--line);overflow:visible}
+  .adm--console .adm__acts{position:static;background:none}
+}
 /* 역할 전환 — 실제 로그인이 아니라 "권한에 따라 무엇이 달라지는가"를 보여주는 장치다.
    Phase 2 에서 인증이 붙으면 이 토글은 사라지고 서버가 역할을 정한다. */
 /* 로그인 화면. 어드민 본체와 같은 폭을 쓰되 가운데로 모은다 — 들어가기 전 화면이라
    목록·패널 레이아웃을 흉내 낼 이유가 없다. */
-/* 로그인은 사이트 화면이 아니라 문이다. 헤더·dock·상담 위젯을 걷어내고 단독으로 세운다. */
-body.admin-login .header,
-body.admin-login .dock,
-body.admin-login .chat,
-body.admin-login .totop,
-body.admin-login .rail{display:none}
-body.admin-login #ch-plugin-script{display:none}
+/* 🔴 로그인 화면뿐 아니라 #/admin 전체에서 걷어낸다. 운영 콘솔 위에 "프로젝트 문의 ↗"
+   CTA 가 떠 있으면 이게 도구인지 마케팅 페이지인지 흐려지고, dock 의 문의 버튼이
+   발행 버튼과 자리를 다툰다. 콘솔은 자기 상단 바(.adm__top)를 따로 갖는다. */
+body.admin-on .header,
+body.admin-on .dock,
+body.admin-on .chat,
+body.admin-on .totop,
+body.admin-on .rail{display:none}
+body.admin-on #ch-plugin-script{display:none}
 .adm--login{min-height:100vh;min-height:100dvh;display:grid;place-items:center;
   padding:clamp(24px,5vw,56px) var(--pad)}
 .login{width:100%;max-width:460px;padding:clamp(30px,4vw,44px);
@@ -776,8 +851,50 @@ body.admin-login #ch-plugin-script{display:none}
 .adm__meta{margin-top:18px;display:grid;gap:10px;font-size:13px}
 .adm__meta div{display:flex;justify-content:space-between;gap:12px}
 .adm__meta span{color:var(--muted)}
-.adm__editor{margin-top:18px;padding:14px;border:1px dashed var(--line);border-radius:12px;
-  font-size:13px;line-height:1.75;color:var(--muted);min-height:104px}
+/* ── 본문 편집기(Tiptap) ─────────────────────────────────────────────────
+   회의록 2026-08-05 확정 요건. 툴바는 실선, 본문은 흰 바탕으로 둔다 —
+   점선 상자로 두면 "아직 자리만 잡은 화면"으로 읽힌다. 이제 실제로 동작한다. */
+.adm__ed{margin-top:18px;border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  background:var(--white)}
+.adm__edBar{display:flex;flex-wrap:wrap;gap:6px;padding:10px;border-bottom:1px solid var(--line);
+  background:#fbfbf9}
+.adm__edBar button{padding:7px 11px;border:1px solid var(--line);border-radius:999px;
+  background:var(--white);font-size:12px;font-weight:750;color:var(--muted);
+  transition:background .18s,color .18s,border-color .18s}
+.adm__edBar button:hover{color:var(--ink);border-color:var(--ink)}
+.adm__edBar button[aria-pressed="true"]{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.adm__edPrevBtn{margin-left:auto}
+.adm__edBody{padding:16px 18px;min-height:180px}
+/* ProseMirror 은 자기 스타일을 들고 오지 않는다. 공개 페이지와 비슷한 리듬으로 맞춰야
+   쓰는 사람이 결과를 예상할 수 있다 — 편집 화면과 실제가 다르면 미리보기를 매번 열게 된다. */
+.adm__edBody .ProseMirror{outline:none;font-size:15px;line-height:1.8;color:#3d4336;min-height:150px}
+.adm__edBody .ProseMirror>*+*{margin-top:14px}
+.adm__edBody .ProseMirror h2{font-size:21px;line-height:1.35;color:var(--ink);letter-spacing:-.01em}
+.adm__edBody .ProseMirror h3{font-size:17px;line-height:1.4;color:var(--ink)}
+.adm__edBody .ProseMirror ul,.adm__edBody .ProseMirror ol{padding-left:22px}
+.adm__edBody .ProseMirror li{margin-top:6px}
+.adm__edBody .ProseMirror blockquote{padding-left:14px;border-left:3px solid var(--lime-2);color:var(--muted)}
+.adm__edBody .ProseMirror a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.adm__edBody .ProseMirror img{max-width:100%;height:auto;border-radius:8px}
+.adm__edBody .ProseMirror code{padding:2px 5px;border-radius:5px;background:#f0f0ec;font-size:13px}
+/* 미리보기는 .detail__body 를 그대로 얻어 쓴다 — 공개 페이지와 같은 CSS·같은 렌더러다. */
+/* 🔴 .detail__body 는 이 블록보다 아래에 정의돼 있다(같은 특정성 → 뒤가 이긴다).
+   그래서 .adm__ed 를 앞에 붙여 특정성을 올린다. 안 그러면 두 가지가 한꺼번에 깨진다:
+   margin-top:54px 가 그대로 먹고, display:grid 가 [hidden] 의 display:none 을 눌러
+   미리보기 패널이 닫히지 않는다 — 접힌 줄 알았는데 편집기 아래에 계속 남는다. */
+.adm__ed .adm__edPrev{margin:0;padding:18px;max-width:none;display:grid;gap:28px}
+.adm__ed .adm__edPrev[hidden]{display:none}
+.adm__edAsk{display:flex;flex-wrap:wrap;gap:8px;align-items:end;padding:10px;
+  border-bottom:1px solid var(--line);background:#fbfbf9}
+.adm__edAsk label{display:grid;gap:5px;flex:1 1 220px}
+.adm__edAsk span{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.02em}
+.adm__edAsk input{padding:8px 11px;border:1px solid var(--line);border-radius:8px;
+  font-size:13px;background:var(--white);width:100%}
+.adm__edAsk button{padding:8px 13px;border:1px solid var(--line);border-radius:999px;
+  background:var(--white);font-size:12px;font-weight:750}
+.adm__edAsk button[type="submit"]{background:var(--ink);color:var(--white);border-color:var(--ink)}
+.adm__ed.is-down .adm__edBody{font-size:13px;line-height:1.75;color:var(--muted)}
+.adm__ed.is-down .adm__edBar{opacity:.4;pointer-events:none}
 .adm__acts{margin-top:18px;display:flex;gap:8px;flex-wrap:wrap}
 .adm__acts button{padding:11px 16px;border-radius:999px;font-size:13px;font-weight:800;
   border:1px solid var(--line);transition:background .2s,color .2s,transform .2s}
@@ -1157,10 +1274,10 @@ body.admin-login #ch-plugin-script{display:none}
            "Selected work" 도 선별된 실적을 함의해 "Work" 로 줄였다. -->
       <div><span class="eyebrow">Work</span><h2 class="section-title" id="work-title" style="margin-top:24px">어떤 문제를 어떤 구조로 푸는지 보여줍니다.</h2></div>
     </div>
-    <!-- 수행 주체 표기 — PRD §7.6 이 ✅ 로 규정한 시나리오다.
-         "표기 없이 자사 실적처럼 게시"는 ❌("비판한 업체와 같은 구조")이므로 이 줄을 지우지 마라.
-         AI Builder Origin 은 신규 브랜드이고 아래 작업물은 똑개가 수행한 것이다. -->
-    <p class="work__note">※ 아래 작업물은 <b>주식회사 똑똑한개발자</b>가 수행한 프로젝트입니다. AI Builder Origin 은 같은 팀이 만드는 신규 브랜드입니다.</p>
+    <!-- 수행 주체 표기 — 목록 상단의 ※ 안내문은 사용자 지시로 제거했다(2026-08-10).
+         PRD §7.6 이 금지한 것은 "표기 없이 자사 실적처럼 게시"이므로 표기 자체는 남아 있어야 한다.
+         현재 표기 위치: 각 Work 상세의 meta '수행: 주식회사 똑똑한개발자' + 푸터 사업자 정보.
+         이 두 곳까지 지우면 PRD §7.6 위반이 된다. -->
     <div class="work-layout">
       <aside class="work-filter" aria-label="Work 카테고리">
         <button class="active" data-filter="all">전체</button>
@@ -2161,9 +2278,96 @@ body.admin-login #ch-plugin-script{display:none}
   const ctaBlock='<div class="detail__cta"><p>이 방식으로 만들 것이 있으신가요?</p>'+
     '<a class="btn-primary" href="#" data-track="detail_contact">프로젝트 문의하기 <span aria-hidden="true">↗</span></a></div>';
 
-  const sections=body=>body.map(([h,p,list])=>'<section><h2>'+esc(h)+'</h2>'+
-    (p?'<p>'+esc(p)+'</p>':'')+
-    (list?'<ul>'+list.map(li=>'<li>'+esc(li)+'</li>').join('')+'</ul>':'')+'</section>').join('');
+  /* ═══ 본문 렌더러 — Tiptap 문서 JSON → HTML ═══════════════════════════
+     회의록 2026-08-05 "관리자: 블로그 콘텐츠 관리(Tiptap 에디터 활용)"가 확정 요건이라
+     본문의 정본 형식을 Tiptap(ProseMirror) 문서 JSON 으로 잡았다.
+
+     🔴 에디터 출력을 HTML 문자열로 저장하지 않는다. 저장은 편하지만 읽을 때 esc() 를
+        걸 수 없다. 쓰는 사람이 관리자뿐이어도 붙여넣기 한 번이면 공개 페이지에
+        스크립트가 실린다. JSON 이면 텍스트 노드만 esc() 하고 구조는 화이트리스트로 막는다.
+        아래 block() 의 default 가 그 화이트리스트다 — 모르는 노드는 내용만 살리고 태그는 버린다.
+
+     기존 8건은 [소제목, 문단, [목록]] 배열이다. 원고를 손으로 옮기지 않고 toDoc() 이
+     읽을 때 문서 JSON 으로 올린다 — 옮기면 오타가 섞이고 diff 가 커져 무엇이 바뀌었는지
+     안 보인다. 새 글은 에디터가 JSON 을 직접 준다. 두 형식이 같은 함수로 들어온다. */
+  const txt=t=>t==null||t===''?[]:[{type:'text',text:String(t)}];
+  const toDoc=body=>{
+    if(body&&body.type==='doc') return body;                 // 이미 Tiptap 문서
+    const content=[];
+    (Array.isArray(body)?body:[]).forEach(row=>{
+      const [h,p,list]=Array.isArray(row)?row:[];
+      if(h) content.push({type:'heading',attrs:{level:2},content:txt(h)});
+      if(p) content.push({type:'paragraph',content:txt(p)});
+      if(list&&list.length) content.push({type:'bulletList',
+        content:list.map(li=>({type:'listItem',
+          content:[{type:'paragraph',content:txt(li)}]}))});
+    });
+    return {type:'doc',content};
+  };
+
+  /* javascript: 와 data: 를 막는다. 링크·이미지 주소는 에디터에서 손으로 입력받으므로
+     여기가 마지막 방어선이다. 허용하지 않는 스킴은 링크 자체를 지운다(텍스트는 남는다). */
+  const safeHref=h=>{
+    const v=String(h==null?'':h).trim();
+    return /^(https?:\/\/|mailto:|#|\/)/i.test(v)?v:'';
+  };
+  const MARK={bold:['<strong>','</strong>'],italic:['<em>','</em>'],code:['<code>','</code>']};
+  const inline=nodes=>(nodes||[]).map(n=>{
+    if(n.type!=='text') return '';
+    let out=esc(n.text==null?'':n.text);
+    (n.marks||[]).forEach(m=>{
+      if(MARK[m.type]){ out=MARK[m.type][0]+out+MARK[m.type][1]; return; }
+      if(m.type==='link'){
+        const href=safeHref(m.attrs&&m.attrs.href);
+        if(href) out='<a href="'+esc(href)+'" target="_blank" rel="noopener noreferrer">'+out+'</a>';
+      }
+    });
+    return out;
+  }).join('');
+
+  /* 목록 항목은 Tiptap 에서 listItem > paragraph 로 감싸여 온다. 그대로 그리면
+     <li><p> 가 되어 .detail__body p 의 margin-top 이 붙는다 — 문단 하나뿐이면 벗겨낸다. */
+  const liInner=li=>{
+    const kids=li.content||[];
+    return kids.length===1&&kids[0].type==='paragraph'
+      ? inline(kids[0].content) : kids.map(block).join('');
+  };
+  function block(n){
+    switch(n.type){
+      case 'heading':{
+        /* h1 은 글 제목이 이미 쓴다. 본문에서 올라오면 h2 로 눌러 문서 구조를 지킨다. */
+        const lv=Math.min(Math.max(Number((n.attrs&&n.attrs.level)||2),2),3);
+        const s=inline(n.content); return s?'<h'+lv+'>'+s+'</h'+lv+'>':'';
+      }
+      case 'paragraph':{const s=inline(n.content); return s?'<p>'+s+'</p>':'';}
+      case 'bulletList':  return '<ul>'+(n.content||[]).map(li=>'<li>'+liInner(li)+'</li>').join('')+'</ul>';
+      case 'orderedList': return '<ol>'+(n.content||[]).map(li=>'<li>'+liInner(li)+'</li>').join('')+'</ol>';
+      case 'blockquote':  return '<blockquote>'+(n.content||[]).map(block).join('')+'</blockquote>';
+      case 'horizontalRule': return '<hr>';
+      case 'image':{
+        const src=safeHref(n.attrs&&n.attrs.src);
+        return src?'<img src="'+esc(src)+'" alt="'+esc((n.attrs&&n.attrs.alt)||'')+'" loading="lazy">':'';
+      }
+      case 'hardBreak': return '<br>';
+      default: return (n.content||[]).map(block).join('');
+    }
+  }
+
+  /* .detail__body 는 grid + gap:44px 다. 블록을 평평하게 뱉으면 문단마다 44px 이 벌어진다.
+     소제목을 만날 때마다 <section> 을 새로 열어 지금 CSS 를 그대로 쓴다 — 레거시 배열이
+     그리던 것과 결과 HTML 이 같다. */
+  const renderDoc=doc=>{
+    const out=[]; let buf=[];
+    const flush=()=>{ if(buf.length){ out.push('<section>'+buf.join('')+'</section>'); buf=[]; } };
+    (toDoc(doc).content||[]).forEach(n=>{
+      if(n.type==='heading') flush();
+      const html=block(n); if(html) buf.push(html);
+    });
+    flush();
+    return out.join('');
+  };
+  const sections=body=>renderDoc(body);
+  window.__DOC={toDoc,renderDoc};          // 어드민 편집기가 같은 함수로 미리보기를 그린다
 
   const navBlock=(arr,i,base,label)=>{
     const prev=arr[i-1],next=arr[i+1];
@@ -2330,6 +2534,139 @@ body.admin-login #ch-plugin-script{display:none}
   const admRows=()=>ADMIN[admTab]
     .filter(r=>ROLE_CAN[admRole].seeAll||r.w===ME)
     .filter(r=>admFilter==='all'||r.s===admFilter);
+  /* ═══ 본문 편집기 — Tiptap ═════════════════════════════════════════════
+     회의록 2026-08-05 확정 요건. 편집기가 뱉는 문서 JSON 이 곧 공개 페이지의 입력이고,
+     미리보기도 공개 페이지와 같은 renderDoc() 을 쓴다 — 미리보기와 실제가 다르면
+     검수하는 사람이 화면을 못 믿게 되고, 그 순간 검수 흐름 전체가 형식이 된다. */
+  const ED_TOOLS=[
+    {k:'h2',    l:'소제목'},{k:'bold',l:'굵게'},{k:'italic',l:'기울임'},
+    {k:'ul',    l:'목록'},  {k:'ol',  l:'번호'},{k:'quote', l:'인용'},
+    {k:'link',  l:'링크'},  {k:'image',l:'이미지'},
+    {k:'undo',  l:'되돌리기'},{k:'redo',l:'다시'}
+  ];
+  /* aria-pressed 를 실제 커서 위치에 맞춰 갱신할 대상만 적는다. undo·redo·이미지는 상태가 없다. */
+  const ED_ACTIVE={h2:['heading',{level:2}],bold:['bold'],italic:['italic'],
+                   ul:['bulletList'],ol:['orderedList'],quote:['blockquote'],link:['link']};
+
+  const editorHost=()=>'<div class="adm__ed" data-ed-host="1">'+
+    '<div class="adm__edBar" role="toolbar" aria-label="본문 서식">'+
+      ED_TOOLS.map(t=>'<button type="button" data-ed="'+t.k+'"'+
+        (ED_ACTIVE[t.k]?' aria-pressed="false"':'')+'>'+esc(t.l)+'</button>').join('')+
+      '<button type="button" class="adm__edPrevBtn" data-ed="preview" aria-pressed="false">미리보기</button>'+
+    '</div>'+
+    '<div class="adm__edBody"></div>'+
+    '<div class="adm__edPrev detail__body" hidden></div>'+
+  '</div>';
+
+  let edInst=null;                       // 살아 있는 Editor 는 항상 하나
+  const edDestroy=()=>{ if(edInst){ try{ edInst.destroy(); }catch(e){} edInst=null; } };
+
+  /* 어드민 목록 행에는 본문이 없다 — 제목·작성자·상태만 있는 시안 데이터다.
+     같은 제목의 공개 글을 찾아 그 본문을 초기값으로 준다. 한 번 고치면 row.doc 에 남아
+     탭을 옮겼다 돌아와도 유지된다. 새로고침하면 사라지는 것은 §8 Phase 1 그대로다. */
+  const edSeed=row=>{
+    if(row&&row.doc) return row.doc;
+    /* WORK 도 같이 뒤진다. INSIGHT 만 보면 Work 탭에서 항목을 눌러도 편집기가 빈 채로 떠서
+       "본문이 없는 화면"으로 읽힌다 — Work 상세에도 본문(body)이 있다. */
+    const t=row&&row.t;
+    const src=WORK.find(x=>x.title===t)||INSIGHT.find(x=>x.title===t);
+    return toDoc(src?src.body:[]);
+  };
+
+  const edSync=()=>{
+    if(!edInst) return;
+    view.querySelectorAll('[data-ed-host] [data-ed]').forEach(b=>{
+      const spec=ED_ACTIVE[b.dataset.ed]; if(!spec) return;
+      b.setAttribute('aria-pressed',String(edInst.isActive.apply(edInst,spec)));
+    });
+  };
+
+  const mountEditor=row=>{
+    edDestroy();
+    const host=view.querySelector('[data-ed-host]');
+    if(!host) return;
+    const body=host.querySelector('.adm__edBody'), T=window.__TIPTAP;
+    /* CDN 이 막힌 환경이 실제로 있다. 빈 상자로 두지 않고 왜 비었는지 그 자리에 쓴다. */
+    if(!T){ host.classList.add('is-down');
+            body.textContent='본문 편집 영역 — Tiptap 을 불러오지 못했습니다. 네트워크를 확인해 주세요.';
+            return; }
+    edInst=new T.Editor({
+      element:body,
+      extensions:[
+        T.StarterKit.configure({heading:{levels:[2,3]}}),
+        T.Link.configure({openOnClick:false,autolink:false}),
+        T.Image
+      ],
+      content:edSeed(row),
+      /* 편집 즉시 데이터에 반영한다. 저장 버튼을 따로 두면 시안에서 "저장했는데 사라졌다"가 된다. */
+      onUpdate:({editor})=>{ if(row) row.doc=editor.getJSON(); },
+      onSelectionUpdate:edSync,
+      onTransaction:edSync
+    });
+    edSync();
+  };
+
+  /* 🔴 prompt() 를 쓰지 않는다. 브라우저 모달은 데모 중에 흐름을 끊고, 이 시안은
+     클라이언트 앞에서 그대로 돌린다. 주소 한 줄만 받으면 되므로 인라인 입력 줄로 처리한다. */
+  const edAsk=(host,label,ph,done)=>{
+    host.querySelectorAll('.adm__edAsk').forEach(n=>n.remove());
+    const row=document.createElement('form');
+    row.className='adm__edAsk';
+    row.innerHTML='<label><span>'+esc(label)+'</span>'+
+      '<input type="text" placeholder="'+esc(ph)+'" autocomplete="off"></label>'+
+      '<button type="submit">적용</button>'+
+      '<button type="button" data-edx="1">취소</button>';
+    row.addEventListener('submit',e=>{
+      e.preventDefault(); e.stopPropagation();          // 전역 submit 위임까지 가면 화면이 다시 그려진다
+      done(row.querySelector('input').value); row.remove(); edSync();
+    });
+    row.addEventListener('click',e=>{ if(e.target.dataset.edx){ e.stopPropagation(); row.remove(); } });
+    host.querySelector('.adm__edBar').after(row);
+    row.querySelector('input').focus();
+  };
+
+  /* 🔴 툴바 버튼을 누르는 순간 편집기가 포커스를 잃고 선택 영역이 접힌다. 그러면
+     "문단을 드래그해서 굵게" 가 아무 데도 안 걸리고, 커서만 있던 자리에 서식이 켜진다.
+     mousedown 을 막으면 선택이 그대로 남는다 — click 은 그대로 발생한다. */
+  document.addEventListener('mousedown',e=>{
+    const b=e.target.closest&&e.target.closest('.adm__edBar [data-ed]');
+    if(b) e.preventDefault();
+  });
+
+  const edCommand=(k,btn)=>{
+    const host=view.querySelector('[data-ed-host]'); if(!host) return;
+    if(k==='preview'){
+      const prev=host.querySelector('.adm__edPrev'), body=host.querySelector('.adm__edBody');
+      const on=prev.hidden;
+      if(on) prev.innerHTML=renderDoc(edInst?edInst.getJSON():{type:'doc',content:[]});
+      prev.hidden=!on; body.hidden=on;
+      btn.setAttribute('aria-pressed',String(on));
+      return;
+    }
+    if(!edInst) return;
+    const c=edInst.chain().focus();
+    if(k==='h2')          c.toggleHeading({level:2}).run();
+    else if(k==='bold')   c.toggleBold().run();
+    else if(k==='italic') c.toggleItalic().run();
+    else if(k==='ul')     c.toggleBulletList().run();
+    else if(k==='ol')     c.toggleOrderedList().run();
+    else if(k==='quote')  c.toggleBlockquote().run();
+    else if(k==='undo')   c.undo().run();
+    else if(k==='redo')   c.redo().run();
+    else if(k==='link')
+      edAsk(host,'링크 주소','https://',v=>{
+        const href=safeHref(v);
+        /* 빈 값·허용하지 않는 스킴이면 링크를 지운다. 조용히 무시하면 눌렀는데 안 되는 버튼이 된다. */
+        if(!href) edInst.chain().focus().unsetLink().run();
+        else edInst.chain().focus().extendMarkRange('link').setLink({href}).run();
+      });
+    else if(k==='image')
+      edAsk(host,'이미지 주소','assets/insight/…',v=>{
+        const src=safeHref(v); if(src) edInst.chain().focus().setImage({src}).run();
+      });
+    edSync();
+  };
+
   const renderAdminBody=()=>{
     const rows=admRows();
     const list=rows.length?rows.map((r,i)=>
@@ -2338,7 +2675,7 @@ body.admin-login #ch-plugin-script{display:none}
       '<span class="adm-row__m">'+esc(r.w)+'</span></span>'+
       '<span class="adm-state" data-s="'+r.s+'">'+SLABEL[r.s]+'</span>'+
       '<span class="adm-row__w">'+(admTab==='builder'&&r.state?esc(ASTATE[r.state]):esc(r.d))+'</span></button>').join('')
-      : '<p style="padding:28px 10px;color:var(--muted);font-size:14px">이 상태의 항목이 없습니다.</p>';
+      : '<p class="adm__empty">이 상태의 항목이 없습니다.</p>';
     const cur=rows[admPick];
     const panel=cur?(
       '<h3>'+esc(cur.t)+'</h3>'+
@@ -2349,7 +2686,7 @@ body.admin-login #ch-plugin-script{display:none}
         '<div><span>공개 여부</span><b>'+(cur.s==='live'?'공개됨':'비공개')+'</b></div>'+
       '</div>'+
       (admTab==='builder' ? profileForm(cur)
-        : '<div class="adm__editor">본문 편집 영역 — 제목·본문·이미지까지 글쓰기 수준으로 다룹니다.</div>')+
+        : editorHost())+
       '<div class="adm__acts">'+
         (ROLE_CAN[admRole].publish
           ? (admReject
@@ -2514,12 +2851,15 @@ body.admin-login #ch-plugin-script{display:none}
      자기가 누구인지는 목록의 한 줄로만 남는다. 빌더는 검수자가 아니라 작업자다 —
      자기 프로필과 작업물이 앞에 오고, 할 일이 뒤에 온다. */
   let spaceEdit=false, spaceNew='';        // '' | 'work' | 'insight'
+  /* 새 글 폼의 본문을 담는 임시 초안. 폼은 다시 그릴 때마다 DOM 이 새로 생기므로
+     편집 중인 문서를 여기에 들고 있지 않으면 필터를 한 번만 눌러도 쓰던 글이 날아간다. */
+  let spaceDraft=null;
   const TYPES=['Working method','AI practice','Philosophy','Class note','Market note','Builder story'];
   const today=()=>{const d=new Date();return d.getFullYear()+'-'+
     String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 
   /* 등록 폼. 필드를 늘리지 않았다 — 제목과 한 줄이 없으면 검토하는 쪽이 무엇인지 알 수 없고,
-     그 둘만 있으면 초안으로는 충분하다. 본문 편집기는 Phase 2 다(§2 "관리자 = Tiptap 수준"). */
+     그 둘만 있으면 초안으로는 충분하다. 본문은 아래 Tiptap 편집기가 받는다(회의록 2026-08-05). */
   const newForm=kind=>'<form class="space__new" data-newkind="'+kind+'">'+
     '<h3>'+(kind==='work'?'작업물 등록':'새 글 쓰기')+'</h3>'+
     '<label class="adm__field"><span>제목</span>'+
@@ -2532,7 +2872,7 @@ body.admin-login #ch-plugin-script{display:none}
         '<input type="text" data-n="client" maxlength="30" placeholder="예: 도다마인드"></label>')+
     '<label class="adm__field"><span>한 줄 설명</span>'+
       '<input type="text" data-n="lead" maxlength="70" placeholder="검토하는 사람이 무엇인지 알 수 있게"></label>'+
-    '<div class="adm__editor">본문 편집 영역 — 제목·본문·이미지까지 글쓰기 수준으로 다룹니다.</div>'+
+    editorHost()+
     '<div class="adm__avaBtns" style="margin:0">'+
       '<button type="submit" class="adm__mini">초안으로 저장</button>'+
       '<button type="button" class="adm__mini" data-space="cancel">취소</button>'+
@@ -2627,27 +2967,40 @@ body.admin-login #ch-plugin-script{display:none}
     const count=k=>ADMIN[k].filter(r=>ROLE_CAN[admRole].seeAll||r.w===ME).length;
     const tab=(k,label)=>'<button data-tab="'+k+'" data-n="'+count(k)+'" aria-pressed="'+(admTab===k)+'">'+label+'</button>';
     const filt=(k,label)=>'<button data-f="'+k+'" aria-pressed="'+(admFilter===k)+'">'+label+'</button>';
-    return '<article class="adm"><div class="container">'+
-      '<div class="adm__bar"><h1 class="adm__title" id="detailTitle" tabindex="-1">콘텐츠 운영</h1>'+
-      /* 로그인한 뒤에 역할을 마음대로 바꿀 수 있으면 권한이 있다는 인상이 무너진다.
-         현재 계정만 보여주고, 다른 역할을 보려면 로그아웃하고 다시 들어온다 — 실제 제품과 같다. */
-      '<div class="adm__who adm__who--user">'+
-        '<span class="adm__me">'+esc(admUser?(admUser.name||admUser.email):(admRole==='admin'?'운영팀':ME))+
-        '<em>'+(admRole==='admin'?'관리자':'빌더')+'</em></span>'+
-        '<button data-signout="1">로그아웃</button>'+
-      '</div>'+
-      '<span class="adm__badge">화면 시안 — 저장·로그인 없음</span></div>'+
-      '<p class="adm__note">'+(ROLE_CAN[admRole].publish
-        ? '관리자 — 모든 항목을 보고 공개 여부를 결정합니다. 발행과 내리기는 여기서만 가능합니다.'
-        : '빌더 — 자기가 작성한 항목만 보입니다. 검토 요청까지 올릴 수 있고, 공개는 관리자가 결정합니다.')+'</p>'+
-      '<div class="adm__layout">'+
+    /* 상단은 콘솔 바다. 예전에는 제목·계정·배지를 space-between 으로 벌려서 가운데가
+       휑하고 셋이 서로 다른 것처럼 보였다 — 좌우 두 덩어리로 묶는다. */
+    return '<article class="adm adm--console">'+
+      '<header class="adm__top">'+
+        '<div class="adm__topL">'+
+          '<span class="adm__brand">AI BUILDER ORIGIN</span>'+
+          '<span class="adm__sep"></span>'+
+          '<h1 class="adm__title" id="detailTitle" tabindex="-1">콘텐츠 운영</h1>'+
+        '</div>'+
+        '<div class="adm__topR">'+
+          '<span class="adm__badge">화면 시안 — 저장·로그인 없음</span>'+
+          '<a class="adm__mini" href="#/">공개 화면 ↗</a>'+
+          /* 로그인한 뒤에 역할을 마음대로 바꿀 수 있으면 권한이 있다는 인상이 무너진다.
+             현재 계정만 보여주고, 다른 역할을 보려면 로그아웃하고 다시 들어온다 — 실제 제품과 같다. */
+          '<div class="adm__who adm__who--user">'+
+            '<span class="adm__me">'+esc(admUser?(admUser.name||admUser.email):(admRole==='admin'?'운영팀':ME))+
+            '<em>'+(admRole==='admin'?'관리자':'빌더')+'</em></span>'+
+            '<button data-signout="1">로그아웃</button>'+
+          '</div>'+
+        '</div>'+
+      '</header>'+
+      '<div class="adm__shell">'+
         '<nav class="adm__nav" aria-label="콘텐츠 종류">'+
+          '<span class="adm__navLabel">콘텐츠</span>'+
           /* 같은 탭이라도 역할에 따라 다른 것을 뜻한다 — 관리자는 빌더 전체를 관리하고,
              빌더는 자기 프로필 하나만 고친다. 라벨이 같으면 무엇을 보는지 오해한다. */
           ROLE_CAN[admRole].tabs.map(k=>tab(k,{work:'Work',insight:'Insight',
             builder:admRole==='admin'?'빌더':'내 프로필'}[k])).join('')+
+          '<p class="adm__note">'+(ROLE_CAN[admRole].publish
+            ? '관리자 — 모든 항목을 보고 공개 여부를 결정합니다. 발행과 내리기는 여기서만 가능합니다.'
+            : '빌더 — 자기가 작성한 항목만 보입니다. 검토 요청까지 올릴 수 있고, 공개는 관리자가 결정합니다.')+'</p>'+
         '</nav>'+
-        '<div><div class="adm__filters" role="group" aria-label="상태 필터">'+
+        '<section class="adm__main"><div class="adm__toolbar">'+
+          '<div class="adm__filters" role="group" aria-label="상태 필터">'+
           filt('all','전체')+filt('draft','작성 중')+filt('review','검토 요청')+filt('live','공개')+
         '</div>'+
         /* 초대는 관리자만 한다. 공개 가입을 열지 않는 것이 1차 방어선이다 —
@@ -2661,29 +3014,55 @@ body.admin-login #ch-plugin-script{display:none}
               : '<button class="adm__mini" data-act="invite">+ 빌더 초대</button>')+
             '</div>'
           : '')+
-        '<div class="adm__list" id="admList">'+list+'</div></div>'+
+        '</div>'+
+        /* 컬럼 머리글. 상태 알약과 날짜만 나열돼 있으면 오른쪽 두 칸이 무엇인지
+           매번 눈으로 대조하게 된다. 빌더 탭은 마지막 칸이 날짜가 아니라 계정 상태다. */
+        '<div class="adm__listHead"><span>제목 · 작성자</span><span>상태</span>'+
+          '<span>'+(admTab==='builder'?'계정':'최종 수정')+'</span></div>'+
+        '<div class="adm__list" id="admList">'+list+'</div>'+
+        '</section>'+
         '<aside class="adm__panel" id="admPanel" aria-label="선택한 항목">'+panel+'</aside>'+
       '</div>'+
-      '<p class="edu-note" style="margin-top:32px">※ Phase 1 화면 시안입니다. 인증·저장은 연결돼 있지 않고, 상태 변경은 이 화면 안에서만 유지됩니다.</p>'+
-      '</div></article>';
+    '</article>';
   };
 
   /* 편집 대상. 빌더 스페이스에서는 목록 선택이라는 개념이 없다 — 항상 자기 프로필이다. */
   const editTarget=()=>admAuth==='builder'?myProfile():admRows()[admPick];
 
-  /* 로그인 화면에서는 헤더·dock·상담 위젯을 숨긴다. 사이트 내비게이션이 그대로 보이면
-     "어드민에 들어와 있다"는 느낌이 안 나고, dock 의 문의 CTA 가 로그인 버튼과 경쟁한다. */
-  const setChrome=()=>document.body.classList.toggle('admin-login',
-    location.hash==='#/admin'&&!admAuth);
+  /* 사이트 내비게이션이 그대로 보이면 "어드민에 들어와 있다"는 느낌이 안 나고,
+     dock 의 문의 CTA 가 이 화면의 행동과 경쟁한다. 두 단계로 나눈다 —
+     admin-on: #/admin 전체에서 공개 크롬을 걷는다.
+     admin-login: 로그인 화면만. 문 앞 화면이라 가운데 정렬 레이아웃이 따로 붙는다. */
+  const setChrome=()=>{
+    const on=location.hash==='#/admin';
+    document.body.classList.toggle('admin-on',on);
+    document.body.classList.toggle('admin-login',on&&!admAuth);
+  };
 
   const admRepaint=()=>{
     if(location.hash!=='#/admin') return;
     setChrome();
+    /* innerHTML 로 갈아끼우기 전에 끊는다. DOM 이 사라진 뒤에 destroy 하면 ProseMirror 가
+       붙여둔 전역 리스너가 남아 다음 인스턴스와 키 입력을 나눠 먹는다. */
+    edDestroy();
     view.innerHTML=!admAuth?renderAdminLogin():admAuth==='builder'?renderSpace():renderAdmin();
     /* 제목도 함께 바꾼다. showDetail 을 거치지 않는 경로라 여기서 안 하면 로그인·역할이 바뀌어도
        탭 제목이 이전 화면에 머문다 — 탭을 여러 개 띄우고 비교할 때 바로 드러난다. */
     document.title=(admAuth==='builder'?'빌더 스페이스':'콘텐츠 운영')+' — '+BASE;
+    /* 편집기는 innerHTML 이후에 붙인다. 편집기 자리가 있는 화면이면 어디든 마운트한다 —
+       상세 패널은 선택한 행이 대상이고, 새 글 폼은 아직 행이 없어 임시 초안에 담는다.
+       Tiptap 이 아직 안 왔으면 tiptap-ready 가 다시 부른다(아래). */
+    const host=view.querySelector('[data-ed-host]');
+    if(host){
+      const inNew=!!(host.closest&&host.closest('.space__new'));
+      if(inNew&&!spaceDraft) spaceDraft={};
+      mountEditor(inNew?spaceDraft:admRows()[admPick]);
+    }
   };
+
+  /* 모듈 스크립트라 첫 렌더보다 늦게 도착할 수 있다. 늦게 오면 그때 한 번 다시 그린다 —
+     안 하면 새로고침 직후 #/admin 으로 바로 들어온 사람만 자리표시자를 본다. */
+  window.addEventListener('tiptap-ready',()=>{ if(location.hash==='#/admin') admRepaint(); });
 
   /* 아바타 이니셜. 한글 세 글자 이름은 성을 빼고 이름 첫 글자를 쓴다(김도윤 → 도) —
      #builders 의 아바타와 같은 규칙이라야 같은 사람으로 읽힌다.
@@ -2784,8 +3163,11 @@ body.admin-login #ch-plugin-script{display:none}
      UI 상태다. 위임으로 받아 화면만 다시 그린다. */
   document.addEventListener('click',e=>{
     if(location.hash!=='#/admin') return;
-    const t=e.target.closest&&e.target.closest('[data-signin],[data-signout],[data-space],[data-sub],[data-tab],[data-f],[data-i],[data-act]');
+    const t=e.target.closest&&e.target.closest('[data-signin],[data-signout],[data-space],[data-sub],[data-tab],[data-f],[data-i],[data-act],[data-ed]');
     if(!t) return;
+    /* 🔴 툴바는 화면을 다시 그리지 않는다. admRepaint 를 타면 에디터가 새로 마운트되면서
+       커서 위치와 실행취소 이력이 통째로 날아간다 — 굵게 한 번 누르고 되돌리기가 죽는다. */
+    if(t.dataset.ed){ edCommand(t.dataset.ed,t); return; }
     if(t.dataset.tab){ admTab=t.dataset.tab; admFilter='all'; admPick=0; admReject=false; }
     else if(t.dataset.f){ admFilter=t.dataset.f; admPick=0; }
     else if(t.dataset.i!==undefined){ admPick=+t.dataset.i; admReject=false; }
@@ -2795,8 +3177,9 @@ body.admin-login #ch-plugin-script{display:none}
       admRepaint();
       return;
     }
-    else if(t.dataset.space==='edit'){ spaceEdit=!spaceEdit; spaceNew=''; admRepaint(); return; }
-    else if(t.dataset.space==='cancel'){ spaceNew=''; admRepaint(); return; }
+    else if(t.dataset.space==='edit'){ spaceEdit=!spaceEdit; spaceNew=''; spaceDraft=null; admRepaint(); return; }
+    /* 취소는 쓰던 본문도 같이 버린다. 남겨두면 다음에 새 글을 열었을 때 남의 초안이 들어 있다. */
+    else if(t.dataset.space==='cancel'){ spaceNew=''; spaceDraft=null; admRepaint(); return; }
     else if(t.dataset.space&&t.dataset.space.startsWith('new-')){
       const k=t.dataset.space.slice(4);
       spaceNew=spaceNew===k?'':k;              // 같은 버튼을 다시 누르면 닫는다
@@ -2885,10 +3268,13 @@ body.admin-login #ch-plugin-script{display:none}
       const val=n=>{const el=nf.querySelector('[data-n="'+n+'"]');return el?el.value.trim():''};
       const title=val('t'); if(!title) return;
       /* 맨 앞에 넣는다 — 방금 만든 것이 목록 맨 위에 보여야 등록됐다는 것을 안다. */
+      /* 편집기에서 쓴 본문을 같이 넘긴다 — 넘기지 않으면 등록 직후 열었을 때 본문이 비어
+         "썼는데 사라졌다"가 된다. 저장이 없는 시안이라도 세션 안에서는 이어져야 한다. */
       ADMIN[k].unshift({t:title,w:ME,s:'draft',d:today(),
         lead:val('lead'),
+        ...(spaceDraft&&spaceDraft.doc?{doc:spaceDraft.doc}:{}),
         ...(k==='insight'?{type:val('type')}:{client:val('client')})});
-      spaceNew='';
+      spaceNew=''; spaceDraft=null;
       admRepaint();
       return;
     }
@@ -2996,7 +3382,10 @@ body.admin-login #ch-plugin-script{display:none}
   const showHome=()=>{
     view.hidden=true; view.innerHTML='';
     home.hidden=false;
-    document.body.classList.remove('admin-login');
+    /* 🔴 두 클래스를 함께 벗긴다. admin-on 만 남으면 홈으로 돌아와도 헤더·dock·상담
+       위젯이 사라진 채라 사이트가 통째로 고장 난 것처럼 보인다 —
+       콘솔의 "공개 화면 ↗"(href="#/")가 정확히 이 경로를 탄다. */
+    document.body.classList.remove('admin-login','admin-on');
     document.title=BASE;
   };
   const showDetail=(html,title)=>{
@@ -3054,6 +3443,36 @@ body.admin-login #ch-plugin-script{display:none}
      비동기라 첫 화면을 늦추지 않는다. 키가 없으면 즉시 빠져나온다. */
   initAuth();
 })();
+</script>
+
+<!-- ═══ Tiptap 로더 ═══════════════════════════════════════════════════════
+     회의록 2026-08-05 확정 요건: "관리자: 블로그 콘텐츠 관리(Tiptap 에디터 활용)".
+
+     esm.sh 를 쓰는 이유 — 이 시안은 번들러가 없는 단일 HTML 이다. supabase-js 도 같은 방식.
+     ?deps= 로 core 버전을 고정하는 이유가 중요하다: 확장을 따로 받으면 esm.sh 가 각자의
+     prosemirror-state 를 끌어와 인스턴스가 둘이 되고, 그러면 에디터가 뜨자마자
+     "Looking for a state field" 로 죽는다. 전부 같은 core 에 묶는다.
+
+     로드에 실패해도 화면은 살아야 한다 — __TIPTAP 이 없으면 어드민은 자리표시자를 남긴다.
+     망에서 CDN 이 막힌 환경(사내망·발표장 와이파이)이 실제로 있다. -->
+<script type="module">
+  /* 🔴 버전은 2.x 의 최신(2.27.2)으로 고정한다. 낮은 판을 고정하면 안 된다 —
+     starter-kit@2.11.5 의 하위 확장은 "^2.11.5" 라서 esm.sh 가 최신 2.x 로 풀고,
+     그 확장이 core 에서 canInsertNode 를 찾다가 SyntaxError 로 죽는다(실제로 겪었다).
+     하위 확장이 풀리는 지점과 core 를 같은 판에 맞춰야 스큐가 안 생긴다. */
+  const V='2.27.2', dep='?deps=@tiptap/core@'+V;
+  try{
+    const [core,kit,link,image]=await Promise.all([
+      import('https://esm.sh/@tiptap/core@'+V),
+      import('https://esm.sh/@tiptap/starter-kit@'+V+dep),
+      import('https://esm.sh/@tiptap/extension-link@'+V+dep),
+      import('https://esm.sh/@tiptap/extension-image@'+V+dep)
+    ]);
+    window.__TIPTAP={Editor:core.Editor,StarterKit:kit.default,Link:link.default,Image:image.default};
+    window.dispatchEvent(new CustomEvent('tiptap-ready'));
+  }catch(e){
+    console.warn('[admin] Tiptap 로드 실패 — 편집기는 자리표시자로 남는다.',e);
+  }
 </script>
 </body>
 </html>

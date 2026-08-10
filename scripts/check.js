@@ -96,7 +96,12 @@ const near = (anchor, needle, span) => {
   const i = s.indexOf(anchor);
   return i >= 0 && s.slice(i, i + (span || 200)).indexOf(needle) >= 0;
 };
-ok(near("h==='#/admin'", 'setChrome()', 140), '#/admin 진입 시 사이트 크롬 토글');
+/* 🔴 예전에는 near("h==='#/admin'", 'setChrome()', 140) 이었다. setChrome 안의
+   location.hash==='#/admin' 에 걸린 뒤 그 아래 admRepaint 의 setChrome() 까지가
+   우연히 140자 안이라 통과하던 것이고, setChrome 이 세 줄 늘자 로직은 멀쩡한데 실패했다.
+   위치가 아니라 사실 두 개를 직접 본다 — 토글이 있는가, 그리고 홈에서 벗겨지는가. */
+ok(s.includes("classList.toggle('admin-on'"), '#/admin 진입 시 사이트 크롬 토글');
+ok(near('const showHome=', "remove('admin-login','admin-on')", 320), '홈 복귀 시 크롬 복원');
 /* 상세 URL 이 생기기 전에는 href="#" 라 내부 링크의 기본 동작을 전부 막았다.
    href 가 실제 주소로 바뀐 뒤에도 그 코드가 남아 홈에서 글을 눌러도 아무 일이 없었다.
    빈 앵커일 때만 막아야 한다. */
@@ -112,8 +117,12 @@ ok(!missTarget.length, '크롬 숨김 대상 존재 ' + (targets.length - missTa
 /* 라우트마다 렌더러가 연결돼 있는지 */
 const routes = {'#/work':'renderWorkList','#/insight':'renderInsightList','#/faq':'renderFaq',
                 '#/education':'renderEducation','#/admin':'renderAdminLogin'};
+/* 🔴 "(h===" 까지 붙여 찾는다. 예전에는 "h==='#/admin'" 으로 찾아서 라우터가 아니라
+   setChrome 의 location.hash==='#/admin' 에 먼저 걸렸다 — 우연히 260자 안에 renderAdminLogin
+   이 있어서 통과했을 뿐이고, 그 사이에 코드가 몇 줄 들어가자 라우터는 멀쩡한데 실패했다.
+   라우터 분기는 전부 "}else if(h===" · "else if(h===" 형태라 여는 괄호가 앞에 온다. */
 const badRoute = Object.entries(routes).filter(([h, fn]) => {
-  const i = s.indexOf("h==='" + h + "'");
+  const i = s.indexOf("(h==='" + h + "'");
   return i < 0 || s.slice(i, i + 260).indexOf(fn) < 0;
 }).map(([h]) => h);
 ok(!badRoute.length, '라우트-렌더러 연결 ' + (Object.keys(routes).length - badRoute.length) + '/' +
@@ -150,6 +159,12 @@ const MUST = {
   'INSIGHT 단일 소스': 'window.__INSIGHT', '표지 폴백': 'cover--01',
   'Google 로그인': 'signInWithOAuth', 'Supabase 설정': 'SUPABASE_ANON_KEY',
   '작업물 연결': 'builder-work', 'Work 상세 캡처': 'detail__shot',
+  /* 회의록 2026-08-05 확정 요건 — 관리자 콘텐츠 관리는 Tiptap 이다. 이 네 개가 한 세트다:
+     로더가 없으면 편집기가 안 뜨고, renderDoc 이 없으면 공개 페이지가 본문을 못 그리고,
+     toDoc 이 없으면 기존 8건이 통째로 빈다. 하나라도 빠지면 여기서 걸린다. */
+  'Tiptap 로더': 'window.__TIPTAP', 'Tiptap 마운트': 'mountEditor',
+  '본문 렌더러': 'renderDoc', '레거시 본문 승격': 'const toDoc',
+  '본문 링크 스킴 검사': 'const safeHref',
 };
 const gone = Object.entries(MUST).filter(([, n]) => !s.includes(n)).map(([k]) => k);
 const total = Object.keys(MUST).length;
