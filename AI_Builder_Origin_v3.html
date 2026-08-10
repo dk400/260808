@@ -1235,7 +1235,14 @@ body.admin-on #ch-plugin-script{display:none}
   .problem-card{min-height:auto;padding:32px 24px;gap:80px}
   .problem-card h3{font-size:39px}
   .proof-grid{grid-template-columns:1fr}
-  .proof-item{border-right:0;min-height:230px}
+  /* 번호와 영문 라벨을 하나의 메타 행으로 묶는다. 세로로 쌓으면 번호 박스 아래에
+     라벨이 매달리고 제목까지 또 한 번 끊겨 모바일에서 정보 위계가 세 조각으로 보인다. */
+  .proof-item{border-right:0;min-height:auto;display:grid;grid-template-columns:48px minmax(0,1fr);
+    grid-template-areas:'icon label' 'title title' 'copy copy';align-items:center;column-gap:14px;padding-block:28px 34px}
+  .proof-item__icon{grid-area:icon}
+  .proof-item__label{grid-area:label;margin-top:0}
+  .proof-item h3{grid-area:title;margin-top:22px}
+  .proof-item p{grid-area:copy}
   .work__head,.insight__head{display:grid;align-items:start}
   .insight__head{grid-template-columns:1fr}
   .work-grid{grid-template-columns:1fr}
