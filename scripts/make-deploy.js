@@ -61,6 +61,11 @@ fs.writeFileSync(path.join(OUT, 'vercel.json'), JSON.stringify({
 }, null, 2) + '\n');
 console.log('  vercel.json 생성 (X-Robots-Tag: noindex)');
 
+/* deploy/ 자체가 저장소의 .gitignore 대상이므로 Vercel CLI 가 상위 규칙을 물려받으면
+   내부 정적 자산까지 제외한다. 배포 폴더 전용 규칙을 두어 assets/ 를 함께 업로드한다. */
+fs.writeFileSync(path.join(OUT, '.vercelignore'), '.vercel\n');
+console.log('  .vercelignore 생성 (정적 자산 포함)');
+
 const size = fs.statSync(path.join(OUT, 'index.html')).size;
 console.log('\n배포 폴더 준비 완료 — ' + OUT);
 console.log('index.html ' + (size / 1024).toFixed(1) + ' KB\n');
