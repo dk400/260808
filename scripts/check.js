@@ -116,7 +116,7 @@ ok(!missTarget.length, '크롬 숨김 대상 존재 ' + (targets.length - missTa
    (missTarget.length ? ' → 없음: ' + missTarget.join(', ') : ''));
 /* 라우트마다 렌더러가 연결돼 있는지 */
 const routes = {'#/work':'renderWorkList','#/insight':'renderInsightList','#/faq':'renderFaq',
-                '#/education':'renderEducation','#/admin':'renderAdminLogin'};
+                '#/education':'renderEducationList','#/admin':'renderAdminLogin'};
 /* 🔴 "(h===" 까지 붙여 찾는다. 예전에는 "h==='#/admin'" 으로 찾아서 라우터가 아니라
    setChrome 의 location.hash==='#/admin' 에 먼저 걸렸다 — 우연히 260자 안에 renderAdminLogin
    이 있어서 통과했을 뿐이고, 그 사이에 코드가 몇 줄 들어가자 라우터는 멀쩡한데 실패했다.
@@ -134,7 +134,7 @@ ok(!badRoute.length, '라우트-렌더러 연결 ' + (Object.keys(routes).length
    "const 이름=" 형태로 정의 자체를 확인한다. */
 const DEFS = ['profileForm', 'renderSpace', 'renderAdmin', 'renderAdminLogin', 'renderAdminBody',
   'renderWork', 'renderInsight', 'renderWorkList', 'renderInsightList', 'renderFaq',
-  'renderEducation', 'admRepaint', 'setChrome', 'editTarget', 'readAvatar', 'initialOf',
+  'renderEducationList', 'renderEducationTrack', 'admRepaint', 'setChrome', 'editTarget', 'readAvatar', 'initialOf',
   'myProfile', 'spaceRow', 'newForm', 'initAuth', 'resolveRole'];
 const noDef = DEFS.filter(n => !s.includes('const ' + n + '='));
 ok(!noDef.length, '함수 정의 ' + (DEFS.length - noDef.length) + '/' + DEFS.length +
