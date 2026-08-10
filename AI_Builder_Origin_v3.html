@@ -175,16 +175,27 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .nav a:hover::after{right:0}
 .header__cta{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--white);padding:13px 20px;border-radius:999px;font-size:15px;font-weight:800;transition:transform .2s,background .2s}
 .header__cta:hover{background:var(--ink-hover);transform:translateY(-2px)}
-/* 테마 토글. 아이콘은 CSS 로 그린다 — 아이콘 폰트나 SVG 파일을 하나 더 늘리지 않는다.
-   라이트에서는 달(다크로 감), 다크에서는 해(라이트로 감)를 보여준다. */
-.theme-btn{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;
-  border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink);
-  transition:background .2s,border-color .2s,transform .2s}
-.theme-btn:hover{background:var(--lime);border-color:var(--ink);transform:translateY(-2px)}
-/* 현재 상태가 아니라 눌렀을 때 이동할 모드를 보여준다: 라이트에서는 달, 다크에서는 해. */
-.theme-btn__icon{width:22px;height:22px;display:grid;place-items:center;line-height:1}
-.theme-btn__icon::before{content:'☾';font-family:Arial,sans-serif;font-size:25px;font-weight:700;transform:translateY(-1px)}
-[data-theme="dark"] .theme-btn__icon::before{content:'☀';font-size:20px;transform:none}
+/* 테마 토글 — 폰트 기호는 OS마다 모양이 달라 CSS 선형 아이콘과 움직이는 손잡이로 그린다. */
+.theme-btn{position:relative;width:58px;height:34px;flex:0 0 58px;padding:3px;overflow:hidden;
+  border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);
+  transition:border-color .2s,transform .2s,box-shadow .2s}
+.theme-btn::before{content:'';position:absolute;z-index:0;left:3px;top:3px;width:26px;height:26px;
+  border-radius:50%;background:var(--white);box-shadow:0 3px 10px rgba(var(--ink-rgb),.14);
+  transition:transform .32s cubic-bezier(.2,.8,.2,1),background .25s}
+.theme-btn:hover{border-color:var(--ink);transform:translateY(-2px);box-shadow:0 8px 18px rgba(var(--ink-rgb),.1)}
+.theme-btn__icon{position:relative;z-index:1;display:block;width:100%;height:100%}
+.theme-btn__sun,.theme-btn__moon{position:absolute;top:50%;color:var(--muted);transition:color .25s,opacity .25s}
+.theme-btn__sun{left:8px;width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;transform:translateY(-50%)}
+.theme-btn__sun::before{content:'';position:absolute;left:50%;top:50%;width:1.5px;height:1.5px;border-radius:50%;
+  background:currentColor;transform:translate(-50%,-50%);
+  box-shadow:0 -7px currentColor,5px -5px currentColor,7px 0 currentColor,5px 5px currentColor,
+    0 7px currentColor,-5px 5px currentColor,-7px 0 currentColor,-5px -5px currentColor}
+.theme-btn__moon{right:9px;width:11px;height:11px;border-radius:50%;
+  box-shadow:-3px 2px 0 0 currentColor;transform:translate(1px,-50%)}
+.theme-btn__sun{color:var(--ink)}
+[data-theme="dark"] .theme-btn::before{transform:translateX(24px);background:var(--lime)}
+[data-theme="dark"] .theme-btn__sun{color:var(--muted)}
+[data-theme="dark"] .theme-btn__moon{color:#111311}
 .menu-btn{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;position:relative}
 .menu-btn span,.menu-btn::before,.menu-btn::after{content:'';position:absolute;left:50%;top:50%;display:block;width:18px;height:1.5px;background:var(--ink);transform-origin:center;transition:transform .25s,opacity .2s}
 .menu-btn::before{transform:translate(-50%,-6px)}
@@ -1382,10 +1393,9 @@ body.admin-on #ch-plugin-script{display:none}
     <nav class="nav" aria-label="주요 메뉴">
       <a href="#/work">Work</a><a href="#/education">Education</a><a href="#/insight">Insight</a><a href="#/faq">FAQ</a>
     </nav>
-    <!-- aria-pressed 가 아니라 aria-label 로 현재 상태를 읽어준다. 토글 두 개가 아니라
-         "지금 무엇으로 바뀌는가"를 알려주는 버튼 하나다. -->
-    <button class="theme-btn" id="themeBtn" type="button" aria-label="다크 모드로 전환">
-      <span class="theme-btn__icon" aria-hidden="true"></span>
+    <!-- 토글 버튼은 aria-pressed 로 다크 모드의 활성 상태를 전달하고 title 은 다음 동작을 안내한다. -->
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="다크 모드" aria-pressed="false">
+      <span class="theme-btn__icon" aria-hidden="true"><span class="theme-btn__sun"></span><span class="theme-btn__moon"></span></span>
     </button>
     <a class="header__cta" href="#contact" data-track="header_contact">프로젝트 문의 <span>↗</span></a>
     <button class="menu-btn" id="menuBtn" aria-label="메뉴 열기" aria-expanded="false"><span></span></button>
@@ -2025,10 +2035,8 @@ body.admin-on #ch-plugin-script{display:none}
     const isDark=()=>root.getAttribute('data-theme')==='dark';
     const sync=()=>{
       const dark=isDark();
-      /* "지금 무엇인가"가 아니라 "누르면 무엇이 되는가"를 읽어준다 */
-      const label=dark?'라이트 모드로 전환':'다크 모드로 전환';
-      btn.setAttribute('aria-label',label);
-      btn.title=label;
+      btn.setAttribute('aria-pressed',String(dark));
+      btn.title=dark?'라이트 모드로 전환':'다크 모드로 전환';
       const meta=document.querySelector('meta[name="theme-color"]');
       if(meta) meta.setAttribute('content',dark?'#0f110f':'#111311');
     };
