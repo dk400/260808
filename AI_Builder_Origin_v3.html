@@ -230,9 +230,8 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .hero{--hero-pointer-x:76%;--hero-pointer-y:34%;--hero-pointer-opacity:0;--hero-glow-opacity:.26;
   --hero-stage-x:0px;--hero-stage-y:0px;--hero-stage-rx:0deg;--hero-stage-ry:0deg;
   min-height:100svh;padding-top:72px;display:flex;align-items:center;position:relative;overflow:hidden;isolation:isolate}
-.hero::before{content:'';position:absolute;inset:0;z-index:0;background:
-  radial-gradient(circle at 75% 18%,rgba(215,255,89,.58),transparent 25%),
-  radial-gradient(circle at 88% 72%,rgba(185,216,255,.55),transparent 28%);pointer-events:none}
+/* 보케(라임·블루 블롭)를 걷었다. 파티클 텍스트가 브랜드 레이어가 된 뒤로는
+   블롭이 같은 자리에서 빛을 뿌려 입자를 삼켰다 — 배경은 비우고 파티클만 남긴다. */
 .hero::after{content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
   background-image:radial-gradient(circle,rgba(var(--ink-rgb),.19) 1px,transparent 1.5px);
   background-size:18px 18px;
@@ -245,7 +244,13 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
    앞에는 카피만 둔다. 좌측 정렬 + 넉넉한 여백으로 읽는 순서를 하나로 만든다. */
 .hero__grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr);
   align-items:center;padding-block:clamp(96px,13vw,168px) clamp(78px,10vw,132px)}
-.hero__copy{max-width:min(100%,780px)}
+/* 카피를 가운데로 모은다. 파티클 텍스트도 가운데라 축이 하나로 선다 —
+   좌측 정렬이면 브랜드 그래픽과 카피가 서로 다른 축을 갖는다. */
+.hero__copy{max-width:min(100%,860px);margin-inline:auto;text-align:center}
+.hero__copy .eyebrow{justify-content:center}
+.hero__title{margin-inline:auto}
+.hero__lead{margin-inline:auto}
+.hero__actions{justify-content:center}
 
 /* 파티클 텍스트 — Hero 후면의 브랜드 그래픽 레이어.
    🔴 카피 위로 올라오면 안 된다. z-index 1 로 .hero__grid(2) 아래에 둔다.
@@ -256,23 +261,18 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
    1496점이 찍혀 있는데 화면에서는 아무것도 안 보였다).
    라이트에서는 같은 브랜드 계열의 진한 초록(--green-ink-2)을 쓰고,
    어두운 면에서 비로소 라임이 제 색으로 선다. 브랜드 색 체계 안에서 해결한다. */
-.hero{--hero-particle:var(--green-ink-2)}
+/* 라이트에서 #779700 은 크림 배경 위에서 대비 3.6 이라 배경 무늬처럼만 보였다.
+   한 단계 진한 --green-ink(#5c7500, 대비 5.4)로 올려 글자가 읽히게 한다. */
+.hero{--hero-particle:var(--green-ink)}
 [data-theme="dark"] .hero{--hero-particle:var(--lime)}
 .hero-particles{position:absolute;inset:0;z-index:1;width:100%;height:100%;
-  pointer-events:none;opacity:.58;
-  /* 왼쪽을 통째로 지우면 브랜드가 반쪽만 남는다. 카피가 얹히는 쪽만 눌러 두고
-     위아래는 부드럽게 죽여 배경 레이어처럼 가라앉힌다. 헤드라인이 900 굵기 검정이라
-     겹쳐도 읽는 데는 지장이 없다. */
-  -webkit-mask-image:linear-gradient(90deg,rgba(0,0,0,.32) 0,rgba(0,0,0,.6) 26%,#000 46%),
-    linear-gradient(180deg,transparent 0,#000 20%,#000 80%,transparent 100%);
-  mask-image:linear-gradient(90deg,rgba(0,0,0,.32) 0,rgba(0,0,0,.6) 26%,#000 46%),
-    linear-gradient(180deg,transparent 0,#000 20%,#000 80%,transparent 100%);
-  -webkit-mask-composite:source-in;mask-composite:intersect}
-[data-theme="dark"] .hero-particles{opacity:.8}
-/* 2차 CTA — 기존 .btn-link 를 그대로 쓰고 화살표만 붙인다. */
-.hero__how{gap:8px}
-.hero__how::after{content:'↓';font-size:13px;transition:transform .22s}
-.hero__how:hover::after{transform:translateY(3px)}
+  pointer-events:none;opacity:1;
+  /* 🔴 가로 페이드를 뺐다. 왼쪽만 흐려 놓으니 글자가 오른쪽으로 밀린 것처럼 보이고
+     앞부분(AI BU)이 사라져 브랜드가 반쪽만 읽혔다. 좌우 대칭으로 두고
+     위아래만 부드럽게 죽여 배경 레이어로 가라앉힌다. */
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%)}
+[data-theme="dark"] .hero-particles{opacity:.92}
 .hero__copy{position:relative;z-index:2}
 .hero__title{margin-top:24px;font-size:clamp(54px,8.2vw,116px);line-height:1.12;letter-spacing:-.025em;font-weight:900;max-inline-size:10ch}
 .hero__title .stroke{-webkit-text-stroke:0;color:var(--lime-2)}
@@ -1618,12 +1618,14 @@ body.admin-on #ch-plugin-script{display:none}
     <div class="hero__copy" data-stagger="90">
       <span class="eyebrow">AI-native development partner</span>
       <h1 class="hero__title">AI로 빠르게,<br><span class="stroke">기준 있게</span> 만듭니다.</h1>
-      <p class="hero__lead">기획부터 디자인, 개발, 검수까지. 누가 만들고 어떻게 판단했는지 숨기지 않는 AI-native development partner.</p>
+      <!-- 🔴 이전 카피는 끝을 "AI-native development partner" 로 맺어 바로 위 eyebrow 와
+           같은 말을 두 번 했다. 첫 화면에서 같은 문구를 두 번 읽히면 둘 다 안 남는다.
+           헤드라인이 "기준 있게" 라고 주장했으니, 서브는 그 기준이 무엇인지로 받는다 —
+           범위(한 팀이 끝까지)와 근거(기록으로 남긴다). 이 사이트가 파는 두 가지다. -->
+      <p class="hero__lead">기획 · 디자인 · 개발 · 검수를 한 팀이 끝까지 맡습니다.<br>누가 만들었고 왜 그렇게 정했는지, 그 근거를 함께 남깁니다.</p>
       <div class="hero__actions">
         <!-- data-track 은 pluuug 배선이 href 를 덮어쓰는 기준이다. 지우지 말 것. -->
         <a href="#contact" class="btn-primary" data-track="hero_contact">프로젝트 문의하기 <span>↗</span></a>
-        <!-- href 는 JS 없이도 도달하는 폴백이고, 실제 이동은 아래 스크립트가 섹션 머리로 맞춘다. -->
-        <a href="#how-title" class="btn-link hero__how" data-hero-how>작업 방식 보기</a>
       </div>
     </div>
   </div>
@@ -2301,19 +2303,19 @@ body.admin-on #ch-plugin-script{display:none}
       const cx=W/2;
       lines.forEach((l,i)=>oc.fillText(l,cx,top+i*lh));
 
-      const step=narrow?4:3;
+      const step=narrow?3:2;
       let img; try{ img=oc.getImageData(0,0,W,H).data; }catch(e){ return; }
       const pts=[];
       for(let y=0;y<H;y+=step) for(let x=0;x<W;x+=step)
         if(img[(y*W+x)*4+3]>128) pts.push(x,y);
-      const total=pts.length/2, MAX=narrow?1100:3400;
+      const total=pts.length/2, MAX=narrow?1800:6200;
       const stride=total>MAX?total/MAX:1, n=Math.min(total,MAX);
       parts=new Array(n);
       for(let i=0;i<n;i++){
         const k=Math.floor(i*stride)*2;
         parts[i]={tx:pts[k],ty:pts[k+1],
           x:W/2+(Math.random()-.5)*W*1.1, y:H/2+(Math.random()-.5)*H*1.1,
-          vx:0,vy:0,s:Math.random()*1.2+1.1,o:Math.random()*.42+.5,
+          vx:0,vy:0,s:Math.random()*1.4+1.7,o:Math.random()*.28+.72,
           ph:Math.random()*6.283};
       }
     };
@@ -2374,19 +2376,6 @@ body.admin-on #ch-plugin-script{display:none}
     rebuild();
   })();
 
-  /* 2차 CTA — How we work 섹션 머리로 보낸다. href 는 JS 가 없을 때의 폴백이다.
-     스크롤 동작은 지정하지 않는다 — html{scroll-behavior:smooth} 가 이미 정하고 있고,
-     여기서 강제하면 prefers-reduced-motion 사용자에게도 부드러운 스크롤이 걸린다. */
-  (()=>{
-    const a=document.querySelector('[data-hero-how]'); if(!a) return;
-    a.addEventListener('click',e=>{
-      const how=document.querySelector('.how'); if(!how) return;
-      e.preventDefault();
-      how.scrollIntoView({block:'start'});
-      const h=document.getElementById('how-title'); if(h){ h.setAttribute('tabindex','-1'); h.focus({preventScroll:true}); }
-      track('hero_how',{section:'hero',content_id:'how'});
-    });
-  })();
 
   /* ═══ Why different — 아코디언 ═══════════════════════════════════════════
      React Bits AccordionGallery 의 동작만 옮겼다. 벌어지고 접히는 것은 CSS 트랜지션이
