@@ -176,14 +176,52 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .hero-stage__motion::before{content:'';position:absolute;inset:5% -3% 3% 8%;z-index:-1;pointer-events:none;
   border-radius:42%;background:radial-gradient(circle at var(--hero-pointer-x) var(--hero-pointer-y),rgba(215,255,89,.34),transparent 58%);
   filter:blur(34px);opacity:var(--hero-glow-opacity);transition:opacity .32s ease}
-.hero-visual{position:relative;width:min(100%,520px);height:560px;margin:0;overflow:hidden;
-  border:1px solid rgba(17,19,17,.14);border-radius:38px;background:var(--panel);
-  box-shadow:0 30px 80px rgba(17,19,17,.20);transform:rotate(1.4deg);
+.hero-system{position:relative;isolation:isolate;width:min(100%,540px);height:560px;margin:0;overflow:hidden;
+  display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;color:var(--white);
+  border:1px solid rgba(255,255,255,.1);border-radius:40px;background:#111511;
+  box-shadow:0 34px 90px rgba(17,19,17,.26);transform:rotate(-1deg);
   transition:transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .55s}
-.hero-visual:hover{transform:rotate(.2deg) translateY(-7px);box-shadow:0 38px 90px rgba(17,19,17,.24)}
-.hero-visual img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
-.hero-visual::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:inherit;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.24)}
+.hero-system:hover{transform:rotate(0) translateY(-7px);box-shadow:0 42px 100px rgba(17,19,17,.3)}
+.hero-system::before{content:'';position:absolute;inset:0;z-index:-2;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:34px 34px;mask-image:linear-gradient(to bottom,#000,transparent 78%)}
+.hero-system::after{content:'';position:absolute;z-index:-1;width:330px;height:330px;right:-120px;top:54px;
+  border-radius:50%;background:radial-gradient(circle,rgba(215,255,89,.18),transparent 66%);
+  filter:blur(8px);pointer-events:none}
+.hero-system__top{display:flex;align-items:center;justify-content:space-between;gap:18px;
+  padding:24px 28px;border-bottom:1px solid rgba(255,255,255,.12);font-size:10px;
+  font-weight:850;letter-spacing:.13em;text-transform:uppercase}
+.hero-system__brand{color:var(--lime)}
+.hero-system__live{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.56)}
+.hero-system__live::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--lime);
+  box-shadow:0 0 0 5px rgba(215,255,89,.1)}
+.hero-system__field{position:relative;min-height:0;padding:34px 28px;overflow:hidden}
+.hero-system__index{display:block;font-size:11px;font-weight:800;letter-spacing:.18em;color:rgba(255,255,255,.46)}
+.hero-system__title{position:relative;z-index:2;margin-top:22px;font-size:clamp(54px,5.4vw,76px);
+  line-height:.82;letter-spacing:-.065em;font-weight:920;text-transform:uppercase}
+.hero-system__title span{display:block}
+.hero-system__title em{font-style:normal;color:var(--lime);font-weight:920}
+.hero-system__rings{position:absolute;right:-54px;top:26px;width:244px;aspect-ratio:1;border-radius:50%;
+  border:1px solid rgba(215,255,89,.24)}
+.hero-system__rings::before,.hero-system__rings::after{content:'';position:absolute;border-radius:50%;
+  border:1px solid rgba(215,255,89,.18)}
+.hero-system__rings::before{inset:34px}.hero-system__rings::after{inset:76px;background:rgba(215,255,89,.05)}
+.hero-system__proof{position:absolute;right:26px;bottom:24px;z-index:3;width:148px;padding:13px 14px;
+  border:1px solid rgba(255,255,255,.14);border-radius:14px;background:rgba(17,21,17,.78);
+  backdrop-filter:blur(12px)}
+.hero-system__proof span{display:flex;align-items:center;gap:7px;font-size:9px;font-weight:800;
+  letter-spacing:.12em;color:rgba(255,255,255,.46)}
+.hero-system__proof span::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--lime)}
+.hero-system__proof strong{display:block;margin-top:8px;font-size:15px;letter-spacing:-.02em}
+.hero-system__steps{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:7px;
+  margin:0;padding:13px 14px;list-style:none;border-top:1px solid rgba(255,255,255,.12)}
+.hero-system__steps li{min-width:0;padding:12px;border-radius:13px;background:rgba(255,255,255,.055)}
+.hero-system__steps li:last-child{background:var(--lime);color:var(--ink)}
+.hero-system__steps b{display:block;font-size:9px;letter-spacing:.12em;opacity:.54}
+.hero-system__steps span{display:block;margin-top:7px;font-size:13px;font-weight:850;white-space:nowrap}
+.hero-system figcaption{padding:17px 28px 21px;border-top:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.58);font-size:12px;line-height:1.55;letter-spacing:-.01em}
 
 /* Transition strip */
 .strip{border-block:1px solid var(--line);overflow:hidden;background:var(--white)}
@@ -1021,7 +1059,7 @@ body.admin-on #ch-plugin-script{display:none}
   .hero__grid{grid-template-columns:1fr;gap:30px}
   .hero__title{max-inline-size:10ch}
   .hero-stage{min-height:540px;max-width:680px;width:100%;margin-inline:auto}
-  .hero-visual{height:520px}
+  .hero-system{height:520px}
   .problem__layout,.how__layout{grid-template-columns:1fr}
   .problem__aside,.how__intro{position:static}
   .problem__aside h2{max-inline-size:18ch}
@@ -1066,7 +1104,16 @@ body.admin-on #ch-plugin-script{display:none}
   .hero__lead{font-size:16px}
   .hero__actions{align-items:flex-start;flex-direction:column;gap:8px}
   .hero-stage{min-height:430px}
-  .hero-visual{width:min(94%,440px);height:430px;border-radius:28px}
+  .hero-system{width:min(94%,440px);height:430px;border-radius:28px;transform:none}
+  .hero-system__top{padding:17px 20px}
+  .hero-system__field{padding:22px 20px}
+  .hero-system__title{margin-top:16px;font-size:clamp(48px,12vw,62px)}
+  .hero-system__rings{width:190px;right:-58px;top:20px}
+  .hero-system__proof{right:18px;bottom:18px;width:132px;padding:11px 12px}
+  .hero-system__steps{grid-template-columns:repeat(2,1fr);padding:10px;gap:6px}
+  .hero-system__steps li{padding:9px 11px}
+  .hero-system__steps span{margin-top:4px;font-size:12px}
+  .hero-system figcaption{display:none}
   .section{padding:82px 0}
   .eyebrow{font-size:13px;gap:8px}
   .eyebrow::before{font-size:12px}
@@ -1156,7 +1203,12 @@ body.admin-on #ch-plugin-script{display:none}
   .hero__note{max-width:none}
   .hero__note::before{display:none}
   .hero-stage{min-height:385px}
-  .hero-visual{width:94%;height:385px}
+  .hero-system{width:94%;height:385px}
+  .hero-system__top{padding:15px 17px;font-size:9px}
+  .hero-system__field{padding:18px 17px}
+  .hero-system__title{font-size:46px}
+  .hero-system__proof{display:none}
+  .hero-system__rings{width:170px;right:-62px}
   .section-title{font-size:clamp(34px,10vw,40px)}
 }
 @media(prefers-reduced-motion:reduce){
@@ -1256,12 +1308,26 @@ body.admin-on #ch-plugin-script{display:none}
       </div>
     </div>
 
-    <div class="hero-stage reveal reveal--right" style="--d:.18s" aria-label="AI Builder Origin 작업 장면">
+    <div class="hero-stage reveal reveal--right" style="--d:.18s" aria-label="AI Builder Origin 작업 시스템">
       <div class="hero-stage__motion">
-      <figure class="hero-visual">
-        <img src="assets/hero/hero-builder-v2.jpg" width="1122" height="1402"
-             alt="노트에 화면 구조를 기록하며 노트북으로 작업하는 빌더의 손"
-             fetchpriority="high" decoding="async">
+      <figure class="hero-system">
+        <div class="hero-system__top">
+          <span class="hero-system__brand">AI Builder Origin</span>
+          <span class="hero-system__live">Operating system</span>
+        </div>
+        <div class="hero-system__field" aria-hidden="true">
+          <span class="hero-system__index">SYSTEM 01 — 04</span>
+          <p class="hero-system__title"><span>Build</span><span><em>with</em></span><span>evidence</span></p>
+          <i class="hero-system__rings"></i>
+          <div class="hero-system__proof"><span>Decision log</span><strong>Recorded</strong></div>
+        </div>
+        <ol class="hero-system__steps" aria-label="작업 과정">
+          <li><b>01</b><span>진단</span></li>
+          <li><b>02</b><span>설계</span></li>
+          <li><b>03</b><span>제작</span></li>
+          <li><b>04</b><span>검수</span></li>
+        </ol>
+        <figcaption>결과물뿐 아니라 범위, 판단, 변경과 검수 기록까지 함께 남깁니다.</figcaption>
       </figure>
       </div>
     </div>
