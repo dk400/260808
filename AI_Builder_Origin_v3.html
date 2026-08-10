@@ -197,10 +197,10 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
    파내는 원의 중심 y 를 원반 중심과 같은 9px 에 둬 위아래가 정확히 대칭인 수직 초승달이 된다.
       가로로만 4px 어긋나므로 가장 두꺼운 곳은 4+9-7.5=6.5px. */
 .theme-btn__icon::before{content:'';position:absolute;inset:0;border-radius:50%;
-  background:currentColor;
+  background:currentColor;transform:rotate(-10deg);
   -webkit-mask-image:radial-gradient(circle 7.5px at 14px 9px,transparent 99%,#000 100%);
   mask-image:radial-gradient(circle 7.5px at 14px 9px,transparent 99%,#000 100%);
-  transition:inset .3s cubic-bezier(.2,.8,.2,1)}
+  transition:inset .3s cubic-bezier(.2,.8,.2,1),transform .3s cubic-bezier(.2,.8,.2,1)}
 /* 광선 — 가운데 점 하나에 box-shadow 여덟 개. 다크에서만 켜고 회전하며 퍼진다. */
 .theme-btn__icon::after{content:'';position:absolute;left:50%;top:50%;width:2px;height:2px;
   margin:-1px 0 0 -1px;border-radius:50%;background:currentColor;opacity:0;
@@ -210,7 +210,7 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 [data-theme="dark"] .theme-btn{color:var(--lime)}
 [data-theme="dark"] .theme-btn:hover{background:rgba(var(--ink-rgb),.08)}
 /* 해 — 원반을 줄이고 파내는 원의 반지름을 0 으로 만들어 온전한 원으로 되돌린다. */
-[data-theme="dark"] .theme-btn__icon::before{inset:4px;
+[data-theme="dark"] .theme-btn__icon::before{inset:4px;transform:rotate(0);
   -webkit-mask-image:radial-gradient(circle 0 at 14px 9px,transparent 99%,#000 100%);
   mask-image:radial-gradient(circle 0 at 14px 9px,transparent 99%,#000 100%)}
 [data-theme="dark"] .theme-btn__icon::after{opacity:1;transform:scale(1) rotate(0)}
