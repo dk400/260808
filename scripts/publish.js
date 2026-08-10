@@ -59,7 +59,9 @@ const hit = () => new Promise(res => {
     console.log('  deploy/ 준비 완료 · 프로젝트 고정 ' + PROJECT_NAME);
 
     step('Vercel 배포');
-    const out = run('npx', ['vercel', 'deploy', 'deploy', '--prod', '--yes', '--scope', SCOPE], { stdio: 'pipe' });
+    /* Vercel CLI 58+ 에서는 하위 경로 인자보다 --cwd 를 써야 해당 폴더의 ignore 규칙과
+       정적 자산을 정확히 수집한다. 경로 인자로 넘기면 상위 .gitignore 의 deploy/ 규칙이 적용된다. */
+    const out = run('npx', ['vercel', 'deploy', '--cwd', 'deploy', '--prod', '--yes', '--scope', SCOPE], { stdio: 'pipe' });
     const urls = out.match(/https:\/\/[a-z0-9-]+\.vercel\.app/g) || [];
     const deployed = urls.filter(u => !u.includes(ALIAS)).pop();
     if (!deployed) { console.error('  배포 URL 을 찾지 못했다. 아래 출력을 확인할 것.\n' + out); process.exit(1); }
