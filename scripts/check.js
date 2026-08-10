@@ -165,6 +165,12 @@ const MUST = {
   'Tiptap 로더': 'window.__TIPTAP', 'Tiptap 마운트': 'mountEditor',
   '본문 렌더러': 'renderDoc', '레거시 본문 승격': 'const toDoc',
   '본문 링크 스킴 검사': 'const safeHref',
+  /* 리드 문단의 문장 단위 줄바꿈. 이 함수가 없으면 esc() 로 되돌아가면서
+     개행이 공백으로 접혀 두 문장이 한 줄에 붙는다 — 화면은 멀쩡해 보이고 조판만 무너진다. */
+  '리드 줄바꿈': 'const leadHTML',
+  /* FAQ 사이드페이지의 분류/질문 2단 구조. 이게 빠지면 예전처럼 카테고리와 질문이
+     같은 h2 로 평평하게 흐른다. */
+  'FAQ 분류 열': 'faqp__cat',
 };
 const gone = Object.entries(MUST).filter(([, n]) => !s.includes(n)).map(([k]) => k);
 const total = Object.keys(MUST).length;
