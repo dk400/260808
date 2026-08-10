@@ -1329,6 +1329,31 @@ body.admin-on #ch-plugin-script{display:none}
   .status-current strong{font-size:18px}
   .status-line{margin-top:12px;height:8px}
 }
+
+/* ── 전체보기 버튼 위치 통일 ──────────────────────────────────────────────
+   데스크톱에서는 네 섹션이 각자 다른 레이아웃(flex space-between · 2열 그리드 ·
+   탭과 한 덩어리)이라 버튼이 모두 오른쪽 끝에 붙었다. 그런데 좁아지면 그 레이아웃이
+   저마다 다르게 무너져 버튼이 제각각 자리에 떨어진다 —
+   Work·FAQ 는 제목 밑, Education 은 설명문 아래 오른쪽, Insight 는 필터 탭 뒤.
+
+   네 곳을 한 줄짜리 세로 흐름으로 통일하고 order 로 자리를 고정한다.
+   .section-aside · .insight__actions 는 display:contents 로 상자를 없애야
+   그 안의 버튼이 헤더의 직접 자식이 되어 order 가 먹는다.
+
+   이 블록은 640px 블록 뒤에 둔다 — 같은 특정성이라 뒤가 이긴다. */
+@media(max-width:780px){
+  .work__head,.education__head,.insight__head,.faq__head{
+    display:flex;flex-direction:column;align-items:flex-start;gap:0}
+  .education__head .section-aside,
+  .insight__head .insight__actions{display:contents}
+  /* 제목 덩어리(eyebrow+h2) → 전체보기 → 나머지(설명문·필터 탭) */
+  .work__head>div,.education__head>div:first-child,
+  .insight__head>div:first-child,.faq__head>div{order:0}
+  .work__head .section-more,.education__head .section-more,
+  .insight__head .section-more,.faq__head .section-more{order:1;margin-top:20px;justify-self:start}
+  .education__head .section-copy{order:2;margin-top:22px}
+  .insight__head .insight-tabs{order:2;margin-top:20px}
+}
 @media(max-width:480px){
   /* display:none 이었다. 콘셉트 고지는 "유지하라"고 명시된 문구인데(§10) 480px 이하에서만
      통째로 사라져 모바일 심사에서는 고지 없이 보였다.
