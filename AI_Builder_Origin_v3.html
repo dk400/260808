@@ -1309,17 +1309,25 @@ body.admin-on #ch-plugin-script{display:none}
   .how__status{position:sticky;top:72px;z-index:6;padding:16px 18px;border-top:0;
     background:rgba(var(--bg-rgb),.93);backdrop-filter:blur(10px);
     -webkit-backdrop-filter:blur(10px)}
-  /* 🔴 마일스톤 라벨(진단·범위·제작·이관)은 바로 아래 스텝 목록과 같은 네 항목이다.
-     스크롤을 따라다니는 요소가 본문을 그대로 되풀이하면 화면만 먹는다.
-     겹치지 않는 것 — 몇 번째인지와 진행률 — 만 남긴다.
-     JS 의 statusMilestones 갱신은 그대로 돈다(데스크톱에서 쓰므로 마크업은 유지). */
-  .status-milestones{display:none}
-  /* 점을 숨겼으므로 막대 손잡이를 되살린다 — 없으면 현재 위치 표시가 사라진다. */
-  .status-line i::after{display:block}
+  /* 🔴 라벨(진단·범위·제작·이관)만 감추고 단계 구분 점은 막대 위에 남긴다.
+     라벨 네 개는 바로 아래 스텝 목록과 같은 항목이라, 스크롤을 따라다니는 요소가
+     본문을 그대로 되풀이하면 화면만 먹는다. 반대로 점까지 없애면 막대가 통짜 게이지가 되어
+     "네 단계 중 어디"라는 정보가 사라진다 — 글자를 지우고 눈금은 남기는 게 답이다.
+     font-size:0 으로 글자만 죽인다. ::before 점은 px 로 잡혀 있어 영향받지 않는다.
+     막대 높이 8px 의 중심(4px)에 7px 점의 중심을 맞춘다 → 점 top 은 0.5px. */
+  .status-milestones{display:block;position:relative;height:8px;margin-top:-8px;
+    font-size:0;pointer-events:none}
+  /* span 이 자기 font-size(clamp)를 들고 있어 컨테이너의 0 이 상속되지 않는다 — 여기서 죽인다. */
+  .status-milestones span,
+  .status-milestones span:first-child,
+  .status-milestones span:last-child{padding-top:0;font-size:0}
+  .status-milestones span::before,
+  .status-milestones span:first-child::before,
+  .status-milestones span:last-child::before{top:.5px}
   /* 화면에 붙어 있는 요소라 높이를 줄인다. 길수록 본문을 가린다. */
   .status-current{margin-top:12px}
   .status-current strong{font-size:18px}
-  .status-line{margin-top:12px;height:8px;margin-bottom:2px}
+  .status-line{margin-top:12px;height:8px}
 }
 @media(max-width:480px){
   /* display:none 이었다. 콘셉트 고지는 "유지하라"고 명시된 문구인데(§10) 480px 이하에서만
