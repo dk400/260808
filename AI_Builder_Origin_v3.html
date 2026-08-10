@@ -189,12 +189,17 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .theme-btn:hover{border-color:var(--ink);background:rgba(var(--ink-rgb),.06);transform:translateY(-2px)}
 .theme-btn:active{transform:translateY(0)}
 .theme-btn__icon{position:relative;display:block;width:18px;height:18px}
-/* 원반 — 라이트에서는 초승달(누르면 다크로), 다크에서는 해(누르면 라이트로) */
+/* 원반 — 라이트에서는 초승달(누르면 다크로), 다크에서는 해(누르면 라이트로)
+   🔴 파내는 원을 % 로 주면 반지름이 farthest-corner 기준이라 실제 크기가 예측되지 않는다.
+      처음에 그래서 초승달이 종잇장처럼 얇게 나왔다. px 로 고정한다 —
+      원반 18px(반지름 9), 파내는 원 반지름 7.5 를 중심에서 4.8px 어긋나게 두면
+      가장 두꺼운 곳이 6.8px 인 흔한 달 모양이 된다.
+   살짝 기울여 둔다. 정확히 수직인 초승달은 로고나 괄호처럼 읽힌다. */
 .theme-btn__icon::before{content:'';position:absolute;inset:0;border-radius:50%;
-  background:currentColor;
-  -webkit-mask-image:radial-gradient(circle at 74% 20%,transparent 56%,#000 57%);
-  mask-image:radial-gradient(circle at 74% 20%,transparent 56%,#000 57%);
-  transition:inset .3s cubic-bezier(.2,.8,.2,1)}
+  background:currentColor;transform:rotate(-20deg);
+  -webkit-mask-image:radial-gradient(circle 7.5px at 13px 5.5px,transparent 99%,#000 100%);
+  mask-image:radial-gradient(circle 7.5px at 13px 5.5px,transparent 99%,#000 100%);
+  transition:inset .3s cubic-bezier(.2,.8,.2,1),transform .3s cubic-bezier(.2,.8,.2,1)}
 /* 광선 — 가운데 점 하나에 box-shadow 여덟 개. 다크에서만 켜고 회전하며 퍼진다. */
 .theme-btn__icon::after{content:'';position:absolute;left:50%;top:50%;width:2px;height:2px;
   margin:-1px 0 0 -1px;border-radius:50%;background:currentColor;opacity:0;
@@ -203,10 +208,10 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
   transition:opacity .25s,transform .3s cubic-bezier(.2,.8,.2,1)}
 [data-theme="dark"] .theme-btn{color:var(--lime)}
 [data-theme="dark"] .theme-btn:hover{background:rgba(var(--ink-rgb),.08)}
-/* 해 — 원반을 줄이고 mask 를 걷어 온전한 원으로 되돌린다(반지름 0 이라 파이는 곳이 없다). */
-[data-theme="dark"] .theme-btn__icon::before{inset:4px;
-  -webkit-mask-image:radial-gradient(circle at 150% -60%,transparent 0,#000 0);
-  mask-image:radial-gradient(circle at 150% -60%,transparent 0,#000 0)}
+/* 해 — 원반을 줄이고 파내는 원의 반지름을 0 으로 만들어 온전한 원으로 되돌린다. */
+[data-theme="dark"] .theme-btn__icon::before{inset:4px;transform:rotate(0);
+  -webkit-mask-image:radial-gradient(circle 0 at 13px 5.5px,transparent 99%,#000 100%);
+  mask-image:radial-gradient(circle 0 at 13px 5.5px,transparent 99%,#000 100%)}
 [data-theme="dark"] .theme-btn__icon::after{opacity:1;transform:scale(1) rotate(0)}
 .menu-btn{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;position:relative}
 .menu-btn span,.menu-btn::before,.menu-btn::after{content:'';position:absolute;left:50%;top:50%;display:block;width:18px;height:1.5px;background:var(--ink);transform-origin:center;transition:transform .25s,opacity .2s}
