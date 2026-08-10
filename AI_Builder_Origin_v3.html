@@ -178,18 +178,13 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 /* 테마 토글. 아이콘은 CSS 로 그린다 — 아이콘 폰트나 SVG 파일을 하나 더 늘리지 않는다.
    라이트에서는 달(다크로 감), 다크에서는 해(라이트로 감)를 보여준다. */
 .theme-btn{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;
-  border:1px solid var(--line);border-radius:999px;
+  border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--ink);
   transition:background .2s,border-color .2s,transform .2s}
-.theme-btn:hover{border-color:var(--ink);transform:translateY(-2px)}
-.theme-btn__icon{position:relative;width:16px;height:16px;border-radius:50%;
-  background:var(--ink);transition:background .2s,box-shadow .2s}
-/* 달 — 원 오른쪽 위를 배경색으로 덮어 초승달을 만든다. */
-.theme-btn__icon::after{content:'';position:absolute;inset:0;border-radius:50%;
-  box-shadow:5px -5px 0 0 var(--bg);transition:box-shadow .2s,transform .2s}
-[data-theme="dark"] .theme-btn__icon{width:11px;height:11px}
-/* 해 — 초승달을 덮던 그림자를 지우고 광선을 두른다. */
-[data-theme="dark"] .theme-btn__icon::after{
-  box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink);transform:scale(1)}
+.theme-btn:hover{background:var(--lime);border-color:var(--ink);transform:translateY(-2px)}
+/* 현재 상태가 아니라 눌렀을 때 이동할 모드를 보여준다: 라이트에서는 달, 다크에서는 해. */
+.theme-btn__icon{width:22px;height:22px;display:grid;place-items:center;line-height:1}
+.theme-btn__icon::before{content:'☾';font-family:Arial,sans-serif;font-size:25px;font-weight:700;transform:translateY(-1px)}
+[data-theme="dark"] .theme-btn__icon::before{content:'☀';font-size:20px;transform:none}
 .menu-btn{display:none;width:44px;height:44px;border:1px solid var(--line);border-radius:50%;position:relative}
 .menu-btn span,.menu-btn::before,.menu-btn::after{content:'';position:absolute;left:50%;top:50%;display:block;width:18px;height:1.5px;background:var(--ink);transform-origin:center;transition:transform .25s,opacity .2s}
 .menu-btn::before{transform:translate(-50%,-6px)}
@@ -2025,7 +2020,9 @@ body.admin-on #ch-plugin-script{display:none}
     const sync=()=>{
       const dark=isDark();
       /* "지금 무엇인가"가 아니라 "누르면 무엇이 되는가"를 읽어준다 */
-      btn.setAttribute('aria-label',dark?'라이트 모드로 전환':'다크 모드로 전환');
+      const label=dark?'라이트 모드로 전환':'다크 모드로 전환';
+      btn.setAttribute('aria-label',label);
+      btn.title=label;
       const meta=document.querySelector('meta[name="theme-color"]');
       if(meta) meta.setAttribute('content',dark?'#0f110f':'#111311');
     };
