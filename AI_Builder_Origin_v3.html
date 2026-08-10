@@ -734,9 +734,6 @@ body.chat-open .dock.show ~ .totop{bottom:20px}
 .edu-note{margin-top:28px;font-size:14px;line-height:1.7;color:var(--muted)}
 .edu-note b{color:var(--ink);font-weight:800}
 /* 채움 버튼이 아니라 텍스트 링크다 — 교육 신청이 문의를 대체하는 경로가 되면 안 된다(§6.2). */
-.edu-link{font-weight:750;color:var(--ink);border-bottom:1px solid var(--line);
-  transition:border-color .22s}
-.edu-link:hover{border-color:var(--ink)}
 @media(max-width:1050px){
   .education__head{grid-template-columns:1fr}
   .education__head .section-aside{justify-self:start}
@@ -1671,7 +1668,10 @@ body.admin-on #ch-plugin-script{display:none}
     <div class="education__head reveal reveal--tilt">
       <div><span class="eyebrow">Education</span><h2 class="section-title" id="education-title" style="margin-top:24px">만드는 사람을 먼저 기릅니다.</h2></div>
       <div class="section-aside">
-        <p class="section-copy">AI 빌더 스쿨 부트캠프를 거친 빌더가 이곳에서 작업합니다. 무엇을 배우고 무엇을 만들어 봤는지가 곧 작업의 근거입니다.</p>
+        <!-- 아래에 있던 "과정 운영은 AI 빌더 스쿨이 맡습니다" 한 줄을 이 문장에 흡수했다.
+             운영 주체를 밝히는 정보라 지울 수는 없지만, 섹션 끝에 따로 서 있을 만한
+             무게는 아니었다. "AI 빌더 스쿨이 운영하는" 으로 앞에 붙인다. -->
+        <p class="section-copy">AI 빌더 스쿨이 운영하는 부트캠프를 거친 빌더가 이곳에서 작업합니다. 무엇을 배우고 무엇을 만들어 봤는지가 곧 작업의 근거입니다.</p>
         <!-- Education 은 목록이 아니라 과정 소개 화면이다. "전체 보기"라고 쓰면 더 많은 항목이
              있다는 뜻이 되므로 무엇이 열리는지 그대로 적는다. -->
         <a class="section-more" href="#/education">과정 자세히 보기 <span aria-hidden="true">→</span></a>
@@ -1702,7 +1702,6 @@ body.admin-on #ch-plugin-script{display:none}
       <article class="edu-phase"><span class="edu-phase__no">02</span><h3>실전 과정 · 2개월</h3>
         <p>실제 프로젝트를 진행하며 매주 피드백 세션으로 결과물을 점검합니다. 만든 것과 판단 근거가 함께 기록됩니다.</p></article>
     </div>
-    <p class="edu-note">과정 운영은 <b>AI 빌더 스쿨</b>이 맡습니다. <a class="edu-link" href="#/education">커리큘럼 자세히 보기 →</a></p>
   </div>
 </section>
 
