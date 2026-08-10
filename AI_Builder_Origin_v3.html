@@ -4143,19 +4143,30 @@ body.admin-on #ch-plugin-script{display:none}
     if(shot) shot.addEventListener('error',()=>{const f=shot.closest('.detail__shot'); if(f) f.remove()});
   };
 
+  /* 홈에서 사이드페이지로 들어갈 때의 스크롤 위치.
+     홈은 한 문서 안에서 숨겼다 꺼내는 구조라 브라우저가 위치를 되돌려 주지 않는다.
+     이 값이 없으면 FAQ 를 보다 돌아와도 항상 히어로부터 다시 스크롤해야 한다. */
+  let homeY=0;
+  /* 브라우저가 자기 나름대로 스크롤을 되돌리면 아래 복원과 싸운다. 우리가 전담한다. */
+  if('scrollRestoration' in history) history.scrollRestoration='manual';
+
   const route=()=>{
     const h=location.hash||'';
+    /* 홈을 떠나기 직전의 위치를 붙잡는다. 사이드페이지 사이를 오갈 때는 홈이 이미
+       숨어 있으므로 값이 덮이지 않는다 — 처음 떠난 자리가 그대로 남는다. */
+    if(!home.hidden) homeY=scrollY;
+    let handled=false;
     /* 교육 트랙 상세 — #/education/track-0N. work·insight 와 데이터 출처가 다르므로
        한 정규식에 묶지 않고 따로 본다. */
     const et=h.match(/^#\/education\/([\w-]+)$/);
     if(et){
       const t=TRACKS.find(x=>x.id===et[1]);
-      if(t){ showDetail(renderEducationTrack(t),t.title); return; }
-      /* 없는 트랙 주소면 목록으로 되돌린다 — 빈 화면을 보여주지 않는다. */
-      location.replace('#/education'); return;
+      /* 🔴 예전엔 여기서 바로 return 했다. 그래서 트랙 상세만 맨 위로 안 올라가고
+         목록에서 보던 스크롤 위치에 그대로 떨어졌다. 아래 공통 처리로 흘려보낸다. */
+      if(t){ showDetail(renderEducationTrack(t),t.title); handled=true; }
+      else { location.replace('#/education'); return; }   /* 없는 트랙이면 목록으로 */
     }
-    const m=h.match(/^#\/(work|insight)\/([\w-]+)$/);
-    let handled=false;
+    const m=handled?null:h.match(/^#\/(work|insight)\/([\w-]+)$/);
     if(m){
       const list=m[1]==='work'?WORK:ARTICLES;
       const item=list.find(x=>x.id===m[2]);
@@ -4180,7 +4191,9 @@ body.admin-on #ch-plugin-script{display:none}
         return;
       }
     }
-    scrollTo({top:0,behavior:'instant'});
+    /* 사이드페이지로 들어갈 때는 맨 위. 홈으로 돌아올 때는 떠났던 자리로.
+       첫 진입이나 주소로 바로 들어온 경우 homeY 가 0 이라 자연스럽게 맨 위가 된다. */
+    scrollTo({top:handled?0:homeY,behavior:'instant'});
     if(window.__scanReveals) window.__scanReveals(handled?view:document);
     if(window.__railSync) window.__railSync();
   };

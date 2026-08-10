@@ -171,6 +171,9 @@ const MUST = {
   /* FAQ 사이드페이지의 분류/질문 2단 구조. 이게 빠지면 예전처럼 카테고리와 질문이
      같은 h2 로 평평하게 흐른다. */
   'FAQ 분류 열': 'faqp__cat',
+  /* 사이드페이지에서 돌아왔을 때 떠났던 자리로 되돌리는 값. 이게 없으면 route 끝의
+     scrollTo 가 무조건 0 이 되어 항상 히어로부터 다시 스크롤해야 한다. */
+  '홈 스크롤 복원': 'let homeY',
 };
 const gone = Object.entries(MUST).filter(([, n]) => !s.includes(n)).map(([k]) => k);
 const total = Object.keys(MUST).length;
