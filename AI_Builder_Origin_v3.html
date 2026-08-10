@@ -228,7 +228,6 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 
 /* Hero */
 .hero{--hero-pointer-x:76%;--hero-pointer-y:34%;--hero-pointer-opacity:0;--hero-glow-opacity:.26;
-  --hero-stage-x:0px;--hero-stage-y:0px;--hero-stage-rx:0deg;--hero-stage-ry:0deg;
   min-height:100svh;padding-top:72px;display:flex;align-items:center;position:relative;overflow:hidden;isolation:isolate}
 /* 보케(라임·블루 블롭)를 걷었다. 파티클 텍스트가 브랜드 레이어가 된 뒤로는
    블롭이 같은 자리에서 빛을 뿌려 입자를 삼켰다 — 배경은 비우고 파티클만 남긴다. */
@@ -307,90 +306,13 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .hero__note{margin-top:28px;display:flex;gap:8px;align-items:flex-start;font-size:14px;line-height:1.65;color:var(--muted);max-width:46ch}
 .hero__note::before{content:'i';width:18px;height:18px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-weight:800;flex:0 0 auto}
 
-.hero-stage{position:relative;min-height:610px;perspective:1200px}
-.hero-stage__motion{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform;
-  display:grid;place-items:center;
-  transform:translate3d(var(--hero-stage-x),var(--hero-stage-y),0) rotateX(var(--hero-stage-rx)) rotateY(var(--hero-stage-ry))}
-.hero-stage__motion::before{content:'';position:absolute;inset:5% -3% 3% 8%;z-index:-1;pointer-events:none;
-  border-radius:42%;background:radial-gradient(circle at var(--hero-pointer-x) var(--hero-pointer-y),rgba(215,255,89,.34),transparent 58%);
-  filter:blur(34px);opacity:var(--hero-glow-opacity);transition:opacity .32s ease}
-.hero-system{position:relative;isolation:isolate;width:min(100%,540px);height:560px;margin:0;overflow:hidden;
-  display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;color:#fffef9;
-  --ink:#fffef9;--ink-rgb:255,254,249;--white:#111511;
-  border:1px solid rgba(255,255,255,.1);border-radius:40px;background:#111511;
-  box-shadow:0 34px 90px rgba(var(--ink-rgb),.26);transform:rotate(-1deg);
-  transition:transform .55s cubic-bezier(.2,.8,.2,1),box-shadow .55s}
-.hero-system:hover{transform:rotate(0) translateY(-7px);box-shadow:0 42px 100px rgba(var(--ink-rgb),.3)}
-.hero-system::before{content:'';position:absolute;inset:0;z-index:-2;pointer-events:none;
-  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
-  background-size:34px 34px;mask-image:linear-gradient(to bottom,#000,transparent 78%)}
-.hero-system::after{content:'';position:absolute;z-index:-1;width:330px;height:330px;right:-120px;top:54px;
-  border-radius:50%;background:radial-gradient(circle,rgba(215,255,89,.18),transparent 66%);
-  filter:blur(8px);pointer-events:none}
-.hero-system__top{display:flex;align-items:center;justify-content:space-between;gap:18px;
-  position:relative;padding:24px 28px;border-bottom:1px solid rgba(255,255,255,.12);font-size:10px;
-  font-weight:850;letter-spacing:.13em;text-transform:uppercase}
-.hero-system__top::after{content:'';position:absolute;left:-34%;bottom:-1px;width:34%;height:1px;
-  background:linear-gradient(90deg,transparent,var(--lime),transparent);box-shadow:0 0 12px rgba(215,255,89,.7);
-  animation:systemEdge 3.8s cubic-bezier(.4,0,.2,1) infinite}
-.hero-system__brand{color:var(--lime)}
-.hero-system__live{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.56)}
-.hero-system__live::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--lime);
-  box-shadow:0 0 0 5px rgba(215,255,89,.1);animation:systemLive 1.8s ease-out infinite}
-.hero-system__field{position:relative;min-height:0;padding:34px 28px;overflow:hidden}
-.hero-system__field::before{content:'';position:absolute;z-index:1;left:0;right:0;top:-30%;height:38%;pointer-events:none;
-  background:linear-gradient(to bottom,transparent,rgba(215,255,89,.04) 56%,rgba(215,255,89,.52) 58%,transparent 61%);
-  filter:drop-shadow(0 0 9px rgba(215,255,89,.4));animation:systemScan 4.8s cubic-bezier(.45,0,.25,1) infinite}
-.hero-system__field::after{content:'';position:absolute;z-index:1;inset:0;pointer-events:none;
-  background:linear-gradient(108deg,transparent 34%,rgba(215,255,89,.09) 48%,rgba(255,255,255,.08) 50%,transparent 64%);
-  transform:translateX(-125%);animation:systemSweep 6.4s ease-in-out infinite}
-.hero-system__index{position:relative;z-index:2;display:block;font-size:11px;font-weight:800;letter-spacing:.18em;color:rgba(255,255,255,.46)}
-.hero-system__title{position:relative;z-index:2;margin-top:22px;font-size:clamp(54px,5.4vw,76px);
-  line-height:.82;letter-spacing:-.065em;font-weight:920;text-transform:uppercase}
-.hero-system__title span{display:block;animation:systemLineIn .82s cubic-bezier(.16,1,.3,1) both}
-.hero-system__title span:nth-child(2){animation-delay:.12s}.hero-system__title span:nth-child(3){animation-delay:.24s}
-.hero-system__title em{font-style:normal;color:var(--lime);font-weight:920}
-.hero-system__title span:last-child::after{content:'';display:inline-block;width:.09em;height:.7em;margin-left:.08em;
-  background:var(--lime);box-shadow:0 0 14px rgba(215,255,89,.55);animation:systemCursor 1.05s steps(1,end) infinite}
-.hero-system__rings{position:absolute;right:-54px;top:26px;width:244px;aspect-ratio:1;border-radius:50%;
-  border:1px solid rgba(215,255,89,.24);border-top-color:rgba(215,255,89,.72);border-right-color:transparent;
-  filter:drop-shadow(0 0 18px rgba(215,255,89,.1));animation:systemOrbit 13s linear infinite}
-.hero-system__rings::before,.hero-system__rings::after{content:'';position:absolute;border-radius:50%;
-  border:1px solid rgba(215,255,89,.18)}
-.hero-system__rings::before{inset:34px;border-left-color:rgba(215,255,89,.56);border-bottom-color:transparent;
-  animation:systemOrbit 8s linear infinite reverse}
-.hero-system__rings::after{inset:76px;background:rgba(215,255,89,.05);animation:systemCore 2.8s ease-in-out infinite}
-.hero-system__proof{position:absolute;right:26px;bottom:24px;z-index:3;width:148px;padding:13px 14px;
-  border:1px solid rgba(255,255,255,.14);border-radius:14px;background:rgba(17,21,17,.78);
-  backdrop-filter:blur(12px);box-shadow:0 14px 34px rgba(0,0,0,.24);animation:systemProof 4s ease-in-out infinite}
-.hero-system__proof span{display:flex;align-items:center;gap:7px;font-size:9px;font-weight:800;
-  letter-spacing:.12em;color:rgba(255,255,255,.46)}
-.hero-system__proof span::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--lime)}
-.hero-system__proof strong{display:block;margin-top:8px;font-size:15px;letter-spacing:-.02em}
-.hero-system__steps{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,1fr);gap:7px;
-  margin:0;padding:13px 14px;list-style:none;border-top:1px solid rgba(255,255,255,.12);overflow:hidden}
-.hero-system__steps::before{content:'';position:absolute;left:0;top:-1px;width:25%;height:2px;
-  background:linear-gradient(90deg,transparent,var(--lime),transparent);box-shadow:0 0 14px rgba(215,255,89,.72);
-  animation:systemStepRail 8s steps(4,end) infinite}
-.hero-system__steps li{min-width:0;padding:12px;border-radius:13px;background:rgba(255,255,255,.055);
-  animation:systemStep 8s linear infinite;transition:none}
-.hero-system__steps li:nth-child(2){animation-delay:-6s}.hero-system__steps li:nth-child(3){animation-delay:-4s}
-.hero-system__steps li:nth-child(4){animation-delay:-2s}
-.hero-system__steps li:last-child{background:var(--lime);color:#111311}
-.hero-system__steps b{display:block;font-size:9px;letter-spacing:.12em;opacity:.54}
-.hero-system__steps span{display:block;margin-top:7px;font-size:13px;font-weight:850;white-space:nowrap}
-.hero-system figcaption{padding:17px 28px 21px;border-top:1px solid rgba(255,255,255,.1);
-  color:rgba(255,255,255,.58);font-size:12px;line-height:1.55;letter-spacing:-.01em}
 
 @keyframes systemEdge{0%{transform:translateX(0);opacity:0}12%{opacity:1}72%{opacity:1}100%{transform:translateX(395%);opacity:0}}
 @keyframes systemLive{0%{box-shadow:0 0 0 0 rgba(215,255,89,.42)}70%,100%{box-shadow:0 0 0 8px rgba(215,255,89,0)}}
 @keyframes systemScan{0%,12%{transform:translateY(0);opacity:0}22%{opacity:1}72%{opacity:1}88%,100%{transform:translateY(360%);opacity:0}}
 @keyframes systemSweep{0%,44%{transform:translateX(-125%);opacity:0}56%{opacity:1}78%,100%{transform:translateX(125%);opacity:0}}
-@keyframes systemLineIn{from{opacity:0;clip-path:inset(0 100% 0 0);transform:translateX(-18px)}to{opacity:1;clip-path:inset(0);transform:none}}
 @keyframes systemCursor{0%,52%{opacity:1}53%,100%{opacity:0}}
 @keyframes systemOrbit{to{transform:rotate(360deg)}}
-@keyframes systemCore{0%,100%{transform:scale(.88);background:rgba(215,255,89,.03)}50%{transform:scale(1.08);background:rgba(215,255,89,.13)}}
 @keyframes systemProof{0%,100%{transform:translateY(0);border-color:rgba(255,255,255,.14)}50%{transform:translateY(-7px);border-color:rgba(215,255,89,.34)}}
 @keyframes systemStep{0%,20%{background:var(--lime);color:#111311;transform:translateY(-2px);box-shadow:0 8px 24px rgba(215,255,89,.14)}25%,100%{background:rgba(255,255,255,.055);color:#fffef9;transform:none;box-shadow:none}}
 @keyframes systemStepRail{to{transform:translateX(400%)}}
@@ -1262,8 +1184,6 @@ body.admin-on #ch-plugin-script{display:none}
 @media(max-width:1050px){
   .hero__grid{grid-template-columns:1fr;gap:30px}
   .hero__title{max-inline-size:10ch}
-  .hero-stage{min-height:540px;max-width:680px;width:100%;margin-inline:auto}
-  .hero-system{height:520px}
   .problem__layout,.how__layout{grid-template-columns:1fr}
   .problem__aside,.how__intro{position:static}
   .problem__aside h2{max-inline-size:18ch}
@@ -1309,17 +1229,6 @@ body.admin-on #ch-plugin-script{display:none}
   .hero__title{font-size:clamp(46px,13vw,68px);max-inline-size:100%}
   .hero__lead{font-size:16px}
   .hero__actions{align-items:flex-start;flex-direction:column;gap:8px}
-  .hero-stage{min-height:430px}
-  .hero-system{width:min(94%,440px);height:430px;border-radius:28px;transform:none}
-  .hero-system__top{padding:17px 20px}
-  .hero-system__field{padding:22px 20px}
-  .hero-system__title{margin-top:16px;font-size:clamp(48px,12vw,62px)}
-  .hero-system__rings{width:190px;right:-58px;top:20px}
-  .hero-system__proof{right:18px;bottom:18px;width:132px;padding:11px 12px}
-  .hero-system__steps{grid-template-columns:repeat(2,1fr);padding:10px;gap:6px}
-  .hero-system__steps li{padding:9px 11px}
-  .hero-system__steps span{margin-top:4px;font-size:12px}
-  .hero-system figcaption{display:none}
   .section{padding:82px 0}
   .eyebrow{font-size:13px;gap:8px}
   .eyebrow::before{font-size:12px}
@@ -1506,21 +1415,12 @@ body.admin-on #ch-plugin-script{display:none}
      글자는 줄이지 않는다 — 폭이 모자라면 줄바꿈으로 흡수하고, 자리를 먹는 장식 아이콘만 뺀다. */
   .hero__note{max-width:none}
   .hero__note::before{display:none}
-  .hero-stage{min-height:385px}
-  .hero-system{width:94%;height:385px}
-  .hero-system__top{padding:15px 17px;font-size:9px}
-  .hero-system__field{padding:18px 17px}
-  .hero-system__title{font-size:46px}
-  .hero-system__proof{display:none}
-  .hero-system__rings{width:170px;right:-62px}
   .section-title{font-size:clamp(34px,10vw,40px)}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   .reveal{opacity:1;transform:none}
-  .hero-system__top::after,.hero-system__field::before,.hero-system__field::after,
-  .hero-system__title span:last-child::after,.hero-system__steps::before{display:none}
 }
 
 /* ═══ 계측 레일 — v1 signature 이식 (오버레이 방식) ═══ */
@@ -2049,10 +1949,9 @@ body.admin-on #ch-plugin-script{display:none}
     const renderHeroPointer=()=>{
       currentX+=(targetX-currentX)*.085;
       currentY+=(targetY-currentY)*.085;
-      hero.style.setProperty('--hero-stage-x',(currentX*18).toFixed(2)+'px');
-      hero.style.setProperty('--hero-stage-y',(currentY*14).toFixed(2)+'px');
-      hero.style.setProperty('--hero-stage-rx',(currentY*-2.6).toFixed(3)+'deg');
-      hero.style.setProperty('--hero-stage-ry',(currentX*3.4).toFixed(3)+'deg');
+      /* --hero-stage-* 네 개를 쓰던 자리다. 그 변수를 읽던 .hero-stage__motion 이
+         HERO2 에서 사라져 지웠다. lerp 자체는 남긴다 — 아래 커서 스포트라이트가
+         --hero-pointer-* 로 계속 쓴다. */
       if(Math.abs(targetX-currentX)>.001||Math.abs(targetY-currentY)>.001) frame=requestAnimationFrame(renderHeroPointer);
       else frame=0;
     };
