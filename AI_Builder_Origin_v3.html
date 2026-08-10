@@ -1086,6 +1086,20 @@ body.admin-on #ch-plugin-script{display:none}
   .dock{bottom:10px;padding-left:14px}
   .dock__copy span{display:none}
 }
+/* 휴대폰에서는 긴 dock 문구가 CTA 와 채팅 런처 사이에서 잘려 보인다.
+   세 전역 동작을 같은 하단 기준선에 두고 문의만 독립 버튼으로 축약한다. */
+@media(max-width:640px){
+  .dock,
+  body.ct-on .dock{left:50%;right:auto;bottom:max(14px,env(safe-area-inset-bottom));
+    width:auto;padding:6px;gap:0}
+  .dock__copy{display:none}
+  .dock a{display:flex;align-items:center;justify-content:center;min-height:52px;
+    padding:0 22px;font-size:14px}
+  .dock.show ~ .totop,
+  body.chat-open .dock.show ~ .totop{bottom:max(14px,env(safe-area-inset-bottom))}
+  .dock.show ~ .chat,
+  body.chat-open .dock.show ~ .chat{bottom:max(14px,env(safe-area-inset-bottom))}
+}
 @media(max-width:480px){
   /* display:none 이었다. 콘셉트 고지는 "유지하라"고 명시된 문구인데(§10) 480px 이하에서만
      통째로 사라져 모바일 심사에서는 고지 없이 보였다.
@@ -1099,9 +1113,6 @@ body.admin-on #ch-plugin-script{display:none}
   .stage-card--ticket{left:-6px;width:185px}
   .stage-card--tag{font-size:11px;padding:11px 14px}
   .section-title{font-size:clamp(34px,10vw,40px)}
-  .dock__copy b{font-size:12px;max-width:160px}
-  /* 좁은 화면에서 dock 이 넘치지 않게 가로만 줄인다. 세로는 44px 터치 타깃이라 건드리지 않는다. */
-  .dock a{padding:15px 12px}
 }
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
