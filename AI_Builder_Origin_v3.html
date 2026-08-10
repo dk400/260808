@@ -414,11 +414,16 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 .status-line{height:10px;background:rgba(var(--ink-rgb),.1);border-radius:99px;margin-top:16px;position:relative}
 .status-line i{display:block;height:100%;width:0;background:var(--lime);border-radius:inherit;box-shadow:inset 0 0 0 1px rgba(17,19,17,.14);position:relative;transition:width .42s cubic-bezier(.2,.8,.2,1)}
 .status-line i::after{content:'';position:absolute;right:0;top:50%;width:12px;height:12px;border:3px solid #111311;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px rgba(var(--ink-rgb),.1);transform:translate(50%,-50%)}
-.status-milestones{position:relative;height:34px;margin-top:15px}
-.status-milestones span{position:absolute;top:0;left:var(--point);padding-top:15px;font-size:clamp(11px,1.1vw,13px);font-weight:800;color:var(--muted-2);text-align:center;white-space:nowrap;transform:translateX(-50%);transition:color .25s,font-weight .25s}
+/* 🔴 같은 자리에 동그라미가 둘이었다 — 막대의 손잡이(i::after)와 마일스톤의 현재 점.
+   마일스톤 점을 막대 위로 끌어올려 하나로 합치고 손잡이는 없앤다.
+   채움 너비와 점 위치가 같은 식(idx/(n-1)*100%)을 쓰므로 정확히 겹친다.
+   막대 높이 10px 의 중심(5px)에 7px 점의 중심을 맞춘다 → 점 top 은 1.5px. */
+.status-line i::after{display:none}
+.status-milestones{position:relative;height:36px;margin-top:-10px}
+.status-milestones span{position:absolute;top:0;left:var(--point);padding-top:20px;font-size:clamp(11px,1.1vw,13px);font-weight:800;color:var(--muted-2);text-align:center;white-space:nowrap;transform:translateX(-50%);transition:color .25s,font-weight .25s}
 .status-milestones span:first-child{transform:none;text-align:left}
 .status-milestones span:last-child{transform:translateX(-100%);text-align:right}
-.status-milestones span::before{content:'';position:absolute;top:0;left:50%;width:7px;height:7px;border-radius:50%;background:rgba(var(--ink-rgb),.38);transform:translateX(-50%);transition:background .25s,transform .25s,box-shadow .25s}
+.status-milestones span::before{content:'';position:absolute;top:1.5px;left:50%;width:7px;height:7px;border-radius:50%;background:rgba(var(--ink-rgb),.38);transform:translateX(-50%);transition:background .25s,transform .25s,box-shadow .25s}
 .status-milestones span:first-child::before{left:0;transform:none}
 .status-milestones span:last-child::before{left:100%;transform:translateX(-100%)}
 .status-milestones span.done,.status-milestones span.current{color:var(--ink)}
@@ -1300,6 +1305,8 @@ body.admin-on #ch-plugin-script{display:none}
      겹치지 않는 것 — 몇 번째인지와 진행률 — 만 남긴다.
      JS 의 statusMilestones 갱신은 그대로 돈다(데스크톱에서 쓰므로 마크업은 유지). */
   .status-milestones{display:none}
+  /* 점을 숨겼으므로 막대 손잡이를 되살린다 — 없으면 현재 위치 표시가 사라진다. */
+  .status-line i::after{display:block}
   /* 화면에 붙어 있는 요소라 높이를 줄인다. 길수록 본문을 가린다. */
   .status-current{margin-top:12px}
   .status-current strong{font-size:18px}
