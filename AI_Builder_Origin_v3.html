@@ -1179,9 +1179,14 @@ body.admin-on #ch-plugin-script{display:none}
   font-size:13px;font-weight:750;color:var(--muted);transition:color .2s}
 .faqp__toggle:hover{color:var(--ink)}
 
-.faqp__group{margin-top:30px}
+/* 그룹 사이는 행 사이보다 확실히 넓어야 한다. 행은 위아래 22px 을 물고 있으니
+   글자와 글자 사이가 44px 인데, 그룹 간격이 그보다 좁으면 분류가 바뀌는 자리가
+   그냥 '다음 줄' 로 읽힌다 — 실선을 하나 더 그어도 붙어 있는 건 붙어 보인다.
+   첫 그룹만 좁다: 위에 칩 바가 이미 경계를 긋고 있어 같은 간격을 또 주면 빈다. */
+.faqp__group{margin-top:clamp(60px,6.5vw,92px)}
+.faqp__group:first-of-type{margin-top:32px}
 .faqp__group[hidden]{display:none}
-.faqp__cat{display:flex;align-items:baseline;gap:10px;padding-bottom:13px;
+.faqp__cat{display:flex;align-items:baseline;gap:10px;padding-bottom:17px;
   font-size:14px;font-weight:800;letter-spacing:.02em;color:var(--ink)}
 .faqp__cat::before{content:'✱';color:var(--green-ink-2)}
 .faqp__n{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--muted-3)}
