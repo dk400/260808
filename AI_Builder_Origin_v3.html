@@ -1175,16 +1175,29 @@ body.admin-on #ch-plugin-script{display:none}
   flex-wrap:wrap;padding:14px 0;background:var(--bg)}
 .faqp__bar .adm__filters{width:max-content;max-width:100%;overflow-x:auto;scrollbar-width:none}
 .faqp__bar .adm__filters::-webkit-scrollbar{display:none}
-.faqp__toggle{margin-left:auto;padding:9px 4px;margin-block:-9px;
-  font-size:13px;font-weight:750;color:var(--muted);transition:color .2s}
-.faqp__toggle:hover{color:var(--ink)}
+/* 맨 처음엔 민무늬 글자였는데 칩 덩어리 옆에서 안 보였다. 누를 수 있는 것 옆에
+   놓인 흐린 글자는 설명문으로 읽힌다 — 테두리를 줘서 버튼으로 만든다.
+   기호는 행의 +/× 를 그대로 쓴다. 같은 동작이면 같은 모양이어야 한다. */
+.faqp__toggle{margin-left:auto;display:inline-flex;align-items:center;gap:9px;
+  min-height:38px;padding:8px 16px;border:1px solid var(--line);border-radius:999px;
+  font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap;
+  transition:background .2s,border-color .2s}
+.faqp__toggle::after{content:'+';font-size:16px;font-weight:400;line-height:1;
+  transition:transform .3s}
+.faqp__toggle[aria-expanded="true"]::after{transform:rotate(45deg)}
+.faqp__toggle:hover{border-color:var(--ink);background:rgba(var(--ink-rgb),.07)}
 
 /* 그룹 사이는 행 사이보다 확실히 넓어야 한다. 행은 위아래 22px 을 물고 있으니
    글자와 글자 사이가 44px 인데, 그룹 간격이 그보다 좁으면 분류가 바뀌는 자리가
    그냥 '다음 줄' 로 읽힌다 — 실선을 하나 더 그어도 붙어 있는 건 붙어 보인다.
-   첫 그룹만 좁다: 위에 칩 바가 이미 경계를 긋고 있어 같은 간격을 또 주면 빈다. */
-.faqp__group{margin-top:clamp(60px,6.5vw,92px)}
-.faqp__group:first-of-type{margin-top:32px}
+   맨 위 그룹만 좁다: 위에 칩 바가 이미 경계를 긋고 있어 같은 간격을 또 주면 빈다.
+
+   🔴 :first-of-type 이 아니라 '앞에 보이는 그룹이 있는가' 로 판정한다. 필터를 걸면
+   앞 그룹이 hidden 이라 문서 순서상 첫 번째가 아니어도 화면에서는 맨 위다.
+   :first-of-type 으로 잡으면 프로젝트만 32px 이고 나머지 분류는 92px 이 되어,
+   같은 필터 동작인데 고른 분류에 따라 칩 바와의 간격이 달라진다. */
+.faqp__group{margin-top:32px}
+.faqp__group:not([hidden])~.faqp__group:not([hidden]){margin-top:clamp(60px,6.5vw,92px)}
 .faqp__group[hidden]{display:none}
 .faqp__cat{display:flex;align-items:baseline;gap:10px;padding-bottom:17px;
   font-size:14px;font-weight:800;letter-spacing:.02em;color:var(--ink)}
