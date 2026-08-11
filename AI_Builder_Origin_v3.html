@@ -2397,6 +2397,10 @@ body.admin-on #ch-plugin-script{display:none}
     const mobileLogoMq=matchMedia('(max-width:780px)');
     const TEXT_WIDE=['AI BUILDER ORIGIN'], TEXT_NARROW=['AI BUILDER ORIGIN'];
     let W=0,H=0,dpr=1,parts=[],raf=0,onScreen=true,lime='#d7ff59';
+    /* 각인 시간과 커서가 글자를 되살리는 반경. 반경은 브랜드 글자 높이의 두 배쯤이라
+       한 번에 두세 글자가 함께 또렷해진다 — 한 글자씩만 살아나면 무엇을 읽는지 모른다. */
+    const HOLD_MS=2200, REVEAL=340;
+    let t0=0;
     const ptr={x:-9999,y:-9999,on:false};
 
     const readLime=()=>{
@@ -2406,6 +2410,7 @@ body.admin-on #ch-plugin-script{display:none}
     };
 
     const build=()=>{
+      t0=0;                    /* 다시 만들면 각인도 다시 — 흩어진 상태로 시작하면 브랜드가 안 보인다 */
       const r=hero.getBoundingClientRect();
       W=Math.max(320,Math.round(r.width)); H=Math.max(360,Math.round(r.height));
       dpr=Math.min(window.devicePixelRatio||1,2);
@@ -2456,7 +2461,13 @@ body.admin-on #ch-plugin-script{display:none}
       for(let i=0;i<n;i++){
         const k=Math.floor(i*stride)*2;
         const tx=pts[k],ty=pts[k+1];
+        /* 흩어진 자리 — 글자 모양을 알아볼 수 없을 만큼은 벌리되 띠는 유지한다.
+           세로 퍼짐을 가로의 55% 로 눌러 두는 이유가 그것이다. 위아래로 같이 벌리면
+           히어로 전체에 먼지가 끼고, 카피가 그 위에 떠 있는 그림이 된다. */
+        const ang=Math.random()*6.283, rad=54+Math.random()*86;
         parts[i]={tx,ty,
+          sx:narrow?tx:tx+Math.cos(ang)*rad,
+          sy:narrow?ty:ty+Math.sin(ang)*rad*.55,
           /* 터치 화면은 첫 프레임부터 완성된 글자를 보여주고 미세 부유만 남긴다.
              데스크톱은 기존처럼 흩어진 입자가 모이는 연출을 유지한다. */
           x:narrow?tx:W/2+(Math.random()-.5)*W*1.1,
@@ -2470,24 +2481,45 @@ body.admin-on #ch-plugin-script{display:none}
       ctx.clearRect(0,0,W,H);
       ctx.fillStyle=lime;
       const still=rm.matches;
+      /* 첫 HOLD_MS 동안은 예전처럼 글자로 모여 그대로 머문다. 처음부터 흩어져 있으면
+         스쳐 가는 방문자는 브랜드를 한 번도 못 본다 — 마우스를 올릴 이유도 모른다.
+         각인 → 해산 → 커서로 다시 소환, 이 순서여야 인터랙션이 발견된다. */
+      if(!t0) t0=t;
+      const hold=(t-t0)<HOLD_MS;
       for(let i=0;i<parts.length;i++){
         const p=parts[i];
+        let e=1;                 /* 0=흩어짐 · 1=글자. 위치와 밝기를 함께 정한다 */
         if(still){ p.x=p.tx; p.y=p.ty; }
         else{
-          /* 목표점으로 당기는 스프링 + 감쇠. 계수를 낮게 둬 스르륵 모이게 한다. */
-          p.vx=(p.vx+(p.tx-p.x)*.014)*.86;
-          p.vy=(p.vy+(p.ty-p.y)*.014)*.86;
+          /* 목표점 — 읽히는 글자(tx,ty)와 흩어진 자리(sx,sy) 사이의 어디쯤인가.
+             hold 동안은 글자 쪽에 100%(브랜드를 한 번은 각인한다), 이후에는
+             포인터가 가까운 입자만 다시 글자로 모인다. 커서를 따라 브랜드가
+             한 덩어리씩 드러나는 형태다.
+             가늠자는 입자의 현재 위치가 아니라 목표점이다 — 현재 위치로 재면
+             모인 입자가 스스로 판정을 바꿔 떨림이 생긴다. */
+          let gx=p.tx, gy=p.ty;
+          if(!hold){
+            e=0;
+            if(ptr.on){
+              const dx=p.tx-ptr.x, dy=p.ty-ptr.y, d=Math.sqrt(dx*dx+dy*dy);
+              /* 1.7 을 곱해 안쪽 40% 를 완전히 모인 상태로 만든다. 곱하지 않으면
+                 정중앙만 또렷하고 나머지는 어중간해 글자가 끝내 안 읽힌다. */
+              if(d<REVEAL){ const k=Math.min(1,(1-d/REVEAL)*1.7); e=k*k*(3-2*k); }
+            }
+            gx=p.sx+(p.tx-p.sx)*e; gy=p.sy+(p.ty-p.sy)*e;
+          }
+          /* 목표점으로 당기는 스프링 + 감쇠. 평소에는 계수를 낮게 둬 스르륵 떠다니고,
+             불려 나온 입자만 세게 당긴다 — 같은 계수로는 커서가 지나갈 동안 다 못 모인다. */
+          const pull=.014+e*.055;
+          p.vx=(p.vx+(gx-p.x)*pull)*.86;
+          p.vy=(p.vy+(gy-p.y)*pull)*.86;
           /* 자리를 잡은 뒤에도 미세하게 떠다닌다 — 완전히 멈추면 그림이 된다. */
           const dr=Math.sin(t*.0006+p.ph)*.5;
           p.x+=p.vx+dr*.35; p.y+=p.vy+Math.cos(t*.0005+p.ph)*.22;
-          /* 포인터 반발 — 데스크톱에서만, 절제해서. */
-          if(ptr.on){
-            const dx=p.x-ptr.x, dy=p.y-ptr.y, d2=dx*dx+dy*dy;
-            if(d2<12100&&d2>1){ const f=(1-Math.sqrt(d2)/110)*7; const d=Math.sqrt(d2);
-              p.x+=dx/d*f; p.y+=dy/d*f; }
-          }
         }
-        ctx.globalAlpha=p.o;
+        /* 흩어진 입자는 옅게, 불려 나온 입자는 제 밝기로. 같은 밝기로 두면 먼지와
+           글자가 구분되지 않아 무엇이 드러난 건지 안 보인다. 대비가 곧 연출이다. */
+        ctx.globalAlpha=p.o*(.62+.38*e);
         ctx.fillRect(p.x,p.y,p.s,p.s);
       }
       ctx.globalAlpha=1;
