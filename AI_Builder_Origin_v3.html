@@ -1170,6 +1170,11 @@ body.admin-on #ch-plugin-script{display:none}
 .detail__meta dt{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
   color:var(--muted)}
 .detail__meta dd{font-size:16px;font-weight:750}
+/* Work 상세에서 빌더로 건너가는 링크. 같은 줄의 다른 dd 는 그냥 글자라, 여기만
+   누를 수 있다는 것을 밑줄로 알린다 — 색만 다르면 "강조"인지 "링크"인지 안 갈린다. */
+.detail__crew{text-decoration:underline;text-underline-offset:4px;
+  text-decoration-color:rgba(var(--ink-rgb),.35);transition:text-decoration-color .2s}
+.detail__crew:hover{text-decoration-color:var(--ink)}
 .detail__body{margin-top:54px;display:grid;gap:44px;max-width:68ch}
 .detail__body h2{font-size:clamp(24px,2.6vw,32px);letter-spacing:-.02em;line-height:1.3}
 .detail__body p{margin-top:14px;font-size:16px;line-height:1.8;color:var(--muted-2)}
@@ -3208,13 +3213,22 @@ body.admin-on #ch-plugin-script{display:none}
       link(prev,'← 이전')+link(next,'다음 →')+'</nav>';
   };
 
-  const renderWork=item=>{const i=WORK.indexOf(item);return wrap(
+  /* 연결이 한쪽으로만 나 있었다. 빌더 → Work 는 갈 수 있는데 Work → 빌더 는 못 갔다.
+     "누가 만드는지 숨기지 않는다"는 주장은 결과물 쪽에서 사람을 물어볼 수 있어야 성립한다.
+     배정의 출처는 CREW 한 곳이다 — 여기서 다시 적으면 두 곳이 어긋난다. */
+  const crewOf=id=>CREW.filter(p=>p.works.indexOf(id)>=0);
+
+  const renderWork=item=>{const i=WORK.indexOf(item);const by=crewOf(item.id);return wrap(
     '<a class="detail__back" href="#/">← Work 목록</a>'+
     '<span class="eyebrow">'+esc(item.cat)+'</span>'+
     '<h1 class="detail__title" id="detailTitle" tabindex="-1">'+esc(item.title)+'</h1>'+
     '<p class="detail__lead">'+leadHTML(item.lead)+'</p>'+
     '<div class="detail__shot"><img src="assets/work/'+esc(item.id)+'.jpg" alt="'+esc(item.title)+' 화면" loading="lazy"></div>'+
-    '<dl class="detail__meta">'+item.meta.map(([k,v])=>'<div><dt>'+esc(k)+'</dt><dd>'+esc(v)+'</dd></div>').join('')+'</dl>'+
+    '<dl class="detail__meta">'+item.meta.map(([k,v])=>'<div><dt>'+esc(k)+'</dt><dd>'+esc(v)+'</dd></div>').join('')+
+      (by.length?'<div><dt>참여 빌더</dt><dd>'+by.map(p=>
+        '<a class="detail__crew" href="#/crew/'+esc(p.id)+'">'+esc(p.name)+'</a>').join('<span aria-hidden="true"> · </span>')+
+        '</dd></div>':'')+
+    '</dl>'+
     '<div class="detail__body">'+sections(item.body)+'</div>'+
     navBlock(WORK,i,'work','Work')+ctaBlock);};
 
@@ -4423,14 +4437,29 @@ body.admin-on #ch-plugin-script{display:none}
      홈은 한 문서 안에서 숨겼다 꺼내는 구조라 브라우저가 위치를 되돌려 주지 않는다.
      이 값이 없으면 FAQ 를 보다 돌아와도 항상 히어로부터 다시 스크롤해야 한다. */
   let homeY=0;
+  /* 목록 화면도 같은 문제를 갖고 있었다. Crew 를 스크롤하다 한 명을 열고 뒤로 오면
+     목록 맨 위였다 — 방금 보던 사람을 다시 찾아 내려가야 했다.
+
+     🔴 다만 홈과 달리 무조건 되돌리지는 않는다. 되돌리는 것은 "목록 → 그 목록의 상세"
+     로 나갔다가 돌아온 경우뿐이다. 메뉴에서 Crew 를 새로 누르는 것은 다시 보러 온 게
+     아니라 처음 여는 것이라 맨 위가 맞다. 브라우저가 뒤로가기에서만 위치를 되살리고
+     새 이동에서는 맨 위로 가는 것과 같은 규칙이다. */
+  const LIST=/^#\/(work|insight|education|crew)$/;
+  const listY={};
+  let prevHash=location.hash||'';
   /* 브라우저가 자기 나름대로 스크롤을 되돌리면 아래 복원과 싸운다. 우리가 전담한다. */
   if('scrollRestoration' in history) history.scrollRestoration='manual';
 
   const route=()=>{
     const h=location.hash||'';
+    /* 지금 떠나는 화면의 주소. 아래 판단이 전부 여기에 달려 있어 먼저 떼어 둔다 —
+       중간에 return 하는 갈래가 있어서 끝에서 갱신하면 값이 새 화면과 어긋난다. */
+    const prev=prevHash; prevHash=h;
     /* 홈을 떠나기 직전의 위치를 붙잡는다. 사이드페이지 사이를 오갈 때는 홈이 이미
        숨어 있으므로 값이 덮이지 않는다 — 처음 떠난 자리가 그대로 남는다. */
     if(!home.hidden) homeY=scrollY;
+    /* 목록에서 그 목록의 상세로 내려가는 순간에만 자리를 적어 둔다. */
+    else if(LIST.test(prev)&&h.indexOf(prev+'/')===0) listY[prev]=scrollY;
     let handled=false;
     /* 교육 트랙 상세 — #/education/track-0N. work·insight 와 데이터 출처가 다르므로
        한 정규식에 묶지 않고 따로 본다. */
@@ -4476,8 +4505,10 @@ body.admin-on #ch-plugin-script{display:none}
       }
     }
     /* 사이드페이지로 들어갈 때는 맨 위. 홈으로 돌아올 때는 떠났던 자리로.
-       첫 진입이나 주소로 바로 들어온 경우 homeY 가 0 이라 자연스럽게 맨 위가 된다. */
-    scrollTo({top:handled?0:homeY,behavior:'instant'});
+       첫 진입이나 주소로 바로 들어온 경우 homeY 가 0 이라 자연스럽게 맨 위가 된다.
+       상세에서 그 목록으로 되돌아온 경우에만 목록의 자리도 되살린다. */
+    const back=handled&&LIST.test(h)&&prev.indexOf(h+'/')===0;
+    scrollTo({top:handled?(back?(listY[h]||0):0):homeY,behavior:'instant'});
     if(window.__scanReveals) window.__scanReveals(handled?view:document);
     if(window.__railSync) window.__railSync();
   };

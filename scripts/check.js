@@ -226,6 +226,10 @@ const MUST = {
   'Crew 배열': 'const CREW=',
   'Crew 프로필 링크': 'href="#/crew/',
   'Crew 사진 배선': 'window.__wirePhotos',
+  /* Work → 빌더 역방향 링크. 빠져도 화면은 멀쩡하고 연결만 한쪽으로 되돌아간다. */
+  'Work 참여 빌더': 'const crewOf=',
+  /* 목록 → 상세 → 뒤로가기 자리 복원. 없으면 목록이 늘 맨 위로 튄다. */
+  '목록 스크롤 복원': 'const listY=',
 };
 const gone = Object.entries(MUST).filter(([, n]) => !s.includes(n)).map(([k]) => k);
 const total = Object.keys(MUST).length;
