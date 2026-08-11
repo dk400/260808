@@ -483,7 +483,15 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
 /* Builders */
 .builders{background:#111311;color:#fffef9}
 .builders__head{display:grid;grid-template-columns:1fr .8fr;gap:48px;align-items:end}
-.builders__head .section-copy{color:rgba(255,255,255,.58);justify-self:end}
+.builders__head .section-copy{color:rgba(255,255,255,.58)}
+.builders__head .section-aside{justify-self:end}
+/* 🔴 다른 섹션의 전체보기와 모양은 같고 움직임은 없다. PRD §4.1 이 이 구간의 인터랙션
+   강도를 "무"로 정했고 그것이 클라이언트의 판별 기준이다 — hover 로 면이 뒤집히는
+   반응을 여기에만 두지 않는다. 대신 정지 상태의 대비를 다른 섹션보다 높인다:
+   --line 은 어두운 잉크 기준이라 이 검은 면 위에서는 테두리가 사라진다. */
+.builders .section-more{transition:none;border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.76)}
+.builders .section-more:hover{background:transparent;color:rgba(255,255,255,.76);border-color:rgba(255,255,255,.3)}
+.builders .section-more span,.builders .section-more:hover span{transition:none;transform:none}
 .builder-grid{margin-top:60px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 /* PRD §4 — 이 구간의 인터랙션 강도는 "무"다. hover · transition · 등장 효과를 넣지 않는다.
    빈 구간이 아니라 판별 기준이다: "애니메이션을 넣는 판단만큼 안 넣는 판단도 기준이다"
@@ -500,7 +508,10 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
   overflow:hidden;background:linear-gradient(145deg,#d7ff59,#9bb73b);
   display:grid;place-items:center;color:var(--ink);font-weight:900;font-size:24px}
 .builder-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.builder-state{font-size:11px;padding:6px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.64)}
+/* 배지가 링크가 됐다(#/crew/<id>). 누를 수 있다는 것은 화살표와 커서로만 알린다 —
+   이 구간에 hover 반응을 두지 않는 규칙은 그대로다. 대신 정지 상태를 밝혀
+   "읽기용 라벨"이 아니라 "누르는 것"으로 보이게 한다. */
+.builder-state{font-size:11px;padding:6px 9px;border-radius:999px;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.8);white-space:nowrap}
 .builder-card h3{margin-top:26px;font-size:28px;line-height:1.3;letter-spacing:-.015em}
 .builder-card>p{margin-top:10px;color:rgba(255,255,255,.58);font-size:14px;line-height:1.65}
 .builder-evidence{margin-top:auto;padding-top:24px;border-top:1px solid rgba(255,255,255,.1);display:grid;gap:10px}
@@ -1247,6 +1258,73 @@ body.admin-on #ch-plugin-script{display:none}
   .faqp__item>summary{padding:19px 0;gap:14px}
 }
 
+/* Crew 사이드페이지 ────────────────────────────────────────────────────────
+   홈의 #builders 는 근거 3장짜리 미리보기다. "누가 만드는지 숨기지 않습니다" 라고
+   써 놓고 정작 그 사람을 더 볼 방법이 없었다 — 카드에서 끝났다.
+   여기가 그 다음 화면이다. 목록(#/crew)과 개인(#/crew/<id>) 두 장.
+
+   🔴 홈 카드의 검은 톤을 그대로 옮기지 않는다. #builders 는 배경이 #111311 로
+   고정된 구간이지만 사이드페이지는 테마를 따라간다. 색을 고정하면 라이트 모드에서
+   이 페이지만 검은 섬이 된다. 토큰만 쓴다.
+   사진은 1254×1254 정사각이라 aspect-ratio 를 1/1 로 둔다 — 잘라낼 것이 없다. */
+.crew-grid{margin-top:36px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.crew-card{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+  background:var(--white);display:flex;flex-direction:column;
+  transition:transform .35s,box-shadow .35s,border-color .35s}
+.crew-card:hover{transform:translateY(-6px);border-color:rgba(var(--ink-rgb),.3);
+  box-shadow:0 18px 40px rgba(var(--ink-rgb),.09)}
+/* 사진이 없거나 못 읽으면 이니셜이 남는다. 홈 아바타와 같은 규칙이다 —
+   빈 <img> 를 두면 404 만 늘고 "준비 안 됨"과 "고장"이 구분되지 않는다. */
+.crew-photo{position:relative;aspect-ratio:1/1;overflow:hidden;
+  background:linear-gradient(145deg,#d7ff59,#9bb73b);
+  display:grid;place-items:center;color:#111311;font-weight:900}
+.crew-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.crew-card .crew-photo{font-size:clamp(40px,4vw,58px)}
+.crew-card__body{padding:22px 22px 24px;display:flex;flex-direction:column;flex:1}
+.crew-card__role{font-size:11px;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted-3)}
+.crew-card h3{margin-top:9px;font-size:23px;font-weight:850;letter-spacing:-.02em}
+.crew-card p{margin-top:10px;font-size:14.5px;line-height:1.7;color:var(--muted);text-wrap:balance}
+/* 이 카드가 파는 것은 인물 소개가 아니라 근거의 개수다 — 맨 아래에 남긴다. */
+.crew-card__ev{margin-top:auto;padding-top:20px;display:flex;gap:16px;
+  font-size:12px;font-weight:750;color:var(--muted-3)}
+.crew-card__ev b{color:var(--ink);font-weight:850}
+
+.crewp__top{margin-top:44px;display:grid;grid-template-columns:280px minmax(0,1fr);
+  gap:clamp(28px,4vw,52px);align-items:start}
+.crewp__top .crew-photo{border-radius:var(--radius);border:1px solid var(--line);font-size:64px}
+.crewp__facts{display:grid;gap:0;margin:0}
+.crewp__facts div{display:flex;justify-content:space-between;align-items:baseline;gap:20px;
+  padding:15px 0;border-bottom:1px solid var(--line)}
+.crewp__facts div:first-child{border-top:1px solid var(--ink)}
+.crewp__facts dt{font-size:12px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted-3)}
+.crewp__facts dd{font-size:15.5px;font-weight:750;text-align:right}
+.crewp__tags{margin-top:22px;display:flex;flex-wrap:wrap;gap:8px}
+/* 상세 안의 구획 제목. .detail__body h2 는 68ch 상자 안에만 사는데, 아래 Work 그리드는
+   그 상자 밖 전폭이라 같은 클래스를 쓸 수 없다. */
+.crewp__h{margin-top:clamp(56px,6vw,80px);padding-bottom:14px;border-bottom:1px solid var(--ink);
+  display:flex;align-items:baseline;gap:10px;font-size:14px;font-weight:800;letter-spacing:.02em}
+.crewp__h::before{content:'✱';color:var(--green-ink-2)}
+.crewp__h span{font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--muted-3)}
+.crewp__h+.work-grid{margin-top:24px}
+.crewp__ins{margin-top:24px;display:grid;gap:10px}
+.crewp__ins a{display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:20px 22px;border:1px solid var(--line);border-radius:16px;background:var(--white);
+  font-size:16.5px;font-weight:800;letter-spacing:-.02em;line-height:1.5;
+  transition:border-color .22s,transform .22s}
+.crewp__ins a:hover{border-color:var(--ink);transform:translateX(5px)}
+.crewp__ins a span{flex:0 0 auto;color:var(--muted-3);font-weight:750}
+@media(max-width:900px){
+  .crew-grid{grid-template-columns:repeat(2,1fr);gap:16px}
+  /* 사진이 열의 절반을 먹으면 사실 목록이 눌린다. 좁아지면 위아래로 쌓는다. */
+  .crewp__top{grid-template-columns:1fr;gap:26px}
+  .crewp__top .crew-photo{max-width:280px}
+}
+@media(max-width:640px){
+  .crew-grid{grid-template-columns:1fr}
+}
+
 .detail__nav{margin-top:64px;padding-top:26px;border-top:1px solid var(--line);
   display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .detail__nav a{padding-block:11px;margin-block:-11px;font-size:15px;font-weight:750;
@@ -1648,7 +1726,9 @@ body.admin-on #ch-plugin-script{display:none}
       <span class="logo__mark">✱</span><span>AI BUILDER ORIGIN</span>
     </a>
     <nav class="nav" aria-label="주요 메뉴">
-      <a href="#/work">Work</a><a href="#/education">Education</a><a href="#/insight">Insight</a><a href="#/faq">FAQ</a>
+      <!-- 순서는 홈 섹션 순서와 같다: work → builders → education → insight → faq.
+           메뉴와 스크롤 순서가 어긋나면 "이 사이트 어디쯤인지"가 매번 다시 계산된다. -->
+      <a href="#/work">Work</a><a href="#/crew">Crew</a><a href="#/education">Education</a><a href="#/insight">Insight</a><a href="#/faq">FAQ</a>
     </nav>
     <!-- 토글 버튼은 aria-pressed 로 다크 모드의 활성 상태를 전달하고 title 은 다음 동작을 안내한다. -->
     <button class="theme-btn" id="themeBtn" type="button" aria-label="다크 모드" aria-pressed="false">
@@ -1659,7 +1739,7 @@ body.admin-on #ch-plugin-script{display:none}
   </div>
 </header>
 <nav class="mobile-menu" id="mobileMenu" aria-label="모바일 메뉴">
-  <a href="#/work">Work</a><a href="#/education">Education</a><a href="#/insight">Insight</a><a href="#/faq">FAQ</a><a href="#" data-track="mobile_contact">문의하기</a>
+  <a href="#/work">Work</a><a href="#/crew">Crew</a><a href="#/education">Education</a><a href="#/insight">Insight</a><a href="#/faq">FAQ</a><a href="#" data-track="mobile_contact">문의하기</a>
 </nav>
 
 <main id="top">
@@ -1805,13 +1885,13 @@ body.admin-on #ch-plugin-script{display:none}
 <section class="builders section" aria-labelledby="builders-title">
   <div class="container">
     <!-- .reveal 없음 — 다른 섹션 헤드와 달리 이 구간만 즉시 표시된다. PRD §4 강도 "무" -->
-    <div class="builders__head"><div><span class="eyebrow">Builder evidence</span><h2 class="section-title" id="builders-title" style="margin-top:24px">누가 만드는지 숨기지 않습니다.</h2></div><p class="section-copy">실제 작업자의 Work와 Insight를 연결해, 고객이 직접 확인할 수 있는 근거를 남깁니다.</p></div>
+    <div class="builders__head"><div><span class="eyebrow">Builder evidence</span><h2 class="section-title" id="builders-title" style="margin-top:24px">누가 만드는지 숨기지 않습니다.</h2></div><div class="section-aside"><p class="section-copy">실제 작업자의 Work와 Insight를 연결해, 고객이 직접 확인할 수 있는 근거를 남깁니다.</p><a class="section-more" href="#/crew">빌더 전체 보기 <span aria-hidden="true">→</span></a></div></div>
     <!-- 연결된 Work · Insight 는 실제 항목이고 누르면 그 상세로 간다.
          🔴 이 구간에는 등장 애니메이션도 전환(transition)도 넣지 않는다. PRD §4.1 강도 "무". -->
     <div class="builder-grid">
-      <article class="builder-card"><div class="builder-top"><div class="builder-avatar" data-photo="assets/builders/kim-do-yoon.jpg?v=2"><span aria-hidden="true">도</span></div><span class="builder-state">BUILDER PROFILE</span></div><h3>김도윤</h3><p>문제 정의와 사용자 흐름을 화면 구조로 바꾸는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-02"><img src="assets/work/work-02.jpg" alt="" aria-hidden="true" loading="lazy"><span>NICE 정보통신</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-06"><img src="assets/work/work-06.jpg" alt="" aria-hidden="true" loading="lazy"><span>CANAPE</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-04">요구를 다 받는 것은 친절이 아닙니다</a></div><div class="evidence-row"><span>Role</span><b>기획 · UI/UX</b></div></div></article>
-      <article class="builder-card"><div class="builder-top"><div class="builder-avatar" data-photo="assets/builders/lee-seo-jin.jpg?v=2"><span aria-hidden="true">서</span></div><span class="builder-state">BUILDER PROFILE</span></div><h3>이서진</h3><p>프론트엔드와 운영 어드민을 함께 구현하는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-01"><img src="assets/work/work-01.jpg" alt="" aria-hidden="true" loading="lazy"><span>Aerok Admin</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-03"><img src="assets/work/work-03.jpg" alt="" aria-hidden="true" loading="lazy"><span>패밀리케어</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-02">AI를 써도 품질이 흔들리지 않게</a></div><div class="evidence-row"><span>Role</span><b>Web · Admin</b></div></div></article>
-      <article class="builder-card"><div class="builder-top"><div class="builder-avatar" data-photo="assets/builders/park-ha-neul.jpg?v=2"><span aria-hidden="true">하</span></div><span class="builder-state">BUILDER PROFILE</span></div><h3>박하늘</h3><p>AI 자동화와 데이터 흐름을 서비스에 연결하는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-04"><img src="assets/work/work-04.jpg" alt="" aria-hidden="true" loading="lazy"><span>Btv 우리동네광고</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-05"><img src="assets/work/work-05.jpg" alt="" aria-hidden="true" loading="lazy"><span>마크스폰 EDK</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-06">AI가 만든 것과 사람이 정한 것</a></div><div class="evidence-row"><span>Role</span><b>Automation · API</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar" data-photo="assets/builders/kim-do-yoon.jpg?v=2"><span aria-hidden="true">도</span></div><a class="builder-state" href="#/crew/kim-do-yoon">BUILDER PROFILE ↗</a></div><h3>김도윤</h3><p>문제 정의와 사용자 흐름을 화면 구조로 바꾸는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-02"><img src="assets/work/work-02.jpg" alt="" aria-hidden="true" loading="lazy"><span>NICE 정보통신</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-06"><img src="assets/work/work-06.jpg" alt="" aria-hidden="true" loading="lazy"><span>CANAPE</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-04">요구를 다 받는 것은 친절이 아닙니다</a></div><div class="evidence-row"><span>Role</span><b>기획 · UI/UX</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar" data-photo="assets/builders/lee-seo-jin.jpg?v=2"><span aria-hidden="true">서</span></div><a class="builder-state" href="#/crew/lee-seo-jin">BUILDER PROFILE ↗</a></div><h3>이서진</h3><p>프론트엔드와 운영 어드민을 함께 구현하는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-01"><img src="assets/work/work-01.jpg" alt="" aria-hidden="true" loading="lazy"><span>Aerok Admin</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-03"><img src="assets/work/work-03.jpg" alt="" aria-hidden="true" loading="lazy"><span>패밀리케어</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-02">AI를 써도 품질이 흔들리지 않게</a></div><div class="evidence-row"><span>Role</span><b>Web · Admin</b></div></div></article>
+      <article class="builder-card"><div class="builder-top"><div class="builder-avatar" data-photo="assets/builders/park-ha-neul.jpg?v=2"><span aria-hidden="true">하</span></div><a class="builder-state" href="#/crew/park-ha-neul">BUILDER PROFILE ↗</a></div><h3>박하늘</h3><p>AI 자동화와 데이터 흐름을 서비스에 연결하는 빌더.</p><div class="builder-works"><a class="builder-work" href="#/work/work-04"><img src="assets/work/work-04.jpg" alt="" aria-hidden="true" loading="lazy"><span>Btv 우리동네광고</span><span class="builder-work__go" aria-hidden="true">↗</span></a><a class="builder-work" href="#/work/work-05"><img src="assets/work/work-05.jpg" alt="" aria-hidden="true" loading="lazy"><span>마크스폰 EDK</span><span class="builder-work__go" aria-hidden="true">↗</span></a></div><div class="builder-evidence"><div class="evidence-row"><span>Insight</span><a class="evidence-link" href="#/insight/insight-06">AI가 만든 것과 사람이 정한 것</a></div><div class="evidence-row"><span>Role</span><b>Automation · API</b></div></div></article>
     </div>
   </div>
 </section>
@@ -1900,7 +1980,7 @@ body.admin-on #ch-plugin-script{display:none}
     <div class="final__box"><h2 id="contact-title">무엇을 만들지부터 정리해 드립니다.</h2><div class="final__right"><p>프로젝트의 현재 단계와 필요한 기능을 알려주세요. 상담 과정에서 이번에 만들 범위와 다음 단계로 넘길 범위를 함께 정리합니다.</p><!-- pluuug 폼 연결 완료(2026-08-07 · 리다이렉트). href 는 로드 시 JS 가 폼 주소로 바꾸고,
      클릭 시 entry_section·ref_content 까지 붙인 주소로 교체한다 — §6.5. -->
       <div class="final__actions"><a class="btn-primary" href="#" data-track="final_contact">프로젝트 문의하기 ↗</a></div></div></div>
-    <footer class="footer"><div><strong>AI BUILDER ORIGIN ✱</strong><span>누가, 어떻게 만드는지 보여주는 개발 파트너</span></div><nav class="footer-nav"><a href="#/work">Work</a><a href="#/education">Education</a><a href="#/insight">Insight</a><a href="#/faq">FAQ</a><a href="#contact">문의하기</a><a href="#/admin">관리자 화면 시안</a></nav>
+    <footer class="footer"><div><strong>AI BUILDER ORIGIN ✱</strong><span>누가, 어떻게 만드는지 보여주는 개발 파트너</span></div><nav class="footer-nav"><a href="#/work">Work</a><a href="#/crew">Crew</a><a href="#/education">Education</a><a href="#/insight">Insight</a><a href="#/faq">FAQ</a><a href="#contact">문의하기</a><a href="#/admin">관리자 화면 시안</a></nav>
       <!-- 사업자 정보 — 사용자 제공(2026-08-07). 메일 주소는 aibuilder@origin.com 으로 지정받았다.
            mailto 링크로 걸지 않는다: 문의를 대체하는 부차 전환 경로를 만들지 않는다는 PRD §6.2 금지 조항.
            TODO: 저작권 표기 주체·연도 — 브랜드명은 AI BUILDER ORIGIN 으로 확정됐는데
@@ -2590,14 +2670,23 @@ body.admin-on #ch-plugin-script{display:none}
   /* 프로필 사진은 data-photo 에 경로가 있을 때만 얹는다. 빈 <img> 를 두면 404 가 그만큼 나고
      콘솔이 지저분해져 "아직 준비 안 된 것"과 "고장난 것"이 구분되지 않는다.
      읽지 못하면 걷어내 이니셜을 남긴다 — 깨진 이미지 아이콘이 이니셜을 덮는 것보다 낫다. */
-  document.querySelectorAll('.builder-avatar[data-photo]').forEach(av=>{
-    const src=av.dataset.photo; if(!src) return;
-    const img=new Image();
-    img.alt=''; img.setAttribute('aria-hidden','true'); img.loading='lazy';
-    img.addEventListener('error',()=>img.remove(),{once:true});
-    img.src=src;
-    av.insertBefore(img,av.firstChild);
-  });
+  /* 라우터가 그리는 Crew 화면도 같은 규칙을 타야 해서 함수로 빼 둔다. 홈에서 한 번,
+     사이드페이지를 그릴 때마다 한 번 — 규칙이 두 벌이 되면 한쪽만 고쳐져 갈라진다. */
+  /* 🔴 선택자를 [data-photo] 로 넓히지 말 것. 어드민의 .adm-avatar 는 data-photo="1" 을
+     CSS 플래그로만 쓰고 사진은 인라인 background-image 로 얹는다 — 넓히면 "1" 이라는
+     파일을 받으러 가고, 속성을 건드리면 background-size:cover 까지 풀린다. */
+  window.__wirePhotos=(root=document)=>{
+    root.querySelectorAll('.builder-avatar[data-photo],.crew-photo[data-photo]').forEach(av=>{
+      const src=av.dataset.photo;
+      if(!src||av.querySelector('img')) return;   // 두 번 얹지 않는다
+      const img=new Image();
+      img.alt=''; img.setAttribute('aria-hidden','true'); img.loading='lazy';
+      img.addEventListener('error',()=>img.remove(),{once:true});
+      img.src=src;
+      av.insertBefore(img,av.firstChild);
+    });
+  };
+  window.__wirePhotos();
 
   /* ═══ 마퀴 — 화면 폭에 맞춰 세트를 늘린다 ═══
      translateX(-50%) 는 트랙 절반만큼 밀어 이음매를 감춘다. 그런데 절반(=한 세트)이
@@ -3141,6 +3230,57 @@ body.admin-on #ch-plugin-script{display:none}
     '<div><dt>발행</dt><dd>'+esc(item.date)+'</dd></div></dl>'+
     '<div class="detail__body">'+sections(item.body)+'</div>'+
     navBlock(ARTICLES,i,'insight','Insight')+ctaBlock);};
+
+  /* ── Crew ─────────────────────────────────────────────────────────────
+     #/crew            빌더 목록
+     #/crew/<id>       빌더 개인 페이지
+
+     여기가 빌더에 대한 진실이다. 홈 #builders 카드는 이 중 세 가지 필드
+     (이름 · 한 줄 소개 · 연결된 Work/Insight)만 보여주는 미리보기이고,
+     아래 check.js 가 두 곳이 어긋나면 잡는다 — 사람 이름과 링크가 갈라지는 것은
+     "누가 만드는지 숨기지 않는다"고 말하는 사이트에서 가장 나쁜 종류의 버그다.
+
+     🔴 없는 이력을 지어내지 않는다(§7.5). 경력 연차 · 참여 프로젝트 수 같은
+        검증 불가 수치는 넣지 않았다. 여기 있는 것은 전부 이 사이트 안에서
+        눌러 확인할 수 있는 것들이다 — 맡은 역할, 참여한 Work, 쓴 Insight.
+
+     정유선(교육생)은 넣지 않는다. 어드민에서 state 가 invited(초대됨·미수락)다.
+     아직 수락하지 않은 사람을 공개 페이지에 세울 수는 없다. */
+  const CREW=[
+    {id:'kim-do-yoon',name:'김도윤',ini:'도',role:'기획 · UI/UX',
+     photo:'assets/builders/kim-do-yoon.jpg?v=2',
+     bio:'문제 정의와 사용자 흐름을 화면 구조로 바꾸는 빌더.',
+     lead:'요구사항 목록을 그대로 화면으로 옮기지 않습니다.\n무엇을 빼야 나머지가 살아나는지를 먼저 정합니다.',
+     tags:['요구 정리','정보 구조','화면 설계','사용자 흐름'],
+     works:['work-02','work-06'],
+     insight:{id:'insight-04',title:'요구를 다 받는 것은 친절이 아닙니다'},
+     body:[['무엇을 맡나',
+       '프로젝트 초반에 붙습니다. 목표와 사용자, 지금 가장 큰 병목을 확인하고 이번에 만들 범위와 다음 단계로 넘길 범위를 나눕니다. 그 결과가 화면 목록과 이동 흐름이 되고, 그때부터 개발이 시작됩니다.'],
+      ['어떻게 남기나',
+       '자른 요구는 지운 것이 아니라 "다음 단계"로 옮긴 것입니다. 무엇을 언제 왜 미뤘는지를 기록으로 남깁니다. 나중에 범위 이야기가 다시 나올 때 기억이 아니라 문서를 펴는 편이 빠릅니다.']]},
+    {id:'lee-seo-jin',name:'이서진',ini:'서',role:'Web · Admin',
+     photo:'assets/builders/lee-seo-jin.jpg?v=2',
+     bio:'프론트엔드와 운영 어드민을 함께 구현하는 빌더.',
+     lead:'고객이 보는 화면과 운영자가 쓰는 화면을 한 사람이 만듭니다.\n둘이 갈라지면 데이터가 먼저 어긋납니다.',
+     tags:['프론트엔드','운영 어드민','디자인 시스템','검수 규칙'],
+     works:['work-01','work-03'],
+     insight:{id:'insight-02',title:'AI를 써도 품질이 흔들리지 않게'},
+     body:[['무엇을 맡나',
+       '서비스 화면과 그것을 운영하는 어드민을 함께 만듭니다. 어드민은 흔히 뒤로 밀리는데, 운영이 안 되는 서비스는 결국 사람이 손으로 메꾸게 됩니다. 처음부터 같이 설계하는 편이 싸게 끝납니다.'],
+      ['어떻게 남기나',
+       '통과 기준을 문장이 아니라 확인 항목으로 적습니다. 같은 입력에 같은 결과가 나와야 사람과 AI 가 같은 화면을 봅니다. 만든 쪽이 자기 결과를 평가하면 통과 쪽으로 기울기 때문에 검수는 생성과 분리합니다.']]},
+    {id:'park-ha-neul',name:'박하늘',ini:'하',role:'Automation · API',
+     photo:'assets/builders/park-ha-neul.jpg?v=2',
+     bio:'AI 자동화와 데이터 흐름을 서비스에 연결하는 빌더.',
+     lead:'AI 를 붙이는 일보다 어디에 붙일지를 정하는 일이 오래 걸립니다.\n흐름이 먼저고 모델은 그다음입니다.',
+     tags:['AI 자동화','API 연동','데이터 흐름','운영 비용'],
+     works:['work-04','work-05'],
+     insight:{id:'insight-06',title:'AI가 만든 것과 사람이 정한 것'},
+     body:[['무엇을 맡나',
+       '업무 흐름에서 사람이 반복하는 구간을 찾아 자동화하고, 기존 시스템과 주고받을 데이터의 모양을 정합니다. 챗봇을 하나 붙이는 것과 프로세스를 다시 그리는 것은 다른 일입니다.'],
+      ['어떻게 남기나',
+       '구축 비용만이 아니라 이후 모델 사용료와 운영 비용까지 함께 계산해 드립니다. 그리고 결과물 안에서 AI 가 만든 부분과 사람이 정한 부분을 구분해 적습니다 — 나중에 무엇을 고쳐야 할지가 거기서 갈립니다.']]}
+  ];
 
   /* 커리큘럼은 실제 과정 안내에서 옮긴 것이다. 가격·"외주 수주 보장"·누적 매출·평점 같은
      항목은 §7.5(가격 소구·검증 불가 수치 금지)에 걸려 가져오지 않았다. */
@@ -4128,6 +4268,60 @@ body.admin-on #ch-plugin-script{display:none}
       filters,list);
   };
 
+  /* ── Crew 화면 ────────────────────────────────────────────────────────
+     목록은 CREW 배열에서 그린다. 홈 카드를 복제하지 않는 이유는 홈이 세 필드만
+     들고 있는 미리보기라서다 — 복제하면 개인 페이지에 쓸 것이 남지 않는다.
+     반대로 Work 카드는 홈에서 복제한다. 거기가 Work 의 진실이다. */
+  const crewCard=p=>
+    '<a class="crew-card" href="#/crew/'+esc(p.id)+'">'+
+      '<div class="crew-photo" data-photo="'+esc(p.photo)+'"><span aria-hidden="true">'+esc(p.ini)+'</span></div>'+
+      '<div class="crew-card__body">'+
+        '<span class="crew-card__role">'+esc(p.role)+'</span>'+
+        '<h3>'+esc(p.name)+'</h3><p>'+esc(p.bio)+'</p>'+
+        '<div class="crew-card__ev">'+
+          '<span>Work <b>'+String(p.works.length).padStart(2,'0')+'</b></span>'+
+          '<span>Insight <b>01</b></span></div>'+
+      '</div></a>';
+
+  const renderCrewList=()=>listShell(
+    'Crew','만드는 사람을 먼저 봅니다.',
+    '결과물만 보고 정하면 다음 프로젝트에 누가 올지는 알 수 없습니다.\n어떤 빌더가 무엇을 맡았고 어떤 판단을 남겼는지 여기서 확인하세요.',
+    '','<div class="crew-grid">'+CREW.map(crewCard).join('')+'</div>');
+
+  const renderCrew=p=>{
+    const i=CREW.indexOf(p);
+    /* Work 카드는 홈에서 복제한다. 여기서 다시 그리면 홈과 갈라진다 —
+       배정이 바뀌었을 때 한쪽만 고쳐지는 것이 이 사이트에서 제일 나쁜 버그다. */
+    const cards=[...home.querySelectorAll('.work-card')];
+    const mine=p.works.map(id=>cards.find(c=>c.dataset.id===id)).filter(Boolean);
+    const n=String(mine.length).padStart(2,'0');
+    return wrap(
+      '<a class="detail__back" href="#/crew">← Crew</a>'+
+      '<span class="eyebrow">'+esc(p.role)+'</span>'+
+      '<h1 class="detail__title" id="detailTitle" tabindex="-1">'+esc(p.name)+'</h1>'+
+      '<p class="detail__lead">'+leadHTML(p.lead)+'</p>'+
+      '<div class="crewp__top">'+
+        '<div class="crew-photo" data-photo="'+esc(p.photo)+'"><span aria-hidden="true">'+esc(p.ini)+'</span></div>'+
+        '<div>'+
+          '<dl class="crewp__facts">'+
+            '<div><dt>역할</dt><dd>'+esc(p.role)+'</dd></div>'+
+            '<div><dt>참여 Work</dt><dd>'+n+'건</dd></div>'+
+            '<div><dt>작성 Insight</dt><dd>01건</dd></div>'+
+          '</dl>'+
+          '<div class="crewp__tags">'+p.tags.map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="detail__body">'+sections(p.body)+'</div>'+
+      /* 여기부터가 이 페이지의 요점이다. 소개 문단은 누구나 쓸 수 있고,
+         눌러서 확인되는 것은 아래 두 블록뿐이다. */
+      (mine.length?'<h2 class="crewp__h">참여한 Work<span>'+n+'</span></h2>'+
+        '<div class="work-grid">'+mine.map(cloneClean).join('')+'</div>':'')+
+      '<h2 class="crewp__h">쓴 Insight<span>01</span></h2>'+
+      '<div class="crewp__ins"><a href="#/insight/'+esc(p.insight.id)+'">'+
+        esc(p.insight.title)+'<span aria-hidden="true">→</span></a></div>'+
+      navBlock(CREW,i,'crew','Crew')+ctaBlock);
+  };
+
   /* 목록 페이지의 필터는 URL 에 넣지 않는다 — §6.3 이 배제한 UI 상태다. */
   document.addEventListener('click',e=>{
     const t=e.target.closest&&e.target.closest('[data-wl],[data-il]');
@@ -4216,6 +4410,9 @@ body.admin-on #ch-plugin-script{display:none}
     const h=view.querySelector('#detailTitle'); if(h) h.focus({preventScroll:true});
     /* 새로 그린 CTA 도 진짜 링크로 만들어 준다. 클릭 자체는 위임으로 이미 잡힌다. */
     if(window.__wireContact) window.__wireContact(view);
+    /* Crew 화면의 얼굴 사진. 홈 아바타와 같은 함수를 탄다 — 규칙이 한 벌이어야
+       사진이 없을 때 이니셜이 남는 동작도 한 곳에서만 바뀐다. */
+    if(window.__wirePhotos) window.__wirePhotos(view);
     /* 캡처 파일이 없으면 액자째 걷어낸다. 깨진 이미지 아이콘이 남는 것보다 없는 편이 낫다 —
        Work 를 추가하면서 캡처를 빠뜨려도 상세 화면이 무너지지 않는다. */
     const shot=view.querySelector('.detail__shot img');
@@ -4245,6 +4442,13 @@ body.admin-on #ch-plugin-script{display:none}
       if(t){ showDetail(renderEducationTrack(t),t.title); handled=true; }
       else { location.replace('#/education'); return; }   /* 없는 트랙이면 목록으로 */
     }
+    /* 빌더 개인 페이지 — #/crew/<id>. 교육 트랙과 같은 이유로 따로 본다(데이터가 다르다). */
+    const cw=handled?null:h.match(/^#\/crew\/([\w-]+)$/);
+    if(cw){
+      const p=CREW.find(x=>x.id===cw[1]);
+      if(p){ showDetail(renderCrew(p),p.name); handled=true; }
+      else { location.replace('#/crew'); return; }   /* 없는 빌더면 목록으로 */
+    }
     const m=handled?null:h.match(/^#\/(work|insight)\/([\w-]+)$/);
     if(m){
       const list=m[1]==='work'?WORK:ARTICLES;
@@ -4256,6 +4460,7 @@ body.admin-on #ch-plugin-script{display:none}
     }else if(h==='#/faq'){ showDetail(renderFaq(),'FAQ'); handled=true; }
     else if(h==='#/work'){ showDetail(renderWorkList(),'Work'); handled=true; }
     else if(h==='#/insight'){ showDetail(renderInsightList(),'Insight'); handled=true; }
+    else if(h==='#/crew'){ showDetail(renderCrewList(),'Crew'); handled=true; }
     else if(h==='#/education'){ showDetail(renderEducationList(),'교육 과정'); handled=true; }
     else if(h==='#/admin'){
       setChrome();

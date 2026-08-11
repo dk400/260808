@@ -130,7 +130,7 @@ ok(!missTarget.length, '크롬 숨김 대상 존재 ' + (targets.length - missTa
    (missTarget.length ? ' → 없음: ' + missTarget.join(', ') : ''));
 /* 라우트마다 렌더러가 연결돼 있는지 */
 const routes = {'#/work':'renderWorkList','#/insight':'renderInsightList','#/faq':'renderFaq',
-                '#/education':'renderEducationList','#/admin':'renderAdminLogin'};
+                '#/education':'renderEducationList','#/crew':'renderCrewList','#/admin':'renderAdminLogin'};
 /* 🔴 "(h===" 까지 붙여 찾는다. 예전에는 "h==='#/admin'" 으로 찾아서 라우터가 아니라
    setChrome 의 location.hash==='#/admin' 에 먼저 걸렸다 — 우연히 260자 안에 renderAdminLogin
    이 있어서 통과했을 뿐이고, 그 사이에 코드가 몇 줄 들어가자 라우터는 멀쩡한데 실패했다.
@@ -142,13 +142,39 @@ const badRoute = Object.entries(routes).filter(([h, fn]) => {
 ok(!badRoute.length, '라우트-렌더러 연결 ' + (Object.keys(routes).length - badRoute.length) + '/' +
    Object.keys(routes).length + (badRoute.length ? ' → 끊김: ' + badRoute.join(', ') : ''));
 
+/* ── 홈 #builders ↔ CREW 배열 ─────────────────────────────
+   빌더 정보가 두 곳에 있다. 홈 카드는 손으로 쓴 마크업이고(§4.1 이 이 구간의 마크업을
+   고정해 두었다), 사이드페이지는 CREW 배열에서 그린다. 한쪽만 고치면 홈에서는 김도윤인데
+   프로필을 누르면 다른 사람이 나오는 상태가 된다 — "누가 만드는지 숨기지 않습니다" 라고
+   써 둔 섹션에서 그건 오타가 아니라 거짓말이 된다. 이름 · 링크 · Work 배정을 대조한다. */
+const crewSrc = s.slice(s.indexOf('const CREW=['), s.indexOf('/* 커리큘럼은'));
+const crewIds = [...crewSrc.matchAll(/\{id:'([\w-]+)',name:'([^']+)'/g)].map(m => [m[1], m[2]]);
+const crewWorks = [...crewSrc.matchAll(/works:\[([^\]]*)\]/g)]
+  .map(m => m[1].split(',').map(x => x.replace(/'/g, '').trim()).filter(Boolean));
+const cardHtml = [...s.matchAll(/<article class="builder-card">([\s\S]*?)<\/article>/g)].map(m => m[1]);
+ok(crewIds.length > 0 && crewIds.length === cardHtml.length,
+  '빌더 수 일치 — CREW ' + crewIds.length + ' · 홈 카드 ' + cardHtml.length);
+const drift = [];
+cardHtml.forEach((html, i) => {
+  const entry = crewIds[i]; if (!entry) return;
+  const [id, name] = entry;
+  const cardName = (html.match(/<h3>([^<]+)<\/h3>/) || [])[1];
+  if (cardName !== name) drift.push('이름 ' + cardName + ' ≠ ' + name);
+  if (!html.includes('href="#/crew/' + id + '"')) drift.push(name + ' 카드에 #/crew/' + id + ' 링크 없음');
+  const cardWorks = [...html.matchAll(/href="#\/work\/([\w-]+)"/g)].map(m => m[1]);
+  const want = (crewWorks[i] || []).join(',');
+  if (cardWorks.join(',') !== want) drift.push(name + ' Work 배정 ' + cardWorks.join('·') + ' ≠ ' + want.replace(/,/g, '·'));
+});
+ok(!drift.length, '홈 카드 ↔ CREW 대조' + (drift.length ? ' → 어긋남: ' + drift.join(' / ') : ' 일치'));
+
 /* ── 함수 정의 존재 ───────────────────────────────────────
    🔴 이름만 세면 안 된다. renderSpace 정의가 통째로 지워졌는데 route 안의 호출부가
    남아 있어서 검사를 통과했고, 배포 후에야 ReferenceError 로 드러났다(2026-08-08).
    "const 이름=" 형태로 정의 자체를 확인한다. */
 const DEFS = ['profileForm', 'renderSpace', 'renderAdmin', 'renderAdminLogin', 'renderAdminBody',
   'renderWork', 'renderInsight', 'renderWorkList', 'renderInsightList', 'renderFaq',
-  'renderEducationList', 'renderEducationTrack', 'admRepaint', 'setChrome', 'editTarget', 'readAvatar', 'initialOf',
+  'renderEducationList', 'renderEducationTrack', 'renderCrewList', 'renderCrew', 'crewCard',
+  'admRepaint', 'setChrome', 'editTarget', 'readAvatar', 'initialOf',
   'myProfile', 'spaceRow', 'newForm', 'initAuth', 'resolveRole'];
 const noDef = DEFS.filter(n => !s.includes('const ' + n + '='));
 ok(!noDef.length, '함수 정의 ' + (DEFS.length - noDef.length) + '/' + DEFS.length +
@@ -157,6 +183,7 @@ ok(!noDef.length, '함수 정의 ' + (DEFS.length - noDef.length) + '/' + DEFS.l
 /* 선언 순서 — const 는 호출 시점에 초기화돼 있어야 한다. route() 가 마지막에 돌므로
    렌더러는 그보다 위에 있어야 한다. 블록을 옮기다 순서가 뒤집히면 TDZ 로 죽는다. */
 const orderPairs = [['renderSpace', 'route='], ['profileForm', 'renderSpace'],
+  ['CREW=', 'crewCard'], ['crewCard', 'route='],
   ['renderAdmin=', 'admRepaint'], ['setChrome', 'admRepaint']];
 const badOrder = orderPairs.filter(([a, b]) => {
   const ia = s.indexOf('const ' + a), ib = s.indexOf('const ' + b);
@@ -193,6 +220,12 @@ const MUST = {
   /* 사이드페이지에서 돌아왔을 때 떠났던 자리로 되돌리는 값. 이게 없으면 route 끝의
      scrollTo 가 무조건 0 이 되어 항상 히어로부터 다시 스크롤해야 한다. */
   '홈 스크롤 복원': 'let homeY',
+  /* Crew 사이드페이지. 홈 카드의 BUILDER PROFILE 배지는 이 링크가 없으면 다시 죽은
+     라벨이 되고, 사진 배선이 빠지면 모든 얼굴이 이니셜로 되돌아간다 —
+     둘 다 화면이 무너지지 않아서 눈으로는 "원래 그런 줄" 알고 지나간다. */
+  'Crew 배열': 'const CREW=',
+  'Crew 프로필 링크': 'href="#/crew/',
+  'Crew 사진 배선': 'window.__wirePhotos',
 };
 const gone = Object.entries(MUST).filter(([, n]) => !s.includes(n)).map(([k]) => k);
 const total = Object.keys(MUST).length;
