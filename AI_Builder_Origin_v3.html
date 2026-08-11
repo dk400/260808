@@ -1356,6 +1356,11 @@ body.admin-on #ch-plugin-script{display:none}
   /* 터치 화면에는 hover 로 프레임을 되세우는 동작이 없으므로 처음부터 수직으로 둔다.
      눌린 뒤 남는 모바일의 sticky hover 상태에서도 다시 기울지 않게 두 선택자를 함께 덮는다. */
   .mock-window,.work-card:hover .mock-window{transform:none}
+  /* 전체 Work 목록의 네 필터는 한 줄로 두면 마지막 항목이 화면 밖에서 잘린다.
+     두 열 세그먼트로 바꿔 분류명과 개수를 스크롤 없이 모두 보여준다. */
+  .list-filters--work{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;
+    width:100%;border-radius:20px}
+  .list-filters--work button{width:100%;min-width:0;justify-content:center}
   .how-step{grid-template-columns:44px minmax(0,1fr);gap:16px;padding:34px 16px}
   .how-step::before{inset:8px 0}
   .how-step.active{transform:none}
@@ -4030,13 +4035,13 @@ body.admin-on #ch-plugin-script{display:none}
      홈의 Work · Insight 는 미리보기이고, 전체 목록은 이 화면이다.
      카드/행 마크업은 홈과 같은 클래스를 쓴다 — 두 벌로 두면 한쪽만 고쳐져 갈라진다.
      목록 데이터는 홈 DOM 에서 읽는다. 배열을 따로 두면 같은 이유로 어긋난다. */
-  const listShell=(eyebrow,title,lead,filters,body)=>wrap(
+  const listShell=(eyebrow,title,lead,filters,body,filterClass='')=>wrap(
     '<a class="detail__back" href="#/">← 홈</a>'+
     '<span class="eyebrow">'+esc(eyebrow)+'</span>'+
     '<h1 class="detail__title" id="detailTitle" tabindex="-1">'+esc(title)+'</h1>'+
     /* esc() 를 먼저 걸고 나서 개행만 <br> 로 바꾼다 — 순서를 바꾸면 태그가 주입된다. */
     '<p class="detail__lead">'+leadHTML(lead)+'</p>'+
-    (filters?'<div class="adm__filters" role="group" aria-label="분류" style="margin-top:34px">'+filters+'</div>':'')+
+    (filters?'<div class="adm__filters '+esc(filterClass)+'" role="group" aria-label="분류" style="margin-top:34px">'+filters+'</div>':'')+
     body);
 
 
@@ -4066,7 +4071,7 @@ body.admin-on #ch-plugin-script{display:none}
       shown.map(cloneClean).join('')+'</div>';
     return listShell('Work','실제로 진행한 프로젝트',
       '주식회사 똑똑한개발자가 수행한 작업입니다. 카테고리로 나눠 보실 수 있습니다.',
-      filters,grid);
+      filters,grid,'list-filters--work');
   };
 
   /* 홈 DOM 을 복제하지 않고 배열에서 직접 그린다. 홈은 종류별 4건만 두므로
