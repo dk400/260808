@@ -293,22 +293,8 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
   mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%)}
 [data-theme="dark"] .hero-particles{opacity:.92}
 .hero__copy{position:relative;z-index:2}
-/* 파티클 띠와 카피가 같은 자리에서 서로를 지웠다("기준 있게"가 안 읽힘).
-   파티클을 통째로 옅게 하는 것은 이미 한 번 되돌린 판단이라(§위 주석) 다시 쓰지 않는다.
-   카피 뒤에만 배경색을 부드럽게 깔아 층을 나눈다 — 가장자리는 건드리지 않으므로
-   AI BUILDER ORIGIN 은 좌우로 계속 읽힌다. 예전의 가로 페이드가 앞글자(AI BU)를
-   통째로 지웠던 것과 다른 점이 여기다.
-   z-index:-1 은 .hero__copy 가 만든 쌓임 맥락 안이라 카피 뒤·파티클 앞에 정확히 낀다. */
-.hero__copy::before{content:'';position:absolute;z-index:-1;inset:-9% -10%;pointer-events:none;
-  background:radial-gradient(58% 54% at 50% 48%,
-    rgba(var(--bg-rgb),.97) 0%,rgba(var(--bg-rgb),.88) 40%,rgba(var(--bg-rgb),0) 75%)}
 .hero__title{margin-top:24px;font-size:clamp(54px,8.2vw,116px);line-height:1.12;letter-spacing:-.025em;font-weight:900;max-inline-size:10ch}
-/* 🔴 --lime-2(#c8ed45)는 크림 배경(#f4f2eb) 위에서 대비 1.20 이다. 파티클을 걷어내도
-   안 읽힌다 — 지금까지 이 글자를 보이게 하고 있던 것은 뒤에 깔린 어두운 입자들이었다.
-   파티클 색에 이미 적용한 것과 같은 해법을 쓴다: --green-ink 는 테마별로 값이 갈리는
-   토큰이라 라이트에서 #5c7500(대비 4.74), 다크에서 #c9e86a(대비 13.8)로 선다.
-   새 색을 만들지 않고 브랜드 체계 안에서 끝낸다. */
-.hero__title .stroke{-webkit-text-stroke:0;color:var(--green-ink)}
+.hero__title .stroke{-webkit-text-stroke:0;color:var(--lime-2)}
 .hero__lead{margin-top:30px;font-size:clamp(17px,1.75vw,21px);color:var(--muted-2);line-height:1.7;max-width:44ch}
 .hero__actions{display:flex;align-items:center;gap:18px;margin-top:38px;flex-wrap:wrap}
 .btn-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--ink);color:var(--white);padding:16px 24px;border-radius:999px;font-size:15px;font-weight:800;min-height:54px;transition:transform .22s,background .22s}
