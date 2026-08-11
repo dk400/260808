@@ -52,6 +52,20 @@ scripts.forEach((js, i) => {
   catch (e) { ok(false, 'script #' + (i + 1) + ' — ' + e.message); }
 });
 
+/* ── 공유 카드(OG) ───────────────────────────────────────
+   규격은 절대 URL 을 요구한다. 상대 경로여도 슬랙·카톡은 알아서 풀어 주기 때문에
+   눈으로 보면 멀쩡하다 — 안 풀어 주는 크롤러에서만 카드가 빈다. 사람 눈으로는
+   못 잡는 종류라 여기서 잡는다. 도메인을 바꿀 때 한 곳만 고치는 사고도 함께 막는다. */
+const OG_URL = ['og:url', 'og:image', 'og:image:secure_url'].map(p =>
+  [p, (s.match(new RegExp('<meta property="' + p + '" content="([^"]*)"')) || [])[1]]);
+OG_URL.push(['twitter:image',
+  (s.match(/<meta name="twitter:image" content="([^"]*)"/) || [])[1]]);
+const ogBad = OG_URL.filter(([, v]) => !v || !/^https:\/\//.test(v)).map(([p]) => p);
+ok(!ogBad.length, 'OG 절대 URL ' + (OG_URL.length - ogBad.length) + '/' + OG_URL.length +
+  (ogBad.length ? ' → 상대경로·누락: ' + ogBad.join(', ') : ''));
+const ogHosts = [...new Set(OG_URL.map(([, v]) => v && v.replace(/^(https:\/\/[^/]+).*/, '$1')).filter(Boolean))];
+ok(ogHosts.length <= 1, 'OG 호스트 일치' + (ogHosts.length > 1 ? ' → 갈림: ' + ogHosts.join(' / ') : ' (' + (ogHosts[0] || '-') + ')'));
+
 /* ── 마크업 ──────────────────────────────────────────── */
 const body = s.slice(s.indexOf('<body'), s.indexOf('<script>', s.indexOf('<body')));
 const o = (body.match(/<div\b/g) || []).length, c = (body.match(/<\/div>/g) || []).length;
