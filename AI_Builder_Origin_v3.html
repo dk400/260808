@@ -279,12 +279,6 @@ p,li,dd{word-break:keep-all;overflow-wrap:normal;line-break:strict;text-wrap:pre
   -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%);
   mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 82%,transparent 100%)}
 [data-theme="dark"] .hero-particles{opacity:.92}
-.hero-mobile-logo{display:none}
-@keyframes heroLogoOrbit{to{transform:rotate(360deg)}}
-@keyframes heroLogoOrbitReverse{to{transform:rotate(-360deg)}}
-@keyframes heroLogoPulse{
-  0%,100%{transform:translateY(0) scale(1);box-shadow:0 18px 46px rgba(119,151,0,.2),0 0 0 0 rgba(215,255,89,.18)}
-  50%{transform:translateY(-5px) scale(1.035);box-shadow:0 24px 58px rgba(119,151,0,.3),0 0 0 12px rgba(215,255,89,0)}}
 .hero__copy{position:relative;z-index:2}
 .hero__title{margin-top:24px;font-size:clamp(54px,8.2vw,116px);line-height:1.12;letter-spacing:-.025em;font-weight:900;max-inline-size:10ch}
 .hero__title .stroke{-webkit-text-stroke:0;color:var(--lime-2)}
@@ -1303,29 +1297,8 @@ body.admin-on #ch-plugin-script{display:none}
   .mobile-menu{inset-block-start:64px}
   .hero{padding-top:64px}
   .hero__grid{padding-block:68px 76px}
-  /* 모바일은 작은 파티클 타이포 대신 헤더와 같은 브랜드 마크를 확대한다.
-     두 궤도의 속도·방향을 달리해 정적인 로고가 아니라 작동 중인 시스템처럼 보이게 한다. */
+  /* 모바일에서는 파티클과 확대 로고를 모두 걷어 카피의 가독성을 우선한다. */
   .hero-particles{display:none}
-  .hero-mobile-logo{position:absolute;z-index:1;top:clamp(82px,11svh,108px);left:50%;
-    display:grid;place-items:center;width:136px;height:136px;transform:translateX(-50%);pointer-events:none}
-  .hero-mobile-logo::before{content:'';position:absolute;inset:-24px;z-index:-1;border-radius:50%;
-    background:radial-gradient(circle,rgba(215,255,89,.22),rgba(215,255,89,.06) 44%,transparent 70%);filter:blur(8px)}
-  .hero-mobile-logo__orbit{position:absolute;inset:18px;border:1px solid rgba(var(--ink-rgb),.22);
-    border-radius:50%;animation:heroLogoOrbit 7s linear infinite}
-  .hero-mobile-logo__orbit::after{content:'';position:absolute;left:50%;top:-4px;width:8px;height:8px;
-    margin-left:-4px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 5px rgba(215,255,89,.14),0 0 18px rgba(215,255,89,.7)}
-  .hero-mobile-logo__orbit--outer{inset:0;border-style:dashed;opacity:.72;animation:heroLogoOrbitReverse 12s linear infinite}
-  .hero-mobile-logo__orbit--outer::after{top:auto;bottom:-3px;width:6px;height:6px;margin-left:-3px}
-  .hero-mobile-logo__core{position:relative;z-index:2;width:68px;height:68px;border-radius:50%;
-    display:grid;place-items:center;background:#111311;color:var(--lime);border:1px solid rgba(215,255,89,.3);
-    animation:heroLogoPulse 3.6s ease-in-out infinite}
-  /* 확대 시 폰트의 ✱ 글리프가 기기마다 다른 형태로 깨져 세 개의 선으로 정확히 다시 그린다. */
-  .hero-mobile-logo__core span{position:relative;display:block;width:30px;height:4px;border-radius:99px;
-    background:var(--lime);transform:rotate(-12deg)}
-  .hero-mobile-logo__core span::before,.hero-mobile-logo__core span::after{content:'';position:absolute;inset:0;
-    border-radius:inherit;background:inherit}
-  .hero-mobile-logo__core span::before{transform:rotate(60deg)}
-  .hero-mobile-logo__core span::after{transform:rotate(-60deg)}
   .hero__title{font-size:clamp(46px,13vw,68px);max-inline-size:100%}
   .hero__lead{font-size:16px}
   .hero__actions{align-items:center;flex-direction:column;gap:8px}
@@ -1632,12 +1605,6 @@ body.admin-on #ch-plugin-script{display:none}
 <section class="hero">
   <!-- 장식 레이어다. 브랜드명이 h1 과 로고에서 이미 읽히므로 스크린리더에서는 감춘다. -->
   <canvas class="hero-particles" id="heroParticles" aria-hidden="true"></canvas>
-  <!-- 모바일은 파티클 글자 대신 헤더와 같은 로고 마크를 확대한다. 장식이므로 읽지 않는다. -->
-  <div class="hero-mobile-logo" aria-hidden="true">
-    <span class="hero-mobile-logo__orbit hero-mobile-logo__orbit--outer"></span>
-    <span class="hero-mobile-logo__orbit"></span>
-    <span class="hero-mobile-logo__core"><span></span></span>
-  </div>
   <div class="container hero__grid">
     <!-- 자식들을 90ms 간격으로 순차 등장시킨다(PRD §4 스태거 등장). -->
     <div class="hero__copy" data-stagger="90">
