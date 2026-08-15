@@ -2659,7 +2659,7 @@ body.admin-on #ch-plugin-script{display:none}
       el.async=true; el.src='https://cdn.channel.io/plugin/ch-plugin-web.js';
       document.head.appendChild(el);
     })();
-    window.ChannelIO('boot',{pluginKey:CHANNEL_PLUGIN_KEY,language:'ko'},err=>{
+    window.ChannelIO('boot',{pluginKey:CHANNEL_PLUGIN_KEY,language:'ko',hidePopup:true},err=>{
       /* ⚠️ 잘못된 키를 넣으면 이 콜백이 아예 오지 않는다(에러도 없다 — 실측 확인).
          그래서 실패를 감지해 되돌리는 구조가 아니라, 성공했을 때만 넘어가는 구조로 짰다.
          키를 넣은 뒤에는 반드시 런처를 눌러 메신저가 실제로 열리는지 확인할 것. */
